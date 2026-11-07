@@ -4003,9 +4003,24 @@
         // Vercel migration: use the existing on-device Llama 3.2 engine (WebLLM).
         // AppDeploy server AI is removed. Local Llama is the only AI path, preserving the original license and model.
         async function requestStudyAi(path, payload, fallbackPrompt, outputType) {
-          const engine = window.vexLocalEngine;
+          let engine = window.vexLocalEngine;
           if (!engine) {
-            throw new Error('Load your existing Llama 3.2 1B model first: open Study Helper → Local AI, load Llama, then retry this feature.');
+            const loadBtn = document.getElementById('loadLocalAi');
+            const alreadyLoading = !!(loadBtn && loadBtn.disabled);
+            if (alreadyLoading || (loadBtn && window.confirm('Llama 3.2 1B is not loaded yet. Load it now? If it is already saved on this device it loads faster; a first-time download can use around 1 GB of data.'))) {
+              if (!alreadyLoading) loadBtn.click();
+              const waitStart = Date.now();
+              while (!window.vexLocalEngine && Date.now() - waitStart < 600000) {
+                if (typeof showStatus === 'function') showStatus('Loading Llama… this can take a minute. Keep this page open.', 'loading');
+                await new Promise((r) => setTimeout(r, 1000));
+                const st = document.getElementById('localAiStatus');
+                if (st && /^Local AI failed/.test(st.textContent || '')) break;
+              }
+              engine = window.vexLocalEngine;
+            }
+            if (!engine) {
+              throw new Error('Llama is not loaded. Open Study Helper → Local AI, tap Load Llama, then try again.');
+            }
           }
           let system = 'You are VEX.FOCUS, a careful and age-appropriate school study assistant. Use only the supplied notes. Never invent facts. Follow the requested output format exactly.';
           let user = fallbackPrompt;
@@ -4026,14 +4041,41 @@
           }
           if (outputType === 'cards') {
             // Faster path: stream tokens, cap output length, and keep every complete card even if the output is cut off.
-            const salvageCards = (text) => {
-              const found = [];
-              const re = /\{\s*"q"\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*"a"\s*:\s*"((?:[^"\\]|\\.)*)"\s*\}/g;
-              let m;
-              while ((m = re.exec(text)) !== null) {
-                try { found.push({ q: JSON.parse('"' + m[1] + '"'), a: JSON.parse('"' + m[2] + '"') }); } catch (e) { /* skip bad card */ }
+            const salvageCards = (raw) => {
+              const text = String(raw || '').replace(/```(?:json)?/gi, '');
+              const clean = (t) => t.replace(/[\u0000-\u001f]+/g, ' ');
+              const pick = (o) => {
+                if (!o || typeof o !== 'object') return null;
+                const q = o.q || o.Q || o.question || o.Question || o.front;
+                const a = o.a || o.A || o.answer || o.Answer || o.back;
+                if (typeof q === 'string' && typeof a === 'string' && q.trim() && a.trim()) return { q: q.trim(), a: a.trim() };
+                return null;
+              };
+              let out = [];
+              const s0 = text.indexOf('[');
+              const e0 = text.lastIndexOf(']');
+              if (s0 !== -1 && e0 > s0) {
+                try {
+                  const arr = JSON.parse(clean(text.slice(s0, e0 + 1)));
+                  if (Array.isArray(arr)) out = arr.map(pick).filter(Boolean);
+                } catch (err) { /* try the next method */ }
               }
-              return found;
+              if (out.length) return out;
+              (text.match(/\{[^{}]*\}/g) || []).forEach((chunk) => {
+                try { const c = pick(JSON.parse(clean(chunk))); if (c) out.push(c); } catch (err) { /* skip */ }
+              });
+              if (out.length) return out;
+              const kv = /"(?:q|question)"\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*"(?:a|answer)"\s*:\s*"((?:[^"\\]|\\.)*)"/gi;
+              let m;
+              while ((m = kv.exec(text)) !== null) {
+                try { out.push({ q: JSON.parse('"' + clean(m[1]) + '"'), a: JSON.parse('"' + clean(m[2]) + '"') }); } catch (err) { /* skip */ }
+              }
+              if (out.length) return out;
+              const qa = /(?:^|\n)\s*(?:Q(?:uestion)?\s*\d*\s*[:.)-])\s*([^\n]+)\n+\s*(?:A(?:nswer)?\s*\d*\s*[:.)-])\s*([^\n]+)/gi;
+              while ((m = qa.exec(text)) !== null) {
+                out.push({ q: m[1].trim(), a: m[2].trim() });
+              }
+              return out;
             };
             const cardStream = await engine.chat.completions.create({
               messages: [
@@ -4214,9 +4256,18 @@
             showStatus(cards.length + ' AI flashcards created. Check the answers against your textbook.', 'success');
           } catch (err) {
             const message = err && err.response && err.response.data && err.response.data.error;
-            showStatus(message || err.message || 'AI flashcards failed. Tap Make flashcards to use the offline card maker.', 'error');
+            const reason = message || (err && err.message) || 'AI flashcards failed.';
             button.textContent = '✦ Make flashcards';
             button.disabled = false;
+            if (/not loaded/i.test(reason)) {
+              showStatus(reason, 'error');
+              return;
+            }
+            // Use the offline card maker so you always get cards.
+            window.vexAiCards = [];
+            replayingAiCardClick = true;
+            button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+            showStatus('AI could not make cards (' + reason + ') so the offline card maker was used instead.', 'error');
           }
         }, true);
 
@@ -4701,6 +4752,14 @@
         if (video.readyState >= 2) startPlayback();
       })();
     </script>
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script>
+      window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
+    </script>
+    <script defer src="/_vercel/speed-insights/script.js"></script>
     <script type="module" src="./src/main.ts"></script>
   </body>
 </html>
