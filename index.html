@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VEX.FOCUS — Study OS</title>
+    <title>VEX.STUDY OS</title>
     <meta name="theme-color" content="#101322" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%238f83ff'/%3E%3Cstop offset='1' stop-color='%2370e6d6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='19' fill='%23101322'/%3E%3Cpath d='M13 17h12l7 21 7-21h12L37 49H27z' fill='url(%23g)'/%3E%3C/svg%3E" />
     <link rel="stylesheet" href="./src/styles.css" />
@@ -34,7 +34,7 @@
         #socraticLog { min-height: 150px; }
         #study-quiz .exam-grid { max-width: 100%; }
       }
-      /* Keep native form controls aligned with the VEX.FOCUS dark glass theme. */
+      /* Keep native form controls aligned with the VEX.STUDY dark glass theme. */
       .exam-tool input:not([type="file"]), .exam-tool textarea, .exam-tool select {
         box-sizing: border-box;
         width: 100%;
@@ -275,11 +275,11 @@
     </style>
   </head>
   <body>
-    <div id="vexIntroScreen" role="status" aria-label="VEX.FOCUS is loading">
+    <div id="vexIntroScreen" role="status" aria-label="VEX.STUDY is loading">
       <div class="vex-intro-card">
         <div class="vex-intro-brand">
           <span class="vex-intro-brand-mark" aria-hidden="true">V</span>
-          <span>VEX.FOCUS</span>
+          <span>VEX.STUDY</span>
         </div>
         <div class="vex-intro-media">
           <video id="vexIntroVideo" autoplay muted playsinline preload="auto" webkit-playsinline>
@@ -296,12 +296,12 @@
     <div id="app">
       <div class="app-shell">
         <header class="topbar">
-          <a class="brand" href="#" aria-label="VEX.FOCUS home"
+          <a class="brand" href="#" aria-label="VEX.STUDY home"
             ><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" focusable="false"><path d="M5 9h8l7 21 7-21h8L23 34h-6z" fill="currentColor"/><path d="M23 9h8l-5 12h-7z" fill="rgba(112,230,214,.9)"/></svg></span
             ><span>FOCUS<span class="brand-dot">.</span></span></a
           >
           <div class="topbar-right">
-            <button class="btn btn-outline" id="whatVexCanDo" type="button" aria-haspopup="dialog" aria-controls="vexFeaturesDialog">What VEX.FOCUS can do</button><button class="menu-trigger" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="vexDrawer"><span></span><span></span><span></span></button><span class="live-pill"><i></i> YOUR STUDY SPACE</span
+            <button class="btn btn-outline" id="whatVexCanDo" type="button" aria-haspopup="dialog" aria-controls="vexFeaturesDialog">What VEX.STUDY can do</button><button class="menu-trigger" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="vexDrawer"><span></span><span></span><span></span></button><span class="live-pill"><i></i> YOUR STUDY SPACE</span
             ><button
               class="btn btn-outline"
               id="themeToggle"
@@ -314,11 +314,11 @@
           </div>
         </header>
         <div class="drawer-scrim" id="drawerScrim" hidden></div>
-        <aside class="vex-drawer" id="vexDrawer" aria-label="VEX.FOCUS menu" aria-hidden="true" inert>
-          <div class="drawer-head"><div><small>VEX.FOCUS</small><h2>Quick menu</h2></div><button id="menuClose" type="button" aria-label="Close menu">×</button></div>
+        <aside class="vex-drawer" id="vexDrawer" aria-label="VEX.STUDY menu" aria-hidden="true" inert>
+          <div class="drawer-head"><div><small>VEX.STUDY</small><h2>Quick menu</h2></div><button id="menuClose" type="button" aria-label="Close menu">×</button></div>
           <button class="drawer-link" id="drawerUploadNotes" type="button"><span>↥</span><span><strong id="drawerUploadTitle">Upload Notes</strong><small id="drawerUploadHint">Choose multiple files or add more notes</small></span></button>
           <button class="drawer-link" id="drawerTestImprovements" type="button"><span>✦</span><span><strong>Your Test Improvements</strong><small>Review quiz results and weak topics</small></span></button>
-          <button class="drawer-link" id="drawerAbout" type="button"><span>ⓘ</span><span><strong>About</strong><small>Learn about VEX.FOCUS</small></span></button>
+          <button class="drawer-link" id="drawerAbout" type="button"><span>ⓘ</span><span><strong>About</strong><small>Learn about VEX.STUDY</small></span></button>
           <button class="drawer-link" id="drawerTerms" type="button"><span>≡</span><span><strong>Terms &amp; Agreement</strong><small>Read the app terms</small></span></button>
           <button class="drawer-link" id="drawerPrivacy" type="button"><span>⚿</span><span><strong>Privacy</strong><small>How your data is handled</small></span></button>
           <p class="drawer-foot">Made for focused learning.</p>
@@ -334,7 +334,7 @@
           <section id="vexFeaturesDialog" class="surface exam-tool" role="dialog" aria-modal="true" aria-labelledby="vexFeaturesTitle" hidden style="position:relative;margin:0 0 20px;padding:20px;">
             <button class="btn btn-outline" id="closeVexFeatures" type="button" style="float:right">Close ✕</button>
             <span class="section-kicker">YOUR STUDY TOOLKIT</span>
-            <h2 id="vexFeaturesTitle">What VEX.FOCUS can do</h2>
+            <h2 id="vexFeaturesTitle">What VEX.STUDY can do</h2>
             <p class="muted small">Every card below explains one feature. AI results depend on the notes and information you provide.</p>
             <div class="vex-feature-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin-top:16px;">
               <article class="surface" style="padding:16px"><span class="section-kicker">01 · FOCUS</span><h3>Focus timer</h3><p class="muted small">Run focused sessions with 25-, 15- or 5-minute presets.</p></article>
@@ -844,7 +844,7 @@
                 <span class="section-kicker">LOCAL AI · WEBLLM</span>
                 <h3>Llama 3.2 1B on this device</h3>
                 <p class="muted small"><strong>⚠️ WARNING — FIRST-TIME DOWNLOAD:</strong> Llama may need to download about <strong>1.3 GB</strong>. Use Wi-Fi and check that your device has enough data and free storage. The actual requirement can vary by browser and model files. <strong>If Llama cannot download or run on your device, use Focus Buddy in Study Helper instead.</strong> Focus Buddy is the built-in fallback and does not require downloading the Llama model.</p>
-                <p class="muted small" id="llamaAttribution"><strong>Built with Llama</strong> · VEX.FOCUS uses Llama 3.2 under Meta's Llama 3.2 Community License. <a href="https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/LICENSE" target="_blank" rel="noopener noreferrer">Read the official license</a>.</p>
+                <p class="muted small" id="llamaAttribution"><strong>Built with Llama</strong> · VEX.STUDY uses Llama 3.2 under Meta's Llama 3.2 Community License. <a href="https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/LICENSE" target="_blank" rel="noopener noreferrer">Read the official license</a>.</p>
                 <div class="local-ai-actions">
                   <button class="btn btn-outline btn-wide" id="loadLocalAi" type="button">Load Llama 3.2 1B locally</button>
                   <button class="btn btn-outline btn-wide" id="cancelLocalAi" type="button" hidden>Cancel download</button>
@@ -1053,22 +1053,22 @@
           <section class="terms-panel">
             <header class="terms-header">
               <button class="terms-back" id="termsBack" type="button">← Back</button>
-              <div class="terms-heading"><small>VEX.FOCUS · THE DETAILS</small><h2 id="termsTitle">Terms &amp; Agreement</h2></div>
+              <div class="terms-heading"><small>VEX.STUDY · THE DETAILS</small><h2 id="termsTitle">Terms &amp; Agreement</h2></div>
             </header>
             <div class="terms-content">
-              <div class="terms-intro"><span class="terms-updated">Last updated · November 7, 2026</span>Welcome to VEX.FOCUS! VEX.FOCUS is a study platform designed to help students learn, organize their studies, improve productivity and prepare for exams.<br><br>By using VEX.FOCUS, you agree to the following terms:</div>
-              <section class="terms-section"><h3>01 · Purpose</h3><p>VEX.FOCUS is designed for educational and productivity purposes. It provides study tools, planners, quizzes, flashcards and other learning features.</p></section>
-              <section class="terms-section"><h3>02 · Free Access</h3><p>VEX.FOCUS does not require users to create an account or sign in to use its available features.</p></section>
+              <div class="terms-intro"><span class="terms-updated">Last updated · November 7, 2026</span>Welcome to VEX.STUDY! VEX.STUDY is a study platform designed to help students learn, organize their studies, improve productivity and prepare for exams.<br><br>By using VEX.STUDY, you agree to the following terms:</div>
+              <section class="terms-section"><h3>01 · Purpose</h3><p>VEX.STUDY is designed for educational and productivity purposes. It provides study tools, planners, quizzes, flashcards and other learning features.</p></section>
+              <section class="terms-section"><h3>02 · Free Access</h3><p>VEX.STUDY does not require users to create an account or sign in to use its available features.</p></section>
               <section class="terms-section"><h3>03 · AI-Generated Content</h3><p>Some features may use artificial intelligence to generate explanations, notes, quizzes or study suggestions. AI-generated information may occasionally contain mistakes. Always verify important academic information with your textbooks or teachers.</p></section>
-              <section class="terms-section"><h3>04 · Educational Use</h3><p>VEX.FOCUS is intended to support learning. It should not replace school education, teachers or official textbooks.</p></section>
-              <section class="terms-section"><h3>05 · Limitation of Liability</h3><p>Users are responsible for how they use the platform and for checking the accuracy of information they use in their studies. VEX.FOCUS is provided “as is” and “as available”, without warranties of any kind, express or implied. To the extent permitted by applicable law, the creator is not responsible for data loss, system crashes, interruptions, or other issues arising from the use of the platform. Keep your own backups of important study data.</p></section>
-              <section class="terms-section"><h3>06 · Features and Updates</h3><p>VEX.FOCUS may receive updates, improvements, new features or changes over time. Some features may occasionally be unavailable.</p></section>
+              <section class="terms-section"><h3>04 · Educational Use</h3><p>VEX.STUDY is intended to support learning. It should not replace school education, teachers or official textbooks.</p></section>
+              <section class="terms-section"><h3>05 · Limitation of Liability</h3><p>Users are responsible for how they use the platform and for checking the accuracy of information they use in their studies. VEX.STUDY is provided “as is” and “as available”, without warranties of any kind, express or implied. To the extent permitted by applicable law, the creator is not responsible for data loss, system crashes, interruptions, or other issues arising from the use of the platform. Keep your own backups of important study data.</p></section>
+              <section class="terms-section"><h3>06 · Features and Updates</h3><p>VEX.STUDY may receive updates, improvements, new features or changes over time. Some features may occasionally be unavailable.</p></section>
               <section class="terms-section"><h3>07 · Copyright</h3><p>Please respect the copyright of textbooks, notes, images and other educational materials. Do not redistribute copyrighted materials without permission.</p></section>
-              <section class="terms-section"><h3>08 · Agreement Changes</h3><p>These terms may be updated as VEX.FOCUS develops. The latest version will be available on this page.</p></section>
-              <section class="terms-section" id="privacySection"><h3>09 · Privacy &amp; Your Data</h3><p><strong>No account needed.</strong> VEX.FOCUS does not ask you to sign in, and it does not ask for your name, email or password.</p><p style="margin-top:10px"><strong>Your study data stays on your device.</strong> Notes, flashcards, planner tasks, review topics and quiz scores are saved in your own browser on this device. They are not uploaded to a VEX.FOCUS server, and the creator cannot see them. Clearing your browser&rsquo;s site data can delete them, so use &ldquo;Export local backup&rdquo; to keep a copy.</p><p style="margin-top:10px"><strong>Local AI.</strong> Llama runs in your browser on your device, so your notes are processed there and are not sent to an AI company. The first time you use it, the model files are downloaded from the internet.</p><p style="margin-top:10px"><strong>Photos and PDFs.</strong> Reading text from photos and PDFs also happens in your browser. The tools that do this are loaded from public online services, which can see your connection like any website you visit.</p><p style="margin-top:10px"><strong>Visit statistics.</strong> This site uses Vercel Web Analytics and Speed Insights to count visits and measure page speed. They collect anonymous usage information, such as pages viewed, device type and country. VEX.FOCUS does not send your notes, flashcards or scores to these tools.</p><p style="margin-top:10px"><strong>Changes.</strong> This section may be updated as VEX.FOCUS changes. The latest version will always be on this page.</p></section>
-              <section class="terms-section"><h3>10 · Final Note</h3><p>VEX.FOCUS is built to make studying simpler, smarter and more organized. Thank you for being part of the VEX.FOCUS learning community.</p></section>
+              <section class="terms-section"><h3>08 · Agreement Changes</h3><p>These terms may be updated as VEX.STUDY develops. The latest version will be available on this page.</p></section>
+              <section class="terms-section" id="privacySection"><h3>09 · Privacy &amp; Your Data</h3><p><strong>No account needed.</strong> VEX.STUDY does not ask you to sign in, and it does not ask for your name, email or password.</p><p style="margin-top:10px"><strong>Your study data stays on your device.</strong> Notes, flashcards, planner tasks, review topics and quiz scores are saved in your own browser on this device. They are not uploaded to a VEX.STUDY server, and the creator cannot see them. Clearing your browser&rsquo;s site data can delete them, so use &ldquo;Export local backup&rdquo; to keep a copy.</p><p style="margin-top:10px"><strong>Local AI.</strong> Llama runs in your browser on your device, so your notes are processed there and are not sent to an AI company. The first time you use it, the model files are downloaded from the internet.</p><p style="margin-top:10px"><strong>Photos and PDFs.</strong> Reading text from photos and PDFs also happens in your browser. The tools that do this are loaded from public online services, which can see your connection like any website you visit.</p><p style="margin-top:10px"><strong>Visit statistics.</strong> This site uses Vercel Web Analytics and Speed Insights to count visits and measure page speed. They collect anonymous usage information, such as pages viewed, device type and country. VEX.STUDY does not send your notes, flashcards or scores to these tools.</p><p style="margin-top:10px"><strong>Changes.</strong> This section may be updated as VEX.STUDY changes. The latest version will always be on this page.</p></section>
+              <section class="terms-section"><h3>10 · Final Note</h3><p>VEX.STUDY is built to make studying simpler, smarter and more organized. Thank you for being part of the VEX.STUDY learning community.</p></section>
             </div>
-            <footer class="terms-footer">Made by Aadi · VEX.FOCUS</footer>
+            <footer class="terms-footer">Made by Aadi · VEX.STUDY</footer>
           </section>
         </div>
         <div class="about-backdrop" id="aboutDialog" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" hidden>
@@ -1076,7 +1076,7 @@
             <button class="about-close" id="aboutClose" type="button" aria-label="Close About">×</button>
             <div class="about-symbol" aria-hidden="true"><svg viewBox="0 0 64 64" focusable="false"><circle cx="32" cy="32" r="23" fill="none" stroke="currentColor" stroke-width="2.5" opacity=".55"/><circle cx="32" cy="32" r="13" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M39 19 35 35 19 39 29 29Z" fill="currentColor"/><circle cx="32" cy="32" r="3" fill="#70e6d6"/></svg></div>
             <p class="about-kicker">A LITTLE ABOUT THIS SPACE</p>
-            <h2 id="aboutTitle">VEX.FOCUS<span class="gradient-text">.</span></h2>
+            <h2 id="aboutTitle">VEX.STUDY<span class="gradient-text">.</span></h2>
             <p class="about-copy">A calmer place to focus, learn, and make progress one session at a time.</p>
             <div class="about-credit">Made by <strong>Aadi</strong> <span aria-hidden="true">⌖</span></div>
             <button class="legal-about-link" id="termsFromAbout" type="button">Read Terms &amp; Agreement ↗</button>
@@ -2696,7 +2696,7 @@
         #generateCards:disabled { opacity: .7; cursor: wait; }
         body.light .textbook-upload { background: rgba(93,160,160,.06); }
 
-        /* VEX.FOCUS motion + liquid glass layer */
+        /* VEX.STUDY motion + liquid glass layer */
         :root {
           --glass-fill: rgba(22, 27, 47, 0.62);
           --glass-edge: rgba(204, 215, 255, 0.16);
@@ -4025,7 +4025,7 @@
               throw new Error('Llama is not loaded. Open Study Helper → Local AI, tap Load Llama, then try again.');
             }
           }
-          let system = 'You are VEX.FOCUS, a careful and age-appropriate school study assistant. Use only the supplied notes. Never invent facts. Follow the requested output format exactly.';
+          let system = 'You are VEX.STUDY, a careful and age-appropriate school study assistant. Use only the supplied notes. Never invent facts. Follow the requested output format exactly.';
           let user = fallbackPrompt;
           let maxTokens = 1800;
           if (outputType === 'cards') {
@@ -4667,7 +4667,7 @@
     const prompt=$('localAiPrompt').value.trim(); if (!prompt) return;
     $('askLocalAi').disabled=true; setStatus('localAiOutput','Generating locally…');
     try {
-      const result=await localEngine.chat.completions.create({messages:[{role:'system',content:'You are VEX.FOCUS, a careful, age-appropriate study coach. Help across flashcards, active quizzes, exam papers, textbook notes, planner tasks, review schedules and quiz history. Use the supplied current app context to understand what the student is working on, explain mistakes step by step, give a hint before revealing a solution when appropriate, and suggest one small next action. Ground textbook-specific claims in the supplied notes and activity. Clearly say when context is missing or insufficient. Never invent scores, questions, or answers, and do not claim to watch activity in the background.'},{role:'user',content:'CURRENT VEX.FOCUS ACTIVITY CONTEXT (current flashcard, visible quiz/exam, notes, planner, reviews and recent results when available):\n'+getVexActivityContext()+'\n\nSTUDENT REQUEST:\n'+prompt}],temperature:0.3,max_tokens:650});
+      const result=await localEngine.chat.completions.create({messages:[{role:'system',content:'You are VEX.STUDY, a careful, age-appropriate study coach. Help across flashcards, active quizzes, exam papers, textbook notes, planner tasks, review schedules and quiz history. Use the supplied current app context to understand what the student is working on, explain mistakes step by step, give a hint before revealing a solution when appropriate, and suggest one small next action. Ground textbook-specific claims in the supplied notes and activity. Clearly say when context is missing or insufficient. Never invent scores, questions, or answers, and do not claim to watch activity in the background.'},{role:'user',content:'CURRENT VEX.STUDY ACTIVITY CONTEXT (current flashcard, visible quiz/exam, notes, planner, reviews and recent results when available):\n'+getVexActivityContext()+'\n\nSTUDENT REQUEST:\n'+prompt}],temperature:0.3,max_tokens:650});
       setStatus('localAiOutput', result.choices?.[0]?.message?.content || 'No response generated.');
     } catch (err) { setStatus('localAiOutput',err?.message || 'Local generation failed.'); }
     finally { $('askLocalAi').disabled=false; }
@@ -4700,9 +4700,9 @@
     setStatus('intervalStatus','Saved '+focus+' min focus / '+rest+' min break. Select the matching preset if available; custom value is saved for future timer sessions.');
   });
   $('exportStudyData').addEventListener('click',()=>{
-    const data={format:'VEX.FOCUS backup',version:1,exportedAt:new Date().toISOString(),state:getState(),notes:notes()};
+    const data={format:'VEX.STUDY backup',version:1,exportedAt:new Date().toISOString(),state:getState(),notes:notes()};
     const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='vex-focus-backup.json'; a.click(); URL.revokeObjectURL(url);
+    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='vex-study-backup.json'; a.click(); URL.revokeObjectURL(url);
     setStatus('backupStatus','Backup exported. Keep the file private; it may contain your study notes and activity.');
   });
   $('importStudyData').addEventListener('change',async e=>{

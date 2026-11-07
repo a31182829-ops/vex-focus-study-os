@@ -5,7 +5,7 @@ Project: https://github.com/mlc-ai/web-llm
 License: Apache License, Version 2.0
 Copyright © 2023 MLC AI (verify applicable copyright notices in the exact WebLLM version distributed).
 
-This notice concerns the WebLLM software library used by VEX.FOCUS. It does not grant rights to any AI model weights downloaded or loaded by the application; see the model-weights section below.
+This notice concerns the WebLLM software library used by VEX.STUDY. It does not grant rights to any AI model weights downloaded or loaded by the application; see the model-weights section below.
 
 ================================================================================
 APACHE LICENSE
@@ -213,14 +213,14 @@ limitations under the License.
 ================================================================================
 DYNAMICALLY LOADED AI MODEL WEIGHTS
 
-VEX.FOCUS may dynamically load AI model weights into the user's browser at runtime. The WebLLM software license above applies to the WebLLM library; it does not automatically apply to model weights downloaded separately.
+VEX.STUDY may dynamically load AI model weights into the user's browser at runtime. The WebLLM software license above applies to the WebLLM library; it does not automatically apply to model weights downloaded separately.
 
 Each model's weights, tokenizer, configuration, and associated files may be governed by their own license terms set by the model creator or distributor. Those terms can differ by model version, quantization, conversion, and hosting source. Before using, redistributing, or commercially deploying a model, identify the exact model artifact and review its accompanying license and usage restrictions. Preserve any required attribution, notices, and usage conditions. The app's configured model identifier is not, by itself, proof of the model's license.
 
 ================================================================================
 LLAMA 3.2 MODEL ATTRIBUTION AND LICENSE
 
-Model configured in VEX.FOCUS: Llama-3.2-1B-Instruct-q4f16_1-MLC (MLC AI WebLLM conversion).
+Model configured in VEX.STUDY: Llama-3.2-1B-Instruct-q4f16_1-MLC (MLC AI WebLLM conversion).
 
 Required attribution notice:
 "Llama 3.2 is licensed under the Llama 3.2 Community License, Copyright © Meta Platforms, Inc. All Rights Reserved."
