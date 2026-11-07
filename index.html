@@ -4250,13 +4250,14 @@
               'cards');
             const cards = response && response.cards;
             if (!Array.isArray(cards) || !cards.length) throw new Error('No cards were returned. Try a shorter section.');
+            const createdCount = cards.length;
             window.vexAiCards = cards;
             window.vexTextbookContext = notes;
             replayingAiCardClick = true;
             button.textContent = '✦ Make flashcards';
             button.disabled = false;
             button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-            showStatus(cards.length + ' AI flashcards created. Check the answers against your textbook.', 'success');
+            showStatus(createdCount + ' AI flashcard' + (createdCount === 1 ? '' : 's') + ' created. Check the answers against your textbook.', 'success');
           } catch (err) {
             const message = err && err.response && err.response.data && err.response.data.error;
             const reason = message || (err && err.message) || 'AI flashcards failed.';
