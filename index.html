@@ -320,6 +320,7 @@
           <button class="drawer-link" id="drawerTestImprovements" type="button"><span>✦</span><span><strong>Your Test Improvements</strong><small>Review quiz results and weak topics</small></span></button>
           <button class="drawer-link" id="drawerAbout" type="button"><span>ⓘ</span><span><strong>About</strong><small>Learn about VEX.FOCUS</small></span></button>
           <button class="drawer-link" id="drawerTerms" type="button"><span>≡</span><span><strong>Terms &amp; Agreement</strong><small>Read the app terms</small></span></button>
+          <button class="drawer-link" id="drawerPrivacy" type="button"><span>⚿</span><span><strong>Privacy</strong><small>How your data is handled</small></span></button>
           <p class="drawer-foot">Made for focused learning.</p>
         </aside>
         <main class="main-content">
@@ -1055,7 +1056,7 @@
               <div class="terms-heading"><small>VEX.FOCUS · THE DETAILS</small><h2 id="termsTitle">Terms &amp; Agreement</h2></div>
             </header>
             <div class="terms-content">
-              <div class="terms-intro"><span class="terms-updated">Last updated · November 1, 2026</span>Welcome to VEX.FOCUS! VEX.FOCUS is a study platform designed to help students learn, organize their studies, improve productivity and prepare for exams.<br><br>By using VEX.FOCUS, you agree to the following terms:</div>
+              <div class="terms-intro"><span class="terms-updated">Last updated · November 7, 2026</span>Welcome to VEX.FOCUS! VEX.FOCUS is a study platform designed to help students learn, organize their studies, improve productivity and prepare for exams.<br><br>By using VEX.FOCUS, you agree to the following terms:</div>
               <section class="terms-section"><h3>01 · Purpose</h3><p>VEX.FOCUS is designed for educational and productivity purposes. It provides study tools, planners, quizzes, flashcards and other learning features.</p></section>
               <section class="terms-section"><h3>02 · Free Access</h3><p>VEX.FOCUS does not require users to create an account or sign in to use its available features.</p></section>
               <section class="terms-section"><h3>03 · AI-Generated Content</h3><p>Some features may use artificial intelligence to generate explanations, notes, quizzes or study suggestions. AI-generated information may occasionally contain mistakes. Always verify important academic information with your textbooks or teachers.</p></section>
@@ -1064,7 +1065,8 @@
               <section class="terms-section"><h3>06 · Features and Updates</h3><p>VEX.FOCUS may receive updates, improvements, new features or changes over time. Some features may occasionally be unavailable.</p></section>
               <section class="terms-section"><h3>07 · Copyright</h3><p>Please respect the copyright of textbooks, notes, images and other educational materials. Do not redistribute copyrighted materials without permission.</p></section>
               <section class="terms-section"><h3>08 · Agreement Changes</h3><p>These terms may be updated as VEX.FOCUS develops. The latest version will be available on this page.</p></section>
-              <section class="terms-section"><h3>09 · Final Note</h3><p>VEX.FOCUS is built to make studying simpler, smarter and more organized. Thank you for being part of the VEX.FOCUS learning community.</p></section>
+              <section class="terms-section" id="privacySection"><h3>09 · Privacy &amp; Your Data</h3><p><strong>No account needed.</strong> VEX.FOCUS does not ask you to sign in, and it does not ask for your name, email or password.</p><p style="margin-top:10px"><strong>Your study data stays on your device.</strong> Notes, flashcards, planner tasks, review topics and quiz scores are saved in your own browser on this device. They are not uploaded to a VEX.FOCUS server, and the creator cannot see them. Clearing your browser&rsquo;s site data can delete them, so use &ldquo;Export local backup&rdquo; to keep a copy.</p><p style="margin-top:10px"><strong>Local AI.</strong> Llama runs in your browser on your device, so your notes are processed there and are not sent to an AI company. The first time you use it, the model files are downloaded from the internet.</p><p style="margin-top:10px"><strong>Photos and PDFs.</strong> Reading text from photos and PDFs also happens in your browser. The tools that do this are loaded from public online services, which can see your connection like any website you visit.</p><p style="margin-top:10px"><strong>Visit statistics.</strong> This site uses Vercel Web Analytics and Speed Insights to count visits and measure page speed. They collect anonymous usage information, such as pages viewed, device type and country. VEX.FOCUS does not send your notes, flashcards or scores to these tools.</p><p style="margin-top:10px"><strong>Changes.</strong> This section may be updated as VEX.FOCUS changes. The latest version will always be on this page.</p></section>
+              <section class="terms-section"><h3>10 · Final Note</h3><p>VEX.FOCUS is built to make studying simpler, smarter and more organized. Thank you for being part of the VEX.FOCUS learning community.</p></section>
             </div>
             <footer class="terms-footer">Made by Aadi · VEX.FOCUS</footer>
           </section>
@@ -3991,6 +3993,7 @@
         byId('closeImprovements').addEventListener('click',()=>{byId('testImprovementsPanel').hidden=true;});
         byId('drawerAbout').addEventListener('click',()=>{closeVexDrawer();byId('aboutOpen').click();});
         byId('drawerTerms').addEventListener('click',()=>{closeVexDrawer();byId('termsOpen').click();});
+        byId('drawerPrivacy').addEventListener('click',()=>{closeVexDrawer();byId('termsOpen').click();setTimeout(()=>{const el=byId('privacySection');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},200);});
         const status = byId('textbookStatus');
         let textbookText = '';
         let replayingAiCardClick = false;
