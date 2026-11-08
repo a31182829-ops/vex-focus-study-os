@@ -131,9 +131,7 @@
         padding: 12px;
         min-height: 100dvh;
         overflow: hidden;
-        background: rgba(7, 10, 23, .78);
-        -webkit-backdrop-filter: blur(18px) saturate(.78);
-        backdrop-filter: blur(18px) saturate(.78);
+        background: #070a17;
         opacity: 1;
         visibility: visible;
         transition: opacity .45s ease, visibility .45s ease;
@@ -147,7 +145,6 @@
         aspect-ratio: 1;
         border-radius: 50%;
         background: radial-gradient(circle, rgba(143,131,255,.18), rgba(112,230,214,.07) 42%, transparent 70%);
-        filter: blur(24px);
         pointer-events: none;
       }
       #vexIntroScreen.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -277,13 +274,9 @@
   <body>
     <div id="vexIntroScreen" role="status" aria-label="VEX.STUDY is loading">
       <div class="vex-intro-card">
-        <div class="vex-intro-brand">
-          <span class="vex-intro-brand-mark" aria-hidden="true">V</span>
-          <span>VEX.STUDY</span>
-        </div>
         <div class="vex-intro-media">
           <video id="vexIntroVideo" autoplay muted playsinline preload="auto" webkit-playsinline>
-            <source src="/resources/vex-intro.mp4" type="video/mp4" />
+            <source src="/resources/vex-study-intro.mp4" type="video/mp4" />
           </video>
         </div>
         <div class="vex-intro-caption">
@@ -298,7 +291,7 @@
         <header class="topbar">
           <a class="brand" href="#" aria-label="VEX.STUDY home"
             ><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40" focusable="false"><path d="M5 9h8l7 21 7-21h8L23 34h-6z" fill="currentColor"/><path d="M23 9h8l-5 12h-7z" fill="rgba(112,230,214,.9)"/></svg></span
-            ><span>FOCUS<span class="brand-dot">.</span></span></a
+            ><span>STUDY<span class="brand-dot">.</span></span></a
           >
           <div class="topbar-right">
             <button class="btn btn-outline" id="whatVexCanDo" type="button" aria-haspopup="dialog" aria-controls="vexFeaturesDialog">What VEX.STUDY can do</button><button class="menu-trigger" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="vexDrawer"><span></span><span></span><span></span></button><span class="live-pill"><i></i> YOUR STUDY SPACE</span
@@ -4747,11 +4740,8 @@
         }, { once: true });
         video.addEventListener('canplay', startPlayback, { once: true });
         video.addEventListener('loadeddata', startPlayback, { once: true });
-        // Start the six-second safety fallback only after playback actually begins,
-        // so network buffering cannot consume the visible part of the intro.
-        fallbackTimer = window.setTimeout(() => {
-          if (!video.paused && !video.ended) dismiss();
-        }, 18000);
+        // Hard limit: the loading screen never stays longer than about 5.5 seconds.
+        fallbackTimer = window.setTimeout(dismiss, 5600);
         video.load();
         if (video.readyState >= 2) startPlayback();
       })();
