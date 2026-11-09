@@ -821,10 +821,28 @@
         p {
           margin-top: 0;
         }
-        h1 {
-          font: 700 clamp(40px, 6vw, 68px)/0.98 'Space Grotesk';
-          letter-spacing: -0.065em;
-          margin: 20px 0 16px;
+        h1,
+        #command-title,
+        #study-title,
+        #planner-title,
+        #progress-title {
+          font-family: 'Space Grotesk', sans-serif !important;
+          font-size: clamp(40px, 6vw, 68px) !important;
+          font-weight: 700 !important;
+          line-height: 0.98 !important;
+          letter-spacing: -0.065em !important;
+          margin: 20px 0 16px !important;
+        }
+        h1 .gradient-text,
+        #command-title .gradient-text,
+        #study-title .gradient-text,
+        #planner-title .gradient-text,
+        #progress-title .gradient-text {
+          font-size: inherit !important;
+          font-weight: inherit !important;
+          font-family: inherit !important;
+          line-height: inherit !important;
+          letter-spacing: inherit !important;
         }
         .gradient-text {
           background: linear-gradient(
@@ -3578,10 +3596,28 @@
         p {
           margin-top: 0;
         }
-        h1 {
-          font: 700 clamp(40px, 6vw, 68px)/0.98 'Space Grotesk';
-          letter-spacing: -0.065em;
-          margin: 20px 0 16px;
+        h1,
+        #command-title,
+        #study-title,
+        #planner-title,
+        #progress-title {
+          font-family: 'Space Grotesk', sans-serif !important;
+          font-size: clamp(40px, 6vw, 68px) !important;
+          font-weight: 700 !important;
+          line-height: 0.98 !important;
+          letter-spacing: -0.065em !important;
+          margin: 20px 0 16px !important;
+        }
+        h1 .gradient-text,
+        #command-title .gradient-text,
+        #study-title .gradient-text,
+        #planner-title .gradient-text,
+        #progress-title .gradient-text {
+          font-size: inherit !important;
+          font-weight: inherit !important;
+          font-family: inherit !important;
+          line-height: inherit !important;
+          letter-spacing: inherit !important;
         }
         .gradient-text {
           background: linear-gradient(
@@ -7586,9 +7622,58 @@ document.addEventListener('visibilitychange', function () {
   document.addEventListener('vex-theme', function () {
     build();
     if (typeof window.vexAfterTheme === 'function') window.vexAfterTheme();
+    if (typeof window.vexForceAmberType === 'function') window.vexForceAmberType();
   });
 })();
 
+    </script>
+    <!-- Final type lock: survives src/styles.css + main.ts on Vercel publish -->
+    <style id="vex-type-lock-final">
+      html[data-theme] #command-title,
+      html[data-theme] #study-title,
+      html[data-theme] #planner-title,
+      html[data-theme] #progress-title,
+      html[data-theme] h1 {
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-size: clamp(40px, 6vw, 68px) !important;
+        font-weight: 700 !important;
+        line-height: 0.98 !important;
+        letter-spacing: -0.065em !important;
+        margin: 20px 0 16px !important;
+      }
+      html[data-theme] #command-title .gradient-text,
+      html[data-theme] #study-title .gradient-text,
+      html[data-theme] #planner-title .gradient-text,
+      html[data-theme] #progress-title .gradient-text,
+      html[data-theme] h1 .gradient-text {
+        font-size: inherit !important;
+        font-weight: inherit !important;
+        font-family: inherit !important;
+        line-height: inherit !important;
+        letter-spacing: inherit !important;
+      }
+    </style>
+    <script>
+      (function () {
+        // Re-stamp after Vite/main.ts can finish mutating the DOM.
+        function kick() {
+          if (typeof window.vexForceAmberType === 'function') window.vexForceAmberType();
+        }
+        document.addEventListener('vex-theme', kick);
+        window.addEventListener('load', function () {
+          kick();
+          [100, 400, 1000, 2000, 4000].forEach(function (ms) {
+            window.setTimeout(kick, ms);
+          });
+        });
+        // If main.ts replaces head styles, put our final lock back at the end.
+        try {
+          var finalCss = document.getElementById('vex-type-lock-final');
+          if (finalCss && finalCss.parentNode) {
+            document.head.appendChild(finalCss);
+          }
+        } catch (e) {}
+      })();
     </script>
   </body>
 </html>
