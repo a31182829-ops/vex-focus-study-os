@@ -5321,9 +5321,11 @@
       </style>
 
       <style id="vex-typography-lock">
-        /* Typography is intentionally independent of the selected colour theme.
-           Amber is the reference: themes may recolour the interface, never resize
-           or replace its typefaces. */
+        /* ============================================================
+           TYPOGRAPHY LOCK — Amber is the single source of truth.
+           Themes may ONLY recolour. Never resize, reweight, or swap
+           typefaces. These rules win over every theme stylesheet.
+           ============================================================ */
         html[data-theme] body,
         html[data-theme] button,
         html[data-theme] input,
@@ -5331,23 +5333,118 @@
         html[data-theme] select {
           font-family: 'DM Sans', sans-serif !important;
         }
+
+        /* Display / heading family */
         html[data-theme] h1,
         html[data-theme] h2,
         html[data-theme] h3,
         html[data-theme] .brand,
-        html[data-theme] .page-heading h1 {
+        html[data-theme] .page-heading h1,
+        html[data-theme] .timer-center strong,
+        html[data-theme] .momentum-score strong,
+        html[data-theme] .stat-num,
+        html[data-theme] .drawer-head h2,
+        html[data-theme] .about-panel h2,
+        html[data-theme] .terms-heading h2,
+        html[data-theme] .terms-section h3 {
           font-family: 'Space Grotesk', sans-serif !important;
         }
-        html[data-theme] h1 {
+
+        /* Hero H1 — exact amber metrics */
+        html[data-theme] h1,
+        html[data-theme] .page-heading h1 {
           font-size: clamp(40px, 6vw, 68px) !important;
           font-weight: 700 !important;
           line-height: 0.98 !important;
           letter-spacing: -0.065em !important;
+          margin: 20px 0 16px !important;
         }
+
+        /* Gradient accent word must inherit parent size — never shrink */
+        html[data-theme] .gradient-text {
+          font-size: inherit !important;
+          font-weight: inherit !important;
+          font-family: inherit !important;
+          line-height: inherit !important;
+          letter-spacing: inherit !important;
+        }
+
+        /* Brand mark */
         html[data-theme] .brand {
           font-size: 19px !important;
           font-weight: 700 !important;
           letter-spacing: -0.05em !important;
+        }
+
+        /* Hero supporting copy */
+        html[data-theme] .hero-copy {
+          font-size: 14px !important;
+          line-height: 1.8 !important;
+          font-weight: 400 !important;
+          font-family: 'DM Sans', sans-serif !important;
+        }
+
+        /* Eyebrow / kicker labels */
+        html[data-theme] .eyebrow {
+          font-size: 10px !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.19em !important;
+          font-family: 'DM Sans', sans-serif !important;
+        }
+        html[data-theme] .section-kicker,
+        html[data-theme] .card-label {
+          font-size: 10px !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.12em !important;
+          font-family: 'DM Sans', sans-serif !important;
+        }
+
+        /* Focus timer digits — amber desktop metrics */
+        html[data-theme] .timer-center strong,
+        html[data-theme] #timerDisplay {
+          font-size: 46px !important;
+          font-weight: 600 !important;
+          line-height: 1 !important;
+          letter-spacing: -0.06em !important;
+          font-family: 'Space Grotesk', sans-serif !important;
+        }
+        html[data-theme] .timer-center span:first-child,
+        html[data-theme] #timerMode {
+          font-size: 9px !important;
+          font-weight: 700 !important;
+          letter-spacing: 0.16em !important;
+        }
+        html[data-theme] .timer-center span:last-child {
+          font-size: 10px !important;
+        }
+
+        /* Momentum big number */
+        html[data-theme] .momentum-score strong {
+          font-size: 60px !important;
+          font-weight: 700 !important;
+          line-height: 0.9 !important;
+          letter-spacing: -0.08em !important;
+        }
+
+        /* Secondary headings stay consistent */
+        html[data-theme] h2 {
+          font-weight: 700 !important;
+          letter-spacing: -0.04em !important;
+        }
+        html[data-theme] h3 {
+          font-weight: 600 !important;
+        }
+
+        /* Same responsive shrink on every theme (amber reference) */
+        @media (max-width: 760px) {
+          html[data-theme] .timer-center strong,
+          html[data-theme] #timerDisplay {
+            font-size: 42px !important;
+          }
+          html[data-theme] h1,
+          html[data-theme] .page-heading h1 {
+            font-size: clamp(36px, 9vw, 56px) !important;
+          }
         }
       </style>
     <script>
