@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VEX.STUDY OS</title>
+    <!-- type-lock v3 desktop-px 2026-11-09 -->
     <meta name="theme-color" content="#1e1610" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%238f83ff'/%3E%3Cstop offset='1' stop-color='%2370e6d6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='19' fill='%23101322'/%3E%3Cpath d='M13 17h12l7 21 7-21h12L37 49H27z' fill='url(%23g)'/%3E%3C/svg%3E" />
     <!-- Fonts loaded outside theme stylesheets so they never drop when a theme media query is disabled -->
@@ -5440,29 +5441,43 @@
     forceAmberType();
     document.dispatchEvent(new CustomEvent('vex-theme', { detail: name }));
   }
+  function heroFontPx() {
+    // Amber reference: clamp(40px, 6vw, 68px) — compute real px so no engine
+    // can ignore clamp() inside element.style on desktop.
+    var vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    var raw = vw * 0.06;
+    return Math.round(Math.max(40, Math.min(68, raw)));
+  }
   function forceAmberType() {
+    var size = heroFontPx() + 'px';
     var heroIds = ['command-title', 'study-title', 'planner-title', 'progress-title'];
     heroIds.forEach(function (id) {
       var el = document.getElementById(id);
       if (!el) return;
-      el.style.setProperty('font-family', "'Space Grotesk', sans-serif", 'important');
-      el.style.setProperty('font-size', 'clamp(40px, 6vw, 68px)', 'important');
-      el.style.setProperty('font-weight', '700', 'important');
-      el.style.setProperty('line-height', '0.98', 'important');
-      el.style.setProperty('letter-spacing', '-0.065em', 'important');
-      el.style.setProperty('margin', '20px 0 16px', 'important');
+      // Write the whole style attribute so nothing can half-override it.
+      var prev = el.getAttribute('style') || '';
+      // Keep non-font declarations (if any) but stamp amber type on top.
+      el.style.cssText = prev
+        + ';font-family:\'Space Grotesk\',sans-serif!important'
+        + ';font-size:' + size + '!important'
+        + ';font-weight:700!important'
+        + ';line-height:0.98!important'
+        + ';letter-spacing:-0.065em!important'
+        + ';margin:20px 0 16px!important';
       el.querySelectorAll('.gradient-text').forEach(function (g) {
-        g.style.setProperty('font-size', 'inherit', 'important');
-        g.style.setProperty('font-weight', 'inherit', 'important');
-        g.style.setProperty('font-family', 'inherit', 'important');
-        g.style.setProperty('line-height', 'inherit', 'important');
-        g.style.setProperty('letter-spacing', 'inherit', 'important');
+        g.style.cssText = (g.getAttribute('style') || '')
+          + ';font-size:inherit!important'
+          + ';font-weight:inherit!important'
+          + ';font-family:inherit!important'
+          + ';line-height:inherit!important'
+          + ';letter-spacing:inherit!important';
       });
     });
     var timer = document.getElementById('timerDisplay');
     if (timer) {
+      var tSize = (document.documentElement.clientWidth || window.innerWidth || 0) <= 760 ? '42px' : '46px';
       timer.style.setProperty('font-family', "'Space Grotesk', sans-serif", 'important');
-      timer.style.setProperty('font-size', window.matchMedia('(max-width: 760px)').matches ? '42px' : '46px', 'important');
+      timer.style.setProperty('font-size', tSize, 'important');
       timer.style.setProperty('font-weight', '600', 'important');
       timer.style.setProperty('letter-spacing', '-0.06em', 'important');
     }
@@ -5473,13 +5488,31 @@
   var saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) { /* ignore */ }
   apply(saved && THEMES[saved] ? saved : 'amber', false);
-  // Run again after DOM is fully painted in case titles mount late.
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', forceAmberType);
-  } else {
+  function bootType() {
     forceAmberType();
+    // Fight late stylesheets / theme sheets that load after first paint.
+    window.setTimeout(forceAmberType, 50);
+    window.setTimeout(forceAmberType, 250);
+    window.setTimeout(forceAmberType, 800);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootType);
+  } else {
+    bootType();
   }
   window.addEventListener('load', forceAmberType);
+  window.addEventListener('resize', function () {
+    window.clearTimeout(window.__vexTypeResize);
+    window.__vexTypeResize = window.setTimeout(forceAmberType, 100);
+  });
+  // If anything mutates hero style after us, stamp it back.
+  try {
+    var mo = new MutationObserver(function () {
+      window.clearTimeout(window.__vexTypeMo);
+      window.__vexTypeMo = window.setTimeout(forceAmberType, 30);
+    });
+    mo.observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ['style', 'class', 'data-theme'] });
+  } catch (e) { /* old engines */ }
 })();
 window.vexTok = function (n) {
   var v = getComputedStyle(document.documentElement).getPropertyValue(n).trim();
