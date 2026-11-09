@@ -6,6 +6,10 @@
     <title>VEX.STUDY OS</title>
     <meta name="theme-color" content="#1e1610" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%238f83ff'/%3E%3Cstop offset='1' stop-color='%2370e6d6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='19' fill='%23101322'/%3E%3Cpath d='M13 17h12l7 21 7-21h12L37 49H27z' fill='url(%23g)'/%3E%3C/svg%3E" />
+    <!-- Fonts loaded outside theme stylesheets so they never drop when a theme media query is disabled -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./src/styles.css" />
     <style data-vex="base">
       /* Keep Socratic conversations inside a stable panel; only the transcript scrolls. */
@@ -2658,8 +2662,8 @@
             </div>
             <div class="hero-row">
               <div>
-                <h1 id="command-title">
-                  Make today<br /><span class="gradient-text">count.</span>
+                <h1 id="command-title" style="font-family:'Space Grotesk',sans-serif!important;font-size:clamp(40px,6vw,68px)!important;font-weight:700!important;line-height:0.98!important;letter-spacing:-0.065em!important;margin:20px 0 16px!important">
+                  Make today<br /><span class="gradient-text" style="font-size:inherit!important;font-weight:inherit!important;font-family:inherit!important;line-height:inherit!important;letter-spacing:inherit!important">count.</span>
                 </h1>
                 <p class="hero-copy">
                   Small focused sessions. Real progress. One step at a time.
@@ -2807,8 +2811,8 @@
             </div>
             <div class="page-heading">
               <div>
-                <h1 id="study-title">
-                  Smart <span class="gradient-text">Study.</span>
+                <h1 id="study-title" style="font-family:'Space Grotesk',sans-serif!important;font-size:clamp(40px,6vw,68px)!important;font-weight:700!important;line-height:0.98!important;letter-spacing:-0.065em!important;margin:20px 0 16px!important">
+                  Smart <span class="gradient-text" style="font-size:inherit!important;font-weight:inherit!important;font-family:inherit!important;line-height:inherit!important;letter-spacing:inherit!important">Study.</span>
                 </h1>
                 <p class="hero-copy">
                   Make your brain do the remembering—not just the rereading.
@@ -3181,8 +3185,8 @@
             </div>
             <div class="page-heading">
               <div>
-                <h1 id="planner-title">
-                  Your <span class="gradient-text">planner.</span>
+                <h1 id="planner-title" style="font-family:'Space Grotesk',sans-serif!important;font-size:clamp(40px,6vw,68px)!important;font-weight:700!important;line-height:0.98!important;letter-spacing:-0.065em!important;margin:20px 0 16px!important">
+                  Your <span class="gradient-text" style="font-size:inherit!important;font-weight:inherit!important;font-family:inherit!important;line-height:inherit!important;letter-spacing:inherit!important">planner.</span>
                 </h1>
                 <p class="hero-copy">
                   Build a realistic plan, then let your quiz results guide your
@@ -3322,7 +3326,7 @@
           <div class="eyebrow"><span class="eyebrow-line"></span> TRACK YOUR GROWTH</div>
           <div class="page-heading">
             <div>
-              <h1 id="progress-title">Your <span class="gradient-text">progress.</span></h1>
+              <h1 id="progress-title" style="font-family:'Space Grotesk',sans-serif!important;font-size:clamp(40px,6vw,68px)!important;font-weight:700!important;line-height:0.98!important;letter-spacing:-0.065em!important;margin:20px 0 16px!important">Your <span class="gradient-text" style="font-size:inherit!important;font-weight:inherit!important;font-family:inherit!important;line-height:inherit!important;letter-spacing:inherit!important">progress.</span></h1>
               <p class="hero-copy">See your focus time, streaks and quiz scores grow day by day.</p>
             </div>
             <div class="level-chip"><span>✦</span><div><small>DAY STREAK</small><strong id="progStreak">0 days</strong></div></div>
@@ -5321,11 +5325,9 @@
       </style>
 
       <style id="vex-typography-lock">
-        /* ============================================================
-           TYPOGRAPHY LOCK — Amber is the single source of truth.
-           Themes may ONLY recolour. Never resize, reweight, or swap
-           typefaces. These rules win over every theme stylesheet.
-           ============================================================ */
+        /* Typography is intentionally independent of the selected colour theme.
+           Amber is the reference: themes may recolour the interface, never resize
+           or replace its typefaces. */
         html[data-theme] body,
         html[data-theme] button,
         html[data-theme] input,
@@ -5333,118 +5335,23 @@
         html[data-theme] select {
           font-family: 'DM Sans', sans-serif !important;
         }
-
-        /* Display / heading family */
         html[data-theme] h1,
         html[data-theme] h2,
         html[data-theme] h3,
         html[data-theme] .brand,
-        html[data-theme] .page-heading h1,
-        html[data-theme] .timer-center strong,
-        html[data-theme] .momentum-score strong,
-        html[data-theme] .stat-num,
-        html[data-theme] .drawer-head h2,
-        html[data-theme] .about-panel h2,
-        html[data-theme] .terms-heading h2,
-        html[data-theme] .terms-section h3 {
+        html[data-theme] .page-heading h1 {
           font-family: 'Space Grotesk', sans-serif !important;
         }
-
-        /* Hero H1 — exact amber metrics */
-        html[data-theme] h1,
-        html[data-theme] .page-heading h1 {
+        html[data-theme] h1 {
           font-size: clamp(40px, 6vw, 68px) !important;
           font-weight: 700 !important;
           line-height: 0.98 !important;
           letter-spacing: -0.065em !important;
-          margin: 20px 0 16px !important;
         }
-
-        /* Gradient accent word must inherit parent size — never shrink */
-        html[data-theme] .gradient-text {
-          font-size: inherit !important;
-          font-weight: inherit !important;
-          font-family: inherit !important;
-          line-height: inherit !important;
-          letter-spacing: inherit !important;
-        }
-
-        /* Brand mark */
         html[data-theme] .brand {
           font-size: 19px !important;
           font-weight: 700 !important;
           letter-spacing: -0.05em !important;
-        }
-
-        /* Hero supporting copy */
-        html[data-theme] .hero-copy {
-          font-size: 14px !important;
-          line-height: 1.8 !important;
-          font-weight: 400 !important;
-          font-family: 'DM Sans', sans-serif !important;
-        }
-
-        /* Eyebrow / kicker labels */
-        html[data-theme] .eyebrow {
-          font-size: 10px !important;
-          font-weight: 700 !important;
-          letter-spacing: 0.19em !important;
-          font-family: 'DM Sans', sans-serif !important;
-        }
-        html[data-theme] .section-kicker,
-        html[data-theme] .card-label {
-          font-size: 10px !important;
-          font-weight: 700 !important;
-          letter-spacing: 0.12em !important;
-          font-family: 'DM Sans', sans-serif !important;
-        }
-
-        /* Focus timer digits — amber desktop metrics */
-        html[data-theme] .timer-center strong,
-        html[data-theme] #timerDisplay {
-          font-size: 46px !important;
-          font-weight: 600 !important;
-          line-height: 1 !important;
-          letter-spacing: -0.06em !important;
-          font-family: 'Space Grotesk', sans-serif !important;
-        }
-        html[data-theme] .timer-center span:first-child,
-        html[data-theme] #timerMode {
-          font-size: 9px !important;
-          font-weight: 700 !important;
-          letter-spacing: 0.16em !important;
-        }
-        html[data-theme] .timer-center span:last-child {
-          font-size: 10px !important;
-        }
-
-        /* Momentum big number */
-        html[data-theme] .momentum-score strong {
-          font-size: 60px !important;
-          font-weight: 700 !important;
-          line-height: 0.9 !important;
-          letter-spacing: -0.08em !important;
-        }
-
-        /* Secondary headings stay consistent */
-        html[data-theme] h2 {
-          font-weight: 700 !important;
-          letter-spacing: -0.04em !important;
-        }
-        html[data-theme] h3 {
-          font-weight: 600 !important;
-        }
-
-        /* Same responsive shrink on every theme (amber reference) */
-        @media (max-width: 760px) {
-          html[data-theme] .timer-center strong,
-          html[data-theme] #timerDisplay {
-            font-size: 42px !important;
-          }
-          html[data-theme] h1,
-          html[data-theme] .page-heading h1 {
-            font-size: clamp(36px, 9vw, 56px) !important;
-          }
         }
       </style>
     <script>
@@ -5528,13 +5435,51 @@
       var bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
       if (bg) meta.setAttribute('content', bg);
     }
+    // Force amber typography after every theme swap — CSS alone can lose to
+    // generated theme sheets on some browsers; element.style always wins.
+    forceAmberType();
     document.dispatchEvent(new CustomEvent('vex-theme', { detail: name }));
+  }
+  function forceAmberType() {
+    var heroIds = ['command-title', 'study-title', 'planner-title', 'progress-title'];
+    heroIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.style.setProperty('font-family', "'Space Grotesk', sans-serif", 'important');
+      el.style.setProperty('font-size', 'clamp(40px, 6vw, 68px)', 'important');
+      el.style.setProperty('font-weight', '700', 'important');
+      el.style.setProperty('line-height', '0.98', 'important');
+      el.style.setProperty('letter-spacing', '-0.065em', 'important');
+      el.style.setProperty('margin', '20px 0 16px', 'important');
+      el.querySelectorAll('.gradient-text').forEach(function (g) {
+        g.style.setProperty('font-size', 'inherit', 'important');
+        g.style.setProperty('font-weight', 'inherit', 'important');
+        g.style.setProperty('font-family', 'inherit', 'important');
+        g.style.setProperty('line-height', 'inherit', 'important');
+        g.style.setProperty('letter-spacing', 'inherit', 'important');
+      });
+    });
+    var timer = document.getElementById('timerDisplay');
+    if (timer) {
+      timer.style.setProperty('font-family', "'Space Grotesk', sans-serif", 'important');
+      timer.style.setProperty('font-size', window.matchMedia('(max-width: 760px)').matches ? '42px' : '46px', 'important');
+      timer.style.setProperty('font-weight', '600', 'important');
+      timer.style.setProperty('letter-spacing', '-0.06em', 'important');
+    }
   }
   window.vexThemes = THEMES;
   window.vexSetTheme = function (n) { apply(n, true); };
+  window.vexForceAmberType = forceAmberType;
   var saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) { /* ignore */ }
   apply(saved && THEMES[saved] ? saved : 'amber', false);
+  // Run again after DOM is fully painted in case titles mount late.
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', forceAmberType);
+  } else {
+    forceAmberType();
+  }
+  window.addEventListener('load', forceAmberType);
 })();
 window.vexTok = function (n) {
   var v = getComputedStyle(document.documentElement).getPropertyValue(n).trim();
