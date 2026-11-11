@@ -64,10 +64,41 @@
         box-shadow: 0 0 0 3px rgba(234, 146, 83, .14);
       }
       .exam-tool textarea { min-height: 112px; resize: vertical; }
+      .vex-feature-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr)); gap:12px; margin-top:10px; }
       .vex-feature-list > article { display:flex; flex-direction:column; align-items:flex-start; min-width:0; border:1px solid rgba(235, 152, 93, .13); background:linear-gradient(145deg,rgba(255, 255, 255, .035),rgba(234, 146, 83, .025)); transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease; }
       .vex-feature-list > article:hover { transform:translateY(-2px); border-color:rgba(234, 146, 83, .38); box-shadow:0 8px 24px rgba(21, 11, 4, .22); }
       .vex-feature-list > article h3 { margin-bottom:8px; }
       .vex-feature-list > article p { flex:1; }
+      .feature-group { margin: 0 0 28px; }
+      .feature-group-title { margin: 0 0 4px; font: 700 clamp(18px, 3vw, 24px)/1.2 'Space Grotesk', sans-serif; letter-spacing: -0.04em; color: var(--text, #fbf5ef); }
+      .feature-group-desc { margin: 0 0 4px; }
+      .vex-tools-body { margin-top: 8px; }
+      .bottom-nav {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 4px !important;
+        width: min(420px, calc(100% - 20px)) !important;
+        padding: 5px !important;
+        bottom: 12px !important;
+        border-radius: 18px !important;
+      }
+      .bottom-nav .nav-item {
+        flex-direction: column !important;
+        gap: 2px !important;
+        min-height: 48px !important;
+        padding: 6px 4px !important;
+        font-size: 10px !important;
+        border-radius: 14px !important;
+        min-width: 0;
+      }
+      .bottom-nav .nav-icon { font-size: 16px !important; }
+      .bottom-nav .nav-icon svg { width: 15px !important; height: 15px !important; }
+      .bottom-nav .nav-item span:not(.nav-icon):not(.nav-dot) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
+        font-size: 10px;
+      }
       .feature-open-btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; margin-top:12px; padding:8px 12px; min-height:34px; border:1px solid rgba(234, 146, 83, .32); border-radius:10px; color:#f1ebe6; background:rgba(234, 146, 83, .075); font:600 11px/1.2 inherit; cursor:pointer; transition:background .18s ease,border-color .18s ease,color .18s ease; }
       .feature-open-btn:hover,.feature-open-btn:focus-visible { background:rgba(234, 146, 83, .16); border-color:rgba(234, 146, 83, .68); color:#ffffff; outline:none; }
       .feature-open-btn span { color:#e37542; transition:transform .18s ease; }
@@ -1972,40 +2003,47 @@
           position: fixed;
           z-index: 100;
           left: 50%;
-          bottom: 15px;
+          bottom: 10px;
           transform: translateX(-50%);
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 5px;
-          width: min(490px, calc(100% - 24px));
-          padding: 7px;
+          gap: 4px;
+          width: min(420px, calc(100% - 20px));
+          padding: 5px;
           border: 1px solid #c1c9ff20;
-          border-radius: 22px;
+          border-radius: 18px;
           background: rgba(12, 15, 26, 0.9);
-          box-shadow: 0 16px 55px #0009;
+          box-shadow: 0 12px 40px #0009;
           backdrop-filter: blur(22px);
           -webkit-backdrop-filter: blur(22px);
         }
         .nav-item {
           position: relative;
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 7px;
-          min-height: 54px;
+          gap: 2px;
+          min-height: 48px;
+          padding: 6px 4px;
           border: 1px solid transparent;
-          border-radius: 16px;
+          border-radius: 14px;
           background: transparent;
           color: #8e98b4;
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 600;
+          line-height: 1.1;
           transition:
             background 0.2s,
             color 0.2s;
         }
         .nav-icon {
-          font-size: 19px;
+          font-size: 16px;
           line-height: 1;
+        }
+        .nav-icon svg {
+          width: 15px;
+          height: 15px;
         }
         .nav-item.active {
           color: white;
@@ -2210,27 +2248,27 @@
             padding: 17px;
           }
           .bottom-nav {
-            bottom: 9px;
-            width: calc(100% - 18px);
-            border-radius: 18px;
-            padding: 5px;
+            bottom: 8px;
+            width: calc(100% - 14px);
+            border-radius: 14px;
+            padding: 3px;
           }
           .nav-item {
             flex-direction: column;
-            gap: 2px;
-            min-height: 53px;
-            font-size: 9px;
-            border-radius: 13px;
+            gap: 1px;
+            min-height: 42px;
+            font-size: 8px;
+            border-radius: 10px;
           }
           .nav-icon {
-            font-size: 18px;
+            font-size: 14px;
           }
           .nav-dot {
             right: calc(50% - 18px);
             top: 5px;
           }
           .toast {
-            bottom: 82px;
+            bottom: 64px;
           }
         }
         @media (max-width: 400px) {
@@ -2400,8 +2438,17 @@
         .menu-trigger span { width:17px;height:2px;border-radius:4px;background:var(--text);transition:transform .2s,opacity .2s; }
         .drawer-scrim { position:fixed;inset:0;z-index:850;background:rgba(4,6,15,.58);backdrop-filter:blur(3px); }
         .drawer-scrim[hidden] { display:none; }
-        .vex-drawer { position:fixed;z-index:860;top:0;right:0;width:min( min(88vw,360px), 360px);height:100dvh;padding:24px 18px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(155deg,#171c30,#0d1120);border-left:1px solid rgba(174,166,255,.2);box-shadow:-24px 0 70px rgba(0,0,0,.35);transform:translateX(105%);visibility:hidden;transition:transform .28s ease,visibility .28s; }
+        .vex-drawer { position:fixed;z-index:860;top:0;right:0;width:min( min(88vw,360px), 360px);height:100dvh;max-height:100dvh;padding:24px 18px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(155deg,#171c30,#0d1120);border-left:1px solid rgba(174,166,255,.2);box-shadow:-24px 0 70px rgba(0,0,0,.35);transform:translateX(105%);visibility:hidden;transition:transform .28s ease,visibility .28s; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; touch-action:pan-y; }
         .vex-drawer.is-open { transform:translateX(0);visibility:visible; }
+        body.drawer-open { overflow: hidden !important; touch-action: none; }
+        .drawer-name-box { padding: 12px 13px 14px; border: 1px solid rgba(174,166,255,.13); border-radius: 15px; background: rgba(255,255,255,.035); }
+        .drawer-name-box > small { display:block; font-size:10px; font-weight:700; letter-spacing:.12em; color:var(--muted); margin-bottom:8px; }
+        .drawer-name-row { display:flex; gap:8px; align-items:center; }
+        .drawer-name-row input { flex:1; min-width:0; box-sizing:border-box; padding:10px 12px; border-radius:12px; border:1px solid rgba(174,166,255,.22); background:rgba(8,10,20,.72); color:var(--text); font:600 13px/1.3 inherit; outline:none; }
+        .drawer-name-row input:focus { border-color: rgba(143,131,255,.65); }
+        .drawer-name-row button { flex:none; padding:10px 12px; border-radius:12px; border:1px solid rgba(143,131,255,.35); background:rgba(143,131,255,.14); color:var(--text); font:700 11px/1 inherit; cursor:pointer; }
+        .drawer-motivation { margin:10px 0 0; padding:10px 12px; border-radius:12px; background:rgba(143,131,255,.1); border:1px solid rgba(143,131,255,.18); color:var(--text); font:600 12px/1.45 inherit; }
+        .drawer-motivation[hidden] { display:none !important; }
         .drawer-head { display:flex;align-items:center;justify-content:space-between;padding:12px 4px 22px;border-bottom:1px solid var(--line);margin-bottom:8px; }
         .drawer-head small { color:#a7a1ff;font-size:10px;font-weight:700;letter-spacing:.18em; }
         .drawer-head h2 { margin:5px 0 0;font:700 23px "Space Grotesk",sans-serif; }
@@ -2611,27 +2658,32 @@
             ><span>STUDY<span class="brand-dot">.</span></span></a
           >
           <div class="topbar-right">
-            <button class="btn btn-outline" id="whatVexCanDo" type="button" aria-haspopup="dialog" aria-controls="vexFeaturesDialog">What VEX.STUDY can do</button><button class="menu-trigger" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="vexDrawer"><span></span><span></span><span></span></button><span class="live-pill"><i></i> YOUR STUDY SPACE</span
-            ><button
-              class="btn btn-outline"
-              id="themeToggle"
-              type="button"
-              aria-label="Switch to light mode"
-              title="Switch to light mode"
-            >
-              Light mode
-            </button>
+            <span class="live-pill"><i></i> YOUR STUDY SPACE</span>
+            <button class="menu-trigger" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="vexDrawer"><span></span><span></span><span></span></button>
+            <!-- Kept in DOM for existing JS; opened from the menu -->
+            <button class="btn btn-outline" id="whatVexCanDo" type="button" hidden aria-controls="view-tools">What VEX.STUDY can do</button>
+            <button class="btn btn-outline" id="themeToggle" type="button" hidden aria-label="Switch to light mode" title="Switch to light mode">Light mode</button>
           </div>
         </header>
         <div class="drawer-scrim" id="drawerScrim" hidden></div>
         <aside class="vex-drawer" id="vexDrawer" aria-label="VEX.STUDY menu" aria-hidden="true" inert>
           <div class="drawer-head"><div><small>VEX.STUDY</small><h2>Quick menu</h2></div><button id="menuClose" type="button" aria-label="Close menu">×</button></div>
+          <div class="drawer-name-box">
+            <small>YOUR NAME</small>
+            <div class="drawer-name-row">
+              <input id="drawerNameInput" type="text" maxlength="24" placeholder="" autocomplete="nickname" enterkeyhint="done" aria-label="Your name" />
+              <button type="button" id="drawerNameSave">Save</button>
+            </div>
+            <p class="drawer-motivation" id="drawerMotivation" hidden></p>
+          </div>
           <div class="drawer-theme">
             <small>COLOUR THEME</small>
             <div class="theme-swatches" id="themeSwatches" role="radiogroup" aria-label="Colour theme"></div>
           </div>
+          <button class="drawer-link" id="drawerWhatVexCanDo" type="button"><span>✦</span><span><strong>What VEX.STUDY can do</strong><small>Browse every tool, grouped and ready</small></span></button>
+          <button class="drawer-link" id="drawerLightDark" type="button"><span>◐</span><span><strong id="drawerLightDarkLabel">Light mode</strong><small id="drawerLightDarkHint">Switch between light and dark UI</small></span></button>
           <button class="drawer-link" id="drawerUploadNotes" type="button"><span>↥</span><span><strong id="drawerUploadTitle">Upload Notes</strong><small id="drawerUploadHint">Choose multiple files or add more notes</small></span></button>
-          <button class="drawer-link" id="drawerTestImprovements" type="button"><span>✦</span><span><strong>Your Test Improvements</strong><small>Review quiz results and weak topics</small></span></button>
+          <button class="drawer-link" id="drawerTestImprovements" type="button"><span>▣</span><span><strong>Your Test Improvements</strong><small>Review quiz results and weak topics</small></span></button>
           <button class="drawer-link" id="drawerAbout" type="button"><span>ⓘ</span><span><strong>About</strong><small>Learn about VEX.STUDY</small></span></button>
           <button class="drawer-link" id="drawerTerms" type="button"><span>≡</span><span><strong>Terms &amp; Agreement</strong><small>Read the app terms</small></span></button>
           <button class="drawer-link" id="drawerPrivacy" type="button"><span>⚿</span><span><strong>Privacy</strong><small>How your data is handled</small></span></button>
@@ -2645,33 +2697,66 @@
             </div>
             <div id="improvementsContent"></div>
           </section>
-          <section id="vexFeaturesDialog" class="surface exam-tool" role="dialog" aria-modal="true" aria-labelledby="vexFeaturesTitle" hidden style="position:relative;margin:0 0 20px;padding:20px;">
-            <button class="btn btn-outline" id="closeVexFeatures" type="button" style="float:right">Close ✕</button>
-            <span class="section-kicker">YOUR STUDY TOOLKIT</span>
-            <h2 id="vexFeaturesTitle">What VEX.STUDY can do</h2>
-            <p class="muted small">Every card below explains one feature. AI results depend on the notes and information you provide.</p>
-            <div class="vex-feature-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin-top:16px;">
-              <article class="surface" style="padding:16px"><span class="section-kicker">01 · FOCUS</span><h3>Focus timer</h3><p class="muted small">Run focused sessions with 25-, 15- or 5-minute presets.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">02 · ROUTINE</span><h3>Custom intervals</h3><p class="muted small">Choose your own focus and break durations.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">03 · GOALS</span><h3>Daily focus goal</h3><p class="muted small">Track completed sessions, focus minutes and progress toward your goal.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">04 · STREAKS</span><h3>Consistency tracking</h3><p class="muted small">See your streak and study milestones as you build a routine.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">05 · TASKS</span><h3>Focus list & planner</h3><p class="muted small">Keep tasks in view and jump to the planner to organise your study.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">06 · NOTES</span><h3>Study notes workspace</h3><p class="muted small" id="featureNotesStatus">Upload one or more notes files, then use them for flashcards, quizzes, papers and study help.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">07 · RECALL</span><h3>Flashcards</h3><p class="muted small">Practise remembering key facts using active recall.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">08 · PRACTICE</span><h3>Quiz builder</h3><p class="muted small">Create quizzes with a choice of question count and difficulty.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">09 · FEEDBACK</span><h3>Quiz-to-planner guidance</h3><p class="muted small">Use quiz results to guide extra review and adaptive-planning suggestions where supported.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">10 · TEXTBOOKS</span><h3>PDF chapter navigator</h3><p class="muted small">Select page ranges and search text extracted from textbook PDFs.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">11 · SCAN</span><h3>Textbook photo / notes scanner</h3><p class="muted small">Use available Smart Study scanning tools to bring textbook content into your workflow.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">12 · VISUALISE</span><h3>Mind maps</h3><p class="muted small">Generate a visual map connecting terms found in your notes.</p></article>
-              <article class="surface vex-feature-jump" id="socraticFeatureJump" role="button" tabindex="0" aria-label="Jump to Socratic mode"><span class="section-kicker">13 · TUTORING</span><h3>Socratic mode <span class="jump-arrow" aria-hidden="true">↗</span></h3><p class="muted small">Learn step by step with follow-up questions and hints.</p><span class="feature-jump-hint">Open Socratic mode →</span></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">14 · REVISION</span><h3>Review scheduling</h3><p class="muted small">Use review reminders and spaced-repetition support to revisit topics.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">15 · ON-DEVICE AI</span><h3>Llama 3.2 1B chat</h3><p class="muted small">Ask study questions with a local model. Needs a compatible browser/device, internet for the first download and sufficient storage.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">16 · INSIGHTS</span><h3>Study analytics</h3><p class="muted small">View activity-by-hour, focus-efficiency estimates and review insights based on saved data.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">17 · TOPICS</span><h3>Quiz-history insights</h3><p class="muted small">Review weaker-topic signals when enough quiz history is available.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">18 · PERSONALISE</span><h3>Theme toggle</h3><p class="muted small">Switch the app's visual theme.</p></article>
-              <article class="surface" style="padding:16px"><span class="section-kicker">19 · BACKUP</span><h3>Export & restore</h3><p class="muted small">Export local study data as JSON and restore it from a backup file.</p></article>
+          <section class="view" id="view-tools" aria-labelledby="tools-title">
+            <div class="eyebrow"><span class="eyebrow-line"></span> YOUR STUDY TOOLKIT</div>
+            <div class="page-heading">
+              <div>
+                <h1 id="tools-title" style="font-family:'Space Grotesk',sans-serif!important;font-size:clamp(40px,6vw,68px)!important;font-weight:700!important;line-height:0.98!important;letter-spacing:-0.065em!important;margin:20px 0 16px!important">All <span class="gradient-text" style="font-size:inherit!important;font-weight:inherit!important;font-family:inherit!important;line-height:inherit!important;letter-spacing:inherit!important">tools.</span></h1>
+                <p class="hero-copy">Everything in VEX.STUDY, grouped so you can find it fast. Tap a card to jump straight in.</p>
+              </div>
             </div>
-            <p class="muted small" style="margin-top:16px">Some features need notes or saved study activity first. Availability and performance can vary by device and browser.</p>
+            <div id="vexFeaturesDialog" class="vex-tools-body" role="region" aria-label="Feature toolkit">
+              <div class="feature-group">
+                <h2 class="feature-group-title">Focus</h2>
+                <p class="muted small feature-group-desc">Timers, goals and consistency</p>
+                <div class="vex-feature-list">
+                  <article class="surface" style="padding:16px"><span class="section-kicker">01 · TIMER</span><h3>Focus timer</h3><p class="muted small">Run focused sessions with 25-, 15- or 5-minute presets.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">02 · ROUTINE</span><h3>Custom intervals</h3><p class="muted small">Choose your own focus and break durations.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">03 · GOALS</span><h3>Daily focus goal</h3><p class="muted small">Track completed sessions, focus minutes and progress toward your goal.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">04 · STREAKS</span><h3>Consistency tracking</h3><p class="muted small">See your streak and study milestones as you build a routine.</p></article>
+                </div>
+              </div>
+              <div class="feature-group">
+                <h2 class="feature-group-title">Plan</h2>
+                <p class="muted small feature-group-desc">Tasks and study schedule</p>
+                <div class="vex-feature-list">
+                  <article class="surface" style="padding:16px"><span class="section-kicker">05 · TASKS</span><h3>Focus list &amp; planner</h3><p class="muted small">Keep tasks in view and jump to the planner to organise your study.</p></article>
+                </div>
+              </div>
+              <div class="feature-group">
+                <h2 class="feature-group-title">Learn</h2>
+                <p class="muted small feature-group-desc">Notes, recall, quizzes and AI help</p>
+                <div class="vex-feature-list">
+                  <article class="surface" style="padding:16px"><span class="section-kicker">06 · NOTES</span><h3>Study notes workspace</h3><p class="muted small" id="featureNotesStatus">Upload one or more notes files, then use them for flashcards, quizzes, papers and study help.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">07 · RECALL</span><h3>Flashcards</h3><p class="muted small">Practise remembering key facts using active recall.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">08 · PRACTICE</span><h3>Quiz builder</h3><p class="muted small">Create quizzes with a choice of question count and difficulty.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">09 · FEEDBACK</span><h3>Quiz-to-planner guidance</h3><p class="muted small">Use quiz results to guide extra review and adaptive-planning suggestions where supported.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">10 · TEXTBOOKS</span><h3>PDF chapter navigator</h3><p class="muted small">Select page ranges and search text extracted from textbook PDFs.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">11 · SCAN</span><h3>Textbook photo / notes scanner</h3><p class="muted small">Use available Smart Study scanning tools to bring textbook content into your workflow.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">12 · VISUALISE</span><h3>Mind maps</h3><p class="muted small">Generate a visual map connecting terms found in your notes.</p></article>
+                  <article class="surface vex-feature-jump" id="socraticFeatureJump" role="button" tabindex="0" aria-label="Jump to Socratic mode"><span class="section-kicker">13 · TUTORING</span><h3>Socratic mode <span class="jump-arrow" aria-hidden="true">↗</span></h3><p class="muted small">Learn step by step with follow-up questions and hints.</p><span class="feature-jump-hint">Open Socratic mode →</span></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">14 · REVISION</span><h3>Review scheduling</h3><p class="muted small">Use review reminders and spaced-repetition support to revisit topics.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">15 · ON-DEVICE AI</span><h3>Llama 3.2 1B chat</h3><p class="muted small">Ask study questions with a local model. Needs a compatible browser/device, internet for the first download and sufficient storage.</p></article>
+                </div>
+              </div>
+              <div class="feature-group">
+                <h2 class="feature-group-title">Track</h2>
+                <p class="muted small feature-group-desc">Analytics and weak-topic signals</p>
+                <div class="vex-feature-list">
+                  <article class="surface" style="padding:16px"><span class="section-kicker">16 · INSIGHTS</span><h3>Study analytics</h3><p class="muted small">View activity-by-hour, focus-efficiency estimates and review insights based on saved data.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">17 · TOPICS</span><h3>Quiz-history insights</h3><p class="muted small">Review weaker-topic signals when enough quiz history is available.</p></article>
+                </div>
+              </div>
+              <div class="feature-group">
+                <h2 class="feature-group-title">Setup</h2>
+                <p class="muted small feature-group-desc">Theme and data backup</p>
+                <div class="vex-feature-list">
+                  <article class="surface" style="padding:16px"><span class="section-kicker">18 · PERSONALISE</span><h3>Theme toggle</h3><p class="muted small">Switch the app's visual theme.</p></article>
+                  <article class="surface" style="padding:16px"><span class="section-kicker">19 · BACKUP</span><h3>Export &amp; restore</h3><p class="muted small">Export local study data as JSON and restore it from a backup file.</p></article>
+                </div>
+              </div>
+              <p class="muted small" style="margin-top:8px">Some features need notes or saved study activity first. Availability can vary by device and browser.</p>
+            </div>
           </section>
           <section
             class="view active"
@@ -2847,47 +2932,12 @@
                 </div>
               </div>
             </div>
-            <div
-              class="study-tabs"
-              role="tablist"
-              aria-label="Smart Study tools"
-            >
-              <button
-                class="study-tab selected"
-                data-study-tab="cards"
-                role="tab"
-                aria-selected="true"
-              >
-                ▤ Flashcards</button
-              ><button
-                class="study-tab"
-                data-study-tab="reviews"
-                role="tab"
-                aria-selected="false"
-              >
-                ◷ Reviews</button
-              ><button
-                class="study-tab"
-                data-study-tab="tutor"
-                role="tab"
-                aria-selected="false"
-              >
-                ✧ Study helper
-              </button><button
-                class="study-tab"
-                data-study-tab="exam"
-                role="tab"
-                aria-selected="false"
-              >
-                ◈ Exam Lab
-              </button><button
-                class="study-tab"
-                data-study-tab="quiz"
-                role="tab"
-                aria-selected="false"
-              >
-                ✓ Quiz Generator
-              </button>
+            <div class="study-tabs" role="tablist" aria-label="Smart Study tools">
+              <button class="study-tab selected" data-study-tab="cards" role="tab" aria-selected="true">▤ Flashcards</button>
+              <button class="study-tab" data-study-tab="quiz" role="tab" aria-selected="false">✓ Quiz</button>
+              <button class="study-tab" data-study-tab="exam" role="tab" aria-selected="false">◈ Exam Lab</button>
+              <button class="study-tab" data-study-tab="tutor" role="tab" aria-selected="false">✧ Helper</button>
+              <button class="study-tab" data-study-tab="reviews" role="tab" aria-selected="false">◷ Reviews</button>
             </div>
             <div class="study-pane" id="study-quiz">
               <div class="study-intro">
@@ -3385,18 +3435,19 @@
         </section>
         </main>
         <nav class="bottom-nav" aria-label="Main navigation">
-          <button
-            class="nav-item active"
-            data-view="command"
-            aria-current="page"
-          >
-            <span class="nav-icon">⌘</span><span>Command</span></button
-          ><button class="nav-item" data-view="study">
-            <span class="nav-icon">▤</span><span>Smart Study</span
-            ><span class="nav-dot" id="studyNavDot" hidden></span></button
-          ><button class="nav-item" data-view="planner">
+          <button class="nav-item active" data-view="command" aria-current="page">
+            <span class="nav-icon">⌘</span><span>Command</span>
+          </button>
+          <button class="nav-item" data-view="study">
+            <span class="nav-icon">▤</span><span>Study</span>
+            <span class="nav-dot" id="studyNavDot" hidden></span>
+          </button>
+          <button class="nav-item" data-view="planner">
             <span class="nav-icon">◷</span><span>Planner</span>
-          </button><button class="nav-item" data-view="progress"> <span class="nav-icon"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block"><path d="M4 4v16h16"/><path d="M8 15l3.5-4.5 3 2.5L19 7"/></svg></span><span>Progress</span> </button>
+          </button>
+          <button class="nav-item" data-view="progress">
+            <span class="nav-icon"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block"><path d="M4 4v16h16"/><path d="M8 15l3.5-4.5 3 2.5L19 7"/></svg></span><span>Progress</span>
+          </button>
         </nav>
         <div id="toast" class="toast" role="status" aria-live="polite"></div>
         <footer class="site-footer">
@@ -4748,40 +4799,47 @@
           position: fixed;
           z-index: 100;
           left: 50%;
-          bottom: 15px;
+          bottom: 10px;
           transform: translateX(-50%);
           display: grid;
           grid-template-columns: repeat(4, 1fr);
-          gap: 5px;
-          width: min(490px, calc(100% - 24px));
-          padding: 7px;
+          gap: 4px;
+          width: min(420px, calc(100% - 20px));
+          padding: 5px;
           border: 1px solid #f4b77220;
-          border-radius: 22px;
+          border-radius: 18px;
           background: rgba(23, 16, 12, 0.9);
-          box-shadow: 0 16px 55px #00000099;
+          box-shadow: 0 12px 40px #00000099;
           backdrop-filter: blur(22px);
           -webkit-backdrop-filter: blur(22px);
         }
         .nav-item {
           position: relative;
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 7px;
-          min-height: 54px;
+          gap: 2px;
+          min-height: 48px;
+          padding: 6px 4px;
           border: 1px solid transparent;
-          border-radius: 16px;
+          border-radius: 14px;
           background: transparent;
           color: #a8a29a;
-          font-size: 11px;
+          font-size: 10px;
           font-weight: 600;
+          line-height: 1.1;
           transition:
             background 0.2s,
             color 0.2s;
         }
         .nav-icon {
-          font-size: 19px;
+          font-size: 16px;
           line-height: 1;
+        }
+        .nav-icon svg {
+          width: 15px;
+          height: 15px;
         }
         .nav-item.active {
           color: white;
@@ -4986,27 +5044,27 @@
             padding: 17px;
           }
           .bottom-nav {
-            bottom: 9px;
-            width: calc(100% - 18px);
-            border-radius: 18px;
-            padding: 5px;
+            bottom: 8px;
+            width: calc(100% - 14px);
+            border-radius: 14px;
+            padding: 3px;
           }
           .nav-item {
             flex-direction: column;
-            gap: 2px;
-            min-height: 53px;
-            font-size: 9px;
-            border-radius: 13px;
+            gap: 1px;
+            min-height: 42px;
+            font-size: 8px;
+            border-radius: 10px;
           }
           .nav-icon {
-            font-size: 18px;
+            font-size: 14px;
           }
           .nav-dot {
             right: calc(50% - 18px);
             top: 5px;
           }
           .toast {
-            bottom: 82px;
+            bottom: 64px;
           }
         }
         @media (max-width: 400px) {
@@ -5176,8 +5234,17 @@
         .menu-trigger span { width:17px;height:2px;border-radius:4px;background:var(--text);transition:transform .2s,opacity .2s; }
         .drawer-scrim { position:fixed;inset:0;z-index:850;background:rgba(15, 8, 3, .58);backdrop-filter:blur(3px); }
         .drawer-scrim[hidden] { display:none; }
-        .vex-drawer { position:fixed;z-index:860;top:0;right:0;width:min( min(88vw,360px), 360px);height:100dvh;padding:24px 18px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(155deg,#2a1f17,#1b130e);border-left:1px solid rgba(236, 156, 100, .2);box-shadow:-24px 0 70px rgba(0, 0, 0, .35);transform:translateX(105%);visibility:hidden;transition:transform .28s ease,visibility .28s; }
+        .vex-drawer { position:fixed;z-index:860;top:0;right:0;width:min( min(88vw,360px), 360px);height:100dvh;max-height:100dvh;padding:24px 18px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(155deg,#2a1f17,#1b130e);border-left:1px solid rgba(236, 156, 100, .2);box-shadow:-24px 0 70px rgba(0, 0, 0, .35);transform:translateX(105%);visibility:hidden;transition:transform .28s ease,visibility .28s; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; touch-action:pan-y; }
         .vex-drawer.is-open { transform:translateX(0);visibility:visible; }
+        body.drawer-open { overflow: hidden !important; touch-action: none; }
+        .drawer-name-box { padding: 12px 13px 14px; border: 1px solid rgba(236, 156, 100, .13); border-radius: 15px; background: rgba(255, 255, 255, .035); }
+        .drawer-name-box > small { display:block; font-size:10px; font-weight:700; letter-spacing:.12em; color:var(--muted); margin-bottom:8px; }
+        .drawer-name-row { display:flex; gap:8px; align-items:center; }
+        .drawer-name-row input { flex:1; min-width:0; box-sizing:border-box; padding:10px 12px; border-radius:12px; border:1px solid rgba(236, 156, 100, .22); background:rgba(24, 13, 5, .72); color:var(--text); font:600 13px/1.3 inherit; outline:none; }
+        .drawer-name-row input:focus { border-color: rgba(234, 146, 83, .65); }
+        .drawer-name-row button { flex:none; padding:10px 12px; border-radius:12px; border:1px solid rgba(234, 146, 83, .35); background:rgba(234, 146, 83, .14); color:var(--text); font:700 11px/1 inherit; cursor:pointer; }
+        .drawer-motivation { margin:10px 0 0; padding:10px 12px; border-radius:12px; background:rgba(234, 146, 83, .1); border:1px solid rgba(234, 146, 83, .18); color:var(--text); font:600 12px/1.45 inherit; }
+        .drawer-motivation[hidden] { display:none !important; }
         .drawer-head { display:flex;align-items:center;justify-content:space-between;padding:12px 4px 22px;border-bottom:1px solid var(--line);margin-bottom:8px; }
         .drawer-head small { color:#ec9b62;font-size:10px;font-weight:700;letter-spacing:.18em; }
         .drawer-head h2 { margin:5px 0 0;font:700 23px "Space Grotesk",sans-serif; }
@@ -5488,7 +5555,7 @@
   }
   function forceAmberType() {
     var size = heroFontPx() + 'px';
-    var heroIds = ['command-title', 'study-title', 'planner-title', 'progress-title'];
+    var heroIds = ['command-title', 'study-title', 'planner-title', 'progress-title', 'tools-title'];
     heroIds.forEach(function (id) {
       var el = document.getElementById(id);
       if (!el) return;
@@ -5772,10 +5839,17 @@ window.vexTok = function (n) {
                 day: 'numeric',
               })
               .toUpperCase();
-            $('dailyMessage').textContent =
-              state.minutes >= state.goal
-                ? 'You showed up for yourself today.'
-                : 'Your next win starts here.';
+            (function () {
+              var nm = '';
+              try { nm = (localStorage.getItem('vex_student_name') || '').trim(); } catch (e) {}
+              if (nm && typeof window.vexPickMotivation === 'function') {
+                $('dailyMessage').textContent = window.vexPickMotivation(nm);
+              } else if (state.minutes >= state.goal) {
+                $('dailyMessage').textContent = 'You showed up for yourself today.';
+              } else {
+                $('dailyMessage').textContent = 'Your next win starts here.';
+              }
+            })();
             var level = 1 + Math.floor(studyXP / 100);
             $('levelValue').textContent =
               String(level).padStart(2, '0') +
@@ -6719,8 +6793,169 @@ document.addEventListener('visibilitychange', function () {
         const byId = (id) => document.getElementById(id);
         const drawer = byId('vexDrawer');
         const scrim = byId('drawerScrim');
-        function closeVexDrawer() { drawer.classList.remove('is-open'); drawer.setAttribute('aria-hidden','true'); drawer.inert = true; scrim.hidden = true; byId('menuOpen').setAttribute('aria-expanded','false'); }
-        function openVexDrawer() { scrim.hidden = false; drawer.inert = false; drawer.setAttribute('aria-hidden','false'); requestAnimationFrame(() => drawer.classList.add('is-open')); byId('menuOpen').setAttribute('aria-expanded','true'); byId('menuClose').focus(); }
+        function closeVexDrawer() {
+          drawer.classList.remove('is-open');
+          drawer.setAttribute('aria-hidden','true');
+          drawer.inert = true;
+          scrim.hidden = true;
+          byId('menuOpen').setAttribute('aria-expanded','false');
+          document.body.classList.remove('drawer-open');
+        }
+        function openVexDrawer() {
+          scrim.hidden = false;
+          drawer.inert = false;
+          drawer.setAttribute('aria-hidden','false');
+          document.body.classList.add('drawer-open');
+          requestAnimationFrame(() => drawer.classList.add('is-open'));
+          byId('menuOpen').setAttribute('aria-expanded','true');
+          byId('menuClose').focus();
+        }
+        // Stop scroll chaining from drawer into the page behind it
+        drawer.addEventListener('touchmove', function (e) { e.stopPropagation(); }, { passive: true });
+        drawer.addEventListener('wheel', function (e) { e.stopPropagation(); }, { passive: true });
+        // Name + time-based motivation bank
+        (function setupDrawerName() {
+          var KEY = 'vex_student_name';
+          var input = byId('drawerNameInput');
+          var saveBtn = byId('drawerNameSave');
+          var mot = byId('drawerMotivation');
+          if (!input || !saveBtn || !mot) return;
+
+          function dayPart() {
+            var h = new Date().getHours();
+            if (h >= 5 && h < 12) return 'morning';
+            if (h >= 12 && h < 17) return 'afternoon';
+            if (h >= 17 && h < 21) return 'evening';
+            return 'night';
+          }
+
+          var bank = {
+            morning: [
+              function (n) { return 'Good morning, ' + n + '. Fresh mind — start with one small win.'; },
+              function (n) { return n + ', the day is quiet. A short focus block sets the tone.'; },
+              function (n) { return 'Morning energy is real, ' + n + '. Open your notes and begin.'; },
+              function (n) { return 'Rise and revise, ' + n + '. Twenty-five minutes can change the day.'; },
+              function (n) { return n + ' — sunrise study hits different. Make today count.'; },
+              function (n) { return 'Early start, ' + n + '. You are already ahead of yesterday.'; },
+              function (n) { return 'Coffee optional. Focus optional? Not today, ' + n + '.'; },
+              function (n) { return n + ', clear the first topic before the world gets loud.'; }
+            ],
+            afternoon: [
+              function (n) { return 'Afternoon check-in, ' + n + '. One more block keeps momentum.'; },
+              function (n) { return n + ', mid-day dip is normal. Push through with a timer.'; },
+              function (n) { return 'Still time to win today, ' + n + '. Open Study and practise.'; },
+              function (n) { return n + ' — post-lunch focus is a superpower. Try fifteen minutes.'; },
+              function (n) { return 'Do not wait for evening, ' + n + '. Start the next chapter now.'; },
+              function (n) { return 'Steady beats perfect, ' + n + '. Keep the streak alive this afternoon.'; },
+              function (n) { return n + ', quiz yourself once. Active recall loves the afternoon.'; },
+              function (n) { return 'Halfway through the day, ' + n + '. Make the second half count.'; }
+            ],
+            evening: [
+              function (n) { return 'Evening study time, ' + n + '. Quiet focus, deep work.'; },
+              function (n) { return n + ', the day is not over. One focused session still counts.'; },
+              function (n) { return 'Lights low, mind clear — review time, ' + n + '.'; },
+              function (n) { return n + ', lock in before the night fully settles.'; },
+              function (n) { return 'Want to start studying, ' + n + '? Hit Start focus on Command.'; },
+              function (n) { return 'Evening is for closing loops, ' + n + '. Finish what you opened.'; },
+              function (n) { return n + ' — weak topics get stronger after sunset. Open Reviews.'; },
+              function (n) { return 'Protect this hour, ' + n + '. Tomorrow-you will thank you.'; }
+            ],
+            night: [
+              function (n) { return 'Late grind, ' + n + '. Keep it short and sharp.'; },
+              function (n) { return n + ', night mode on. One last clean session, then rest.'; },
+              function (n) { return 'Quiet hours hit different, ' + n + '. Use them wisely.'; },
+              function (n) { return n + ' — do not force hours. Force one honest focus block.'; },
+              function (n) { return 'Still here, ' + n + '? Respect. Make it quality, not endless.'; },
+              function (n) { return 'Night study works if you stay calm, ' + n + '. Timer on.'; },
+              function (n) { return n + ', close the day with a win, not guilt.'; },
+              function (n) { return 'Before sleep, ' + n + ': one recall pass beats scrolling.'; }
+            ],
+            anytime: [
+              function (n) { return 'It is study time, ' + n + '. One focused block is enough to start.'; },
+              function (n) { return n + ', small sessions stack up. You have got this.'; },
+              function (n) { return 'Back at it, ' + n + '. Make today count.'; },
+              function (n) { return n + ' — notes open, timer ready. Let us go.'; },
+              function (n) { return 'Progress is quiet, ' + n + '. Show up anyway.'; },
+              function (n) { return n + ', discipline is choosing the work when mood is mid.'; },
+              function (n) { return 'You do not need motivation for the whole day, ' + n + ' — just the next twenty-five minutes.'; },
+              function (n) { return n + ': consistency beats intensity. Start simple.'; },
+              function (n) { return 'Future marks are built in boring minutes, ' + n + '.'; },
+              function (n) { return n + ', the hard part is starting. After that, ride the timer.'; },
+              function (n) { return 'No drama. Just study, ' + n + '.'; },
+              function (n) { return n + ' — open the notes you have been avoiding. That is the win.'; },
+              function (n) { return 'Clarity comes after effort, ' + n + '. Begin before you feel ready.'; },
+              function (n) { return n + ', protect your focus like it is limited — because it is.'; },
+              function (n) { return 'Less scrolling, more solving, ' + n + '.'; },
+              function (n) { return n + ': one quiz, one card deck, one honest try.'; }
+            ]
+          };
+
+          function pickLine(n) {
+            var part = dayPart();
+            var pool = bank[part].concat(bank.anytime);
+            var i = Math.floor(Math.random() * pool.length);
+            return pool[i](n);
+          }
+
+          window.vexPickMotivation = pickLine;
+          window.vexGetStudentName = function () {
+            try { return (localStorage.getItem(KEY) || '').trim(); } catch (e) { return ''; }
+          };
+
+          function applyName(name, persist) {
+            name = String(name || '').trim().slice(0, 24);
+            if (!name) {
+              mot.hidden = true;
+              mot.textContent = '';
+              if (persist) try { localStorage.removeItem(KEY); } catch (e) {}
+              return;
+            }
+            input.value = name;
+            var line = pickLine(name);
+            mot.textContent = line;
+            mot.hidden = false;
+            if (persist) try { localStorage.setItem(KEY, name); } catch (e) {}
+            var daily = byId('dailyMessage');
+            if (daily) daily.textContent = line;
+          }
+
+          try {
+            var saved = localStorage.getItem(KEY);
+            if (saved) applyName(saved, false);
+          } catch (e) {}
+
+          saveBtn.addEventListener('click', function () { applyName(input.value, true); });
+          input.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') { e.preventDefault(); applyName(input.value, true); }
+          });
+          // New line every time the menu opens
+          var _open = openVexDrawer;
+          // openVexDrawer already defined above; refresh motivation when drawer opens
+          var origOpen = openVexDrawer;
+          openVexDrawer = function () {
+            origOpen();
+            try {
+              var n = (localStorage.getItem(KEY) || '').trim();
+              if (n) {
+                var line = pickLine(n);
+                mot.textContent = line;
+                mot.hidden = false;
+                var daily = byId('dailyMessage');
+                if (daily) daily.textContent = line;
+              }
+            } catch (e) {}
+          };
+        })();
+        // Refresh daily message once name system is ready
+        (function () {
+          try {
+            var n = (localStorage.getItem('vex_student_name') || '').trim();
+            var daily = byId('dailyMessage');
+            if (n && daily && typeof window.vexPickMotivation === 'function') {
+              daily.textContent = window.vexPickMotivation(n);
+            }
+          } catch (e) {}
+        })();
         byId('menuOpen').addEventListener('click',openVexDrawer);
         byId('menuClose').addEventListener('click',closeVexDrawer);
         scrim.addEventListener('click',closeVexDrawer);
@@ -6791,6 +7026,34 @@ document.addEventListener('visibilitychange', function () {
         });
         byId('closeImprovements').addEventListener('click',()=>{byId('testImprovementsPanel').hidden=true;});
         byId('drawerAbout').addEventListener('click',()=>{closeVexDrawer();byId('aboutOpen').click();});
+        function syncDrawerLightDarkLabel() {
+          var isLight = document.body.classList.contains('light');
+          var lab = byId('drawerLightDarkLabel');
+          var hint = byId('drawerLightDarkHint');
+          if (lab) lab.textContent = isLight ? 'Dark mode' : 'Light mode';
+          if (hint) hint.textContent = isLight ? 'Switch back to the dark UI' : 'Switch to a brighter UI';
+        }
+        byId('drawerWhatVexCanDo')?.addEventListener('click', function () {
+          closeVexDrawer();
+          document.querySelectorAll('.view').forEach(function (v) {
+            v.classList.toggle('active', v.id === 'view-tools');
+          });
+          document.querySelectorAll('.nav-item').forEach(function (b) {
+            b.classList.remove('active');
+            b.removeAttribute('aria-current');
+          });
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        byId('drawerLightDark')?.addEventListener('click', function () {
+          byId('themeToggle')?.click();
+          syncDrawerLightDarkLabel();
+        });
+        syncDrawerLightDarkLabel();
+        document.body.addEventListener('click', function (e) {
+          if (e.target && (e.target.id === 'themeToggle' || e.target.closest && e.target.closest('#themeToggle'))) {
+            window.setTimeout(syncDrawerLightDarkLabel, 0);
+          }
+        }, true);
         byId('drawerTerms').addEventListener('click',()=>{closeVexDrawer();byId('termsOpen').click();});
         byId('drawerPrivacy').addEventListener('click',()=>{closeVexDrawer();byId('termsOpen').click();setTimeout(()=>{const el=byId('privacySection');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},200);});
         const status = byId('textbookStatus');
@@ -7350,7 +7613,7 @@ document.addEventListener('visibilitychange', function () {
   const socraticJump = () => {
     const target = $('socraticModePanel');
     if (!target) return;
-    $('vexFeaturesDialog').hidden = true;
+    document.querySelector('[data-view="study"]')?.click();
     target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
     target.classList.remove('socratic-arrive');
     void target.offsetWidth;
@@ -7372,7 +7635,6 @@ document.addEventListener('visibilitychange', function () {
     button.innerHTML = 'Open feature <span aria-hidden="true">↗</span>';
     button.setAttribute('aria-label', 'Open ' + label);
     button.addEventListener('click', () => {
-      $('vexFeaturesDialog').hidden = true;
       if (targetId === 'themeToggle') { $('themeToggle')?.click(); return; }
       const view = viewId ? $(viewId) : null;
       if (view && view.classList.contains('view') && !view.classList.contains('active')) {
@@ -7458,9 +7720,28 @@ document.addEventListener('visibilitychange', function () {
     $('loadLocalAi').disabled=false;
     setStatus('localAiStatus','Cancellation requested. WebLLM may finish or reject an in-flight file request before stopping; this page was not reloaded and cached files were not cleared.');
   });
-  const vexFeaturesDialog=$('vexFeaturesDialog');
-  $('whatVexCanDo')?.addEventListener('click', () => { vexFeaturesDialog.hidden=false; vexFeaturesDialog.scrollIntoView({behavior:'smooth',block:'start'}); $('closeVexFeatures')?.focus(); });
-  $('closeVexFeatures')?.addEventListener('click', () => { vexFeaturesDialog.hidden=true; $('whatVexCanDo')?.focus(); });
+  $('whatVexCanDo')?.addEventListener('click', () => {
+    document.querySelectorAll('.view').forEach((v) => v.classList.toggle('active', v.id === 'view-tools'));
+    document.querySelectorAll('.nav-item').forEach((b) => {
+      b.classList.remove('active');
+      b.removeAttribute('aria-current');
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  // Keep drawer light/dark label in sync when themeToggle runs
+  const _themeBtn = $('themeToggle');
+  if (_themeBtn) {
+    const _orig = _themeBtn.onclick;
+    _themeBtn.addEventListener('click', () => {
+      window.setTimeout(() => {
+        const isLight = document.body.classList.contains('light');
+        const lab = $('drawerLightDarkLabel');
+        const hint = $('drawerLightDarkHint');
+        if (lab) lab.textContent = isLight ? 'Dark mode' : 'Light mode';
+        if (hint) hint.textContent = isLight ? 'Switch back to the dark UI' : 'Switch to a brighter UI';
+      }, 10);
+    });
+  }
   $('askLocalAi').addEventListener('click', async () => {
     if (!localEngine) return;
     const prompt=$('localAiPrompt').value.trim(); if (!prompt) return;
