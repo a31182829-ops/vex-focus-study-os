@@ -4,9 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VEX.STUDY OS</title>
+    <!-- type-lock v4 full-audit 2026-11-10 -->
     <meta name="theme-color" content="#1e1610" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%238f83ff'/%3E%3Cstop offset='1' stop-color='%2370e6d6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='19' fill='%23101322'/%3E%3Cpath d='M13 17h12l7 21 7-21h12L37 49H27z' fill='url(%23g)'/%3E%3C/svg%3E" />
-    <link rel="stylesheet" href="./src/styles.css" />
+    <!-- Fonts loaded outside theme stylesheets so they never drop when a theme media query is disabled -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Optional Vite CSS: removed on 404 so standalone preview matches production type locks -->
+    <link rel="stylesheet" href="./src/styles.css" onerror="this.remove()" />
     <style data-vex="base">
       /* Keep Socratic conversations inside a stable panel; only the transcript scrolls. */
       #socraticModePanel {
@@ -207,7 +213,7 @@
         height: 100%;
         object-fit: cover;
         background: #180d05;
-        opacity: 0;
+        opacity: 1;
         transition: opacity .28s ease;
         transform: translateZ(0);
         backface-visibility: hidden;
@@ -532,7 +538,7 @@
         height: 100%;
         object-fit: cover;
         background: #080b18;
-        opacity: 0;
+        opacity: 1;
         transition: opacity .28s ease;
         transform: translateZ(0);
         backface-visibility: hidden;
@@ -816,10 +822,28 @@
         p {
           margin-top: 0;
         }
-        h1 {
-          font: 700 clamp(40px, 6vw, 68px)/0.98 'Space Grotesk';
-          letter-spacing: -0.065em;
-          margin: 20px 0 16px;
+        h1,
+        #command-title,
+        #study-title,
+        #planner-title,
+        #progress-title {
+          font-family: 'Space Grotesk', sans-serif !important;
+          font-size: clamp(40px, 6vw, 68px) !important;
+          font-weight: 700 !important;
+          line-height: 0.98 !important;
+          letter-spacing: -0.065em !important;
+          margin: 20px 0 16px !important;
+        }
+        h1 .gradient-text,
+        #command-title .gradient-text,
+        #study-title .gradient-text,
+        #planner-title .gradient-text,
+        #progress-title .gradient-text {
+          font-size: inherit !important;
+          font-weight: inherit !important;
+          font-family: inherit !important;
+          line-height: inherit !important;
+          letter-spacing: inherit !important;
         }
         .gradient-text {
           background: linear-gradient(
@@ -2570,24 +2594,11 @@
           <video id="vexIntroVideo" autoplay muted playsinline preload="auto" webkit-playsinline>
             
           </video>
-        <script>
-          (function () {
-            var v = document.getElementById('vexIntroVideo');
-            if (!v) return;
-            var t = 'amber';
-            try { t = localStorage.getItem('vex_theme') || 'amber'; } catch (e) { /* default */ }
-            var rot = { emerald: 127, rose: 315, ocean: 180 };
-            var s = document.createElement('source');
-            s.src = t === 'violet' ? '/resources/vex-study-intro.mp4' : '/resources/vex-study-intro-amber.mp4';
-            s.type = 'video/mp4';
-            v.appendChild(s);
-            if (rot[t]) v.style.filter = 'hue-rotate(' + rot[t] + 'deg)';
-          })();
-        </script>
         </div>
         <div class="vex-intro-caption">
           <strong>Your study space is getting ready</strong>
           <span>FOCUS · LEARN · IMPROVE</span>
+          <span id="vexIntroTapHint" hidden style="display:none;margin-top:10px;color:#c7b4a8;font:600 11px/1.4 system-ui,sans-serif;letter-spacing:.04em">Tap to continue</span>
           <div class="vex-intro-progress" aria-hidden="true"></div>
         </div>
       </div>
@@ -2672,8 +2683,8 @@
             </div>
             <div class="hero-row">
               <div>
-                <h1 id="command-title">
-                  Make today<br /><span class="gradient-text">count.</span>
+                <h1 id="command-title" style="font-family:'Space Grotesk',sans-serif!important;font-size:clamp(40px,6vw,68px)!important;font-weight:700!important;line-height:0.98!important;letter-spacing:-0.065em!important;margin:20px 0 16px!important">
+                  Make today<br /><span class="gradient-text" style="font-size:inherit!important;font-weight:inherit!important;font-family:inherit!important;line-height:inherit!important;letter-spacing:inherit!important">count.</span>
                 </h1>
                 <p class="hero-copy">
                   Small focused sessions. Real progress. One step at a time.
@@ -2821,8 +2832,8 @@
             </div>
             <div class="page-heading">
               <div>
-                <h1 id="study-title">
-                  Smart <span class="gradient-text">Study.</span>
+                <h1 id="study-title" style="font-family:'Space Grotesk',sans-serif!important;font-size:clamp(40px,6vw,68px)!important;font-weight:700!important;line-height:0.98!important;letter-spacing:-0.065em!important;margin:20px 0 16px!important">
+                  Smart <span class="gradient-text" style="font-size:inherit!important;font-weight:inherit!important;font-family:inherit!important;line-height:inherit!important;letter-spacing:inherit!important">Study.</span>
                 </h1>
                 <p class="hero-copy">
                   Make your brain do the remembering—not just the rereading.
@@ -3195,8 +3206,8 @@
             </div>
             <div class="page-heading">
               <div>
-                <h1 id="planner-title">
-                  Your <span class="gradient-text">planner.</span>
+                <h1 id="planner-title" style="font-family:'Space Grotesk',sans-serif!important;font-size:clamp(40px,6vw,68px)!important;font-weight:700!important;line-height:0.98!important;letter-spacing:-0.065em!important;margin:20px 0 16px!important">
+                  Your <span class="gradient-text" style="font-size:inherit!important;font-weight:inherit!important;font-family:inherit!important;line-height:inherit!important;letter-spacing:inherit!important">planner.</span>
                 </h1>
                 <p class="hero-copy">
                   Build a realistic plan, then let your quiz results guide your
@@ -3336,7 +3347,7 @@
           <div class="eyebrow"><span class="eyebrow-line"></span> TRACK YOUR GROWTH</div>
           <div class="page-heading">
             <div>
-              <h1 id="progress-title">Your <span class="gradient-text">progress.</span></h1>
+              <h1 id="progress-title" style="font-family:'Space Grotesk',sans-serif!important;font-size:clamp(40px,6vw,68px)!important;font-weight:700!important;line-height:0.98!important;letter-spacing:-0.065em!important;margin:20px 0 16px!important">Your <span class="gradient-text" style="font-size:inherit!important;font-weight:inherit!important;font-family:inherit!important;line-height:inherit!important;letter-spacing:inherit!important">progress.</span></h1>
               <p class="hero-copy">See your focus time, streaks and quiz scores grow day by day.</p>
             </div>
             <div class="level-chip"><span>✦</span><div><small>DAY STREAK</small><strong id="progStreak">0 days</strong></div></div>
@@ -3587,10 +3598,28 @@
         p {
           margin-top: 0;
         }
-        h1 {
-          font: 700 clamp(40px, 6vw, 68px)/0.98 'Space Grotesk';
-          letter-spacing: -0.065em;
-          margin: 20px 0 16px;
+        h1,
+        #command-title,
+        #study-title,
+        #planner-title,
+        #progress-title {
+          font-family: 'Space Grotesk', sans-serif !important;
+          font-size: clamp(40px, 6vw, 68px) !important;
+          font-weight: 700 !important;
+          line-height: 0.98 !important;
+          letter-spacing: -0.065em !important;
+          margin: 20px 0 16px !important;
+        }
+        h1 .gradient-text,
+        #command-title .gradient-text,
+        #study-title .gradient-text,
+        #planner-title .gradient-text,
+        #progress-title .gradient-text {
+          font-size: inherit !important;
+          font-weight: inherit !important;
+          font-family: inherit !important;
+          line-height: inherit !important;
+          letter-spacing: inherit !important;
         }
         .gradient-text {
           background: linear-gradient(
@@ -5333,6 +5362,37 @@
           .motion-ready .reveal-on-scroll { opacity: 1; transform: none; }
         }
       </style>
+
+      <style id="vex-typography-lock">
+        /* Typography is intentionally independent of the selected colour theme.
+           Amber is the reference: themes may recolour the interface, never resize
+           or replace its typefaces. */
+        html[data-theme] body,
+        html[data-theme] button,
+        html[data-theme] input,
+        html[data-theme] textarea,
+        html[data-theme] select {
+          font-family: 'DM Sans', sans-serif !important;
+        }
+        html[data-theme] h1,
+        html[data-theme] h2,
+        html[data-theme] h3,
+        html[data-theme] .brand,
+        html[data-theme] .page-heading h1 {
+          font-family: 'Space Grotesk', sans-serif !important;
+        }
+        html[data-theme] h1 {
+          font-size: clamp(40px, 6vw, 68px) !important;
+          font-weight: 700 !important;
+          line-height: 0.98 !important;
+          letter-spacing: -0.065em !important;
+        }
+        html[data-theme] .brand {
+          font-size: 19px !important;
+          font-weight: 700 !important;
+          letter-spacing: -0.05em !important;
+        }
+      </style>
     <script>
 (function () {
   var KEY = 'vex_theme';
@@ -5414,13 +5474,83 @@
       var bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
       if (bg) meta.setAttribute('content', bg);
     }
+    // Force amber typography after every theme swap — CSS alone can lose to
+    // generated theme sheets on some browsers; element.style always wins.
+    forceAmberType();
     document.dispatchEvent(new CustomEvent('vex-theme', { detail: name }));
+  }
+  function heroFontPx() {
+    // Amber reference: clamp(40px, 6vw, 68px) — compute real px so no engine
+    // can ignore clamp() inside element.style on desktop.
+    var vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    var raw = vw * 0.06;
+    return Math.round(Math.max(40, Math.min(68, raw)));
+  }
+  function forceAmberType() {
+    var size = heroFontPx() + 'px';
+    var heroIds = ['command-title', 'study-title', 'planner-title', 'progress-title'];
+    heroIds.forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      // Write the whole style attribute so nothing can half-override it.
+      var prev = el.getAttribute('style') || '';
+      // Keep non-font declarations (if any) but stamp amber type on top.
+      el.style.cssText = prev
+        + ';font-family:\'Space Grotesk\',sans-serif!important'
+        + ';font-size:' + size + '!important'
+        + ';font-weight:700!important'
+        + ';line-height:0.98!important'
+        + ';letter-spacing:-0.065em!important'
+        + ';margin:20px 0 16px!important';
+      el.querySelectorAll('.gradient-text').forEach(function (g) {
+        g.style.cssText = (g.getAttribute('style') || '')
+          + ';font-size:inherit!important'
+          + ';font-weight:inherit!important'
+          + ';font-family:inherit!important'
+          + ';line-height:inherit!important'
+          + ';letter-spacing:inherit!important';
+      });
+    });
+    var timer = document.getElementById('timerDisplay');
+    if (timer) {
+      var tSize = (document.documentElement.clientWidth || window.innerWidth || 0) <= 760 ? '42px' : '46px';
+      timer.style.setProperty('font-family', "'Space Grotesk', sans-serif", 'important');
+      timer.style.setProperty('font-size', tSize, 'important');
+      timer.style.setProperty('font-weight', '600', 'important');
+      timer.style.setProperty('letter-spacing', '-0.06em', 'important');
+    }
   }
   window.vexThemes = THEMES;
   window.vexSetTheme = function (n) { apply(n, true); };
+  window.vexForceAmberType = forceAmberType;
   var saved = null;
   try { saved = localStorage.getItem(KEY); } catch (e) { /* ignore */ }
   apply(saved && THEMES[saved] ? saved : 'amber', false);
+  function bootType() {
+    forceAmberType();
+    // Fight late stylesheets / theme sheets that load after first paint.
+    window.setTimeout(forceAmberType, 50);
+    window.setTimeout(forceAmberType, 250);
+    window.setTimeout(forceAmberType, 800);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bootType);
+  } else {
+    bootType();
+  }
+  window.addEventListener('load', forceAmberType);
+  window.addEventListener('resize', function () {
+    window.clearTimeout(window.__vexTypeResize);
+    window.__vexTypeResize = window.setTimeout(forceAmberType, 100);
+  });
+  // If anything mutates hero style after us, stamp it back.
+  try {
+    var mo = new MutationObserver(function () {
+      window.clearTimeout(window.__vexTypeMo);
+      window.__vexTypeMo = window.setTimeout(forceAmberType, 30);
+    });
+    mo.observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ['style', 'class', 'data-theme'] });
+  } catch (e) { /* old engines */ }
 })();
 window.vexTok = function (n) {
   var v = getComputedStyle(document.documentElement).getPropertyValue(n).trim();
@@ -7392,34 +7522,116 @@ document.addEventListener('visibilitychange', function () {
         const screen = document.getElementById('vexIntroScreen');
         const video = document.getElementById('vexIntroVideo');
         if (!screen || !video) return;
+
+        // Hardened intro for Realme / strict mobile autoplay + desktop.
         let dismissed = false;
+        let playing = false;
         let fallbackTimer = 0;
+        let retryTimers = [];
+        const MAX_RETRIES = 6;
+
+        const clearRetries = () => {
+          retryTimers.forEach((id) => window.clearTimeout(id));
+          retryTimers = [];
+        };
+
         const dismiss = () => {
           if (dismissed) return;
           dismissed = true;
+          clearRetries();
           window.clearTimeout(fallbackTimer);
+          try { video.pause(); } catch (e) {}
           screen.classList.add('is-leaving');
-          window.setTimeout(() => screen.remove(), 500);
+          window.setTimeout(() => { try { screen.remove(); } catch (e) {} }, 500);
         };
-        const startPlayback = () => {
-          if (dismissed) return;
-          video.play().catch(() => {
-            video.muted = true;
-            video.play().catch(() => screen.classList.add('video-ready'));
-          });
+
+        const markReady = () => { screen.classList.add('video-ready'); };
+
+        const tryPlay = (attempt) => {
+          if (dismissed || playing) return;
+          video.muted = true;
+          video.defaultMuted = true;
+          video.playsInline = true;
+          video.setAttribute('muted', '');
+          video.setAttribute('playsinline', '');
+          video.setAttribute('webkit-playsinline', '');
+          video.setAttribute('x5-playsinline', '');
+          video.volume = 0;
+          let result;
+          try { result = video.play(); } catch (err) { result = Promise.reject(err); }
+          if (result && typeof result.then === 'function') {
+            result.then(() => {
+              playing = true;
+              markReady();
+              clearRetries();
+            }).catch(() => {
+              if (dismissed || playing) return;
+              if (attempt < MAX_RETRIES) {
+                retryTimers.push(window.setTimeout(() => tryPlay(attempt + 1), 180 + attempt * 220));
+              } else {
+                markReady();
+              }
+            });
+          } else if (!video.paused) {
+            playing = true;
+            markReady();
+          }
         };
-        video.addEventListener('playing', () => screen.classList.add('video-ready'), { once: true });
+
+        try { video.pause(); } catch (e) {}
+        video.removeAttribute('src');
+        video.innerHTML = '';
+        video.muted = true;
+        video.defaultMuted = true;
+        video.playsInline = true;
+        video.setAttribute('muted', '');
+        video.setAttribute('autoplay', '');
+        video.setAttribute('playsinline', '');
+        video.setAttribute('webkit-playsinline', '');
+        video.setAttribute('x5-playsinline', '');
+        video.setAttribute('x5-video-player-type', 'h5');
+        video.preload = 'auto';
+        video.controls = false;
+        video.src = '/resources/vex-study-intro-amber.mp4';
+
+        video.addEventListener('playing', () => { playing = true; markReady(); clearRetries(); });
         video.addEventListener('ended', dismiss, { once: true });
         video.addEventListener('error', () => {
-          screen.classList.add('video-ready');
-          fallbackTimer = window.setTimeout(dismiss, 1200);
+          markReady();
+          clearRetries();
+          window.clearTimeout(fallbackTimer);
+          fallbackTimer = window.setTimeout(dismiss, 1400);
         }, { once: true });
-        video.addEventListener('canplay', startPlayback, { once: true });
-        video.addEventListener('loadeddata', startPlayback, { once: true });
-        // Hard limit: the loading screen never stays longer than about 5.5 seconds.
-        fallbackTimer = window.setTimeout(dismiss, 5600);
-        video.load();
-        if (video.readyState >= 2) startPlayback();
+
+        const onReady = () => { if (!dismissed && !playing) tryPlay(0); };
+        video.addEventListener('loadeddata', onReady);
+        video.addEventListener('canplay', onReady);
+        video.addEventListener('canplaythrough', onReady, { once: true });
+
+        const onUserGesture = () => {
+          if (dismissed) return;
+          tryPlay(0);
+          window.setTimeout(() => { if (!dismissed && video.paused) dismiss(); }, 900);
+        };
+        screen.addEventListener('pointerdown', onUserGesture, { once: true });
+        screen.addEventListener('touchstart', onUserGesture, { once: true, passive: true });
+        screen.addEventListener('click', onUserGesture, { once: true });
+
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden && !dismissed && video.paused) tryPlay(0);
+        });
+
+        retryTimers.push(window.setTimeout(() => {
+          if (dismissed || playing) return;
+          const hint = document.getElementById('vexIntroTapHint');
+          if (hint) { hint.hidden = false; hint.style.display = 'block'; }
+        }, 2200));
+
+        fallbackTimer = window.setTimeout(dismiss, 6500);
+        try { video.load(); } catch (e) {}
+        if (video.readyState >= 2) tryPlay(0);
+        retryTimers.push(window.setTimeout(() => tryPlay(0), 120));
+        retryTimers.push(window.setTimeout(() => tryPlay(1), 400));
       })();
     </script>
     <script>
@@ -7430,7 +7642,8 @@ document.addEventListener('visibilitychange', function () {
       window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
     </script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
-    <script type="module" src="./src/main.ts"></script>
+    <!-- Optional Vite entry: 404-safe. Type lock re-runs after load so main.ts cannot shrink heroes. -->
+    <script type="module" src="./src/main.ts" onerror="console.info('VEX: src/main.ts not present (standalone mode)')"></script>
       <script>
 (function () {
   var box = document.getElementById('themeSwatches');
@@ -7457,9 +7670,70 @@ document.addEventListener('visibilitychange', function () {
   document.addEventListener('vex-theme', function () {
     build();
     if (typeof window.vexAfterTheme === 'function') window.vexAfterTheme();
+    if (typeof window.vexForceAmberType === 'function') window.vexForceAmberType();
   });
 })();
 
+    </script>
+    <!-- Final type lock: survives src/styles.css + main.ts on Vercel publish -->
+    <style id="vex-type-lock-final">
+      /* Amber metrics — every theme, including violet */
+      html[data-theme] #command-title,
+      html[data-theme="violet"] #command-title,
+      html[data-theme="amber"] #command-title,
+      html[data-theme="emerald"] #command-title,
+      html[data-theme="rose"] #command-title,
+      html[data-theme="ocean"] #command-title,
+      html[data-theme] #study-title,
+      html[data-theme] #planner-title,
+      html[data-theme] #progress-title,
+      html[data-theme] h1 {
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-size: clamp(40px, 6vw, 68px) !important;
+        font-weight: 700 !important;
+        line-height: 0.98 !important;
+        letter-spacing: -0.065em !important;
+        margin: 20px 0 16px !important;
+      }
+      html[data-theme] #command-title .gradient-text,
+      html[data-theme="violet"] #command-title .gradient-text,
+      html[data-theme] #study-title .gradient-text,
+      html[data-theme] #planner-title .gradient-text,
+      html[data-theme] #progress-title .gradient-text,
+      html[data-theme] h1 .gradient-text {
+        font-size: inherit !important;
+        font-weight: inherit !important;
+        font-family: inherit !important;
+        line-height: inherit !important;
+        letter-spacing: inherit !important;
+      }
+    </style>
+    <script>
+      (function () {
+        function kick() {
+          if (typeof window.vexForceAmberType === 'function') window.vexForceAmberType();
+        }
+        document.addEventListener('vex-theme', kick);
+        window.addEventListener('load', function () {
+          kick();
+          [100, 400, 1000, 2000, 4000].forEach(function (ms) {
+            window.setTimeout(kick, ms);
+          });
+        });
+        // Keep final CSS last in <head> even if main.ts injects sheets.
+        try {
+          var finalCss = document.getElementById('vex-type-lock-final');
+          if (finalCss) document.head.appendChild(finalCss);
+          var mo = new MutationObserver(function () {
+            var el = document.getElementById('vex-type-lock-final');
+            if (el && el.parentNode === document.head && el !== document.head.lastElementChild) {
+              document.head.appendChild(el);
+            }
+            kick();
+          });
+          mo.observe(document.head, { childList: true });
+        } catch (e) {}
+      })();
     </script>
   </body>
 </html>
