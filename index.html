@@ -8016,5 +8016,285 @@ document.addEventListener('visibilitychange', function () {
         } catch (e) {}
       })();
     </script>
-  </body>
+  <style data-vex="prep">
+.study-tabs{display:flex!important;overflow-x:auto;gap:6px;-webkit-overflow-scrolling:touch}
+.study-tabs .study-tab{flex:0 0 auto;white-space:nowrap}
+.prep-row{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:10px}
+.prep-chip{display:inline-block;margin-left:8px;padding:3px 10px;border-radius:999px;border:1px solid rgba(234,146,83,.32);font-size:12px}
+.prep-chip.urgent{border-color:#e5604d;color:#ff9d8f}
+.prep-timer{position:sticky;top:8px;z-index:5;margin-bottom:10px;padding:8px 14px;border-radius:12px;background:rgba(24,13,5,.94);border:1px solid rgba(234,146,83,.4);font:700 16px 'Space Grotesk',sans-serif;text-align:center}
+.prep-timer.low{border-color:#e5604d;color:#ff9d8f}
+.prep-mini{padding:6px 10px;min-height:30px;font-size:12px;margin-top:8px}
+.exam-option.picked{border-color:#ea9253;background:rgba(234,146,83,.14)}
+#study-prep ul{margin:4px 0 8px 18px;padding:0}
+</style>
+<script>
+(function () {
+  'use strict';
+  var KEY = 'vex_prep_v1';
+  var $ = function (i) { return document.getElementById(i); };
+  function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
+  var db = { exams: [], mistakes: [] };
+  try { var d0 = JSON.parse(localStorage.getItem(KEY)); if (d0 && typeof d0 === 'object') { db.exams = d0.exams || []; db.mistakes = d0.mistakes || []; } } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(db)); } catch (e) {} }
+  var tabs = document.querySelector('.study-tabs');
+  var panes = document.querySelectorAll('.study-pane');
+  if (!tabs || !panes.length) return;
+
+  // ---------- UI ----------
+  var tb = el('button', 'study-tab', '⏱ Exam Prep');
+  tb.dataset.studyTab = 'prep'; tb.setAttribute('role', 'tab'); tb.setAttribute('aria-selected', 'false');
+  tabs.append(tb);
+  var pane = el('div', 'study-pane'); pane.id = 'study-prep';
+  pane.innerHTML = `
+  <div class="study-intro"><div><h2>Practice like it counts.</h2>
+  <p class="muted">Count down to your exams, sit a timed mock, review every miss, and explain topics back in your own words.</p></div><div class="practice-icon mint-icon">⏱</div></div>
+  <div class="exam-grid">
+  <article class="surface exam-tool"><h3>Exam countdown</h3>
+    <label for="prepExamName">Exam</label><input id="prepExamName" maxlength="60" placeholder="e.g. Biology final">
+    <label for="prepExamDate">Date</label><input id="prepExamDate" type="date">
+    <button class="btn btn-primary btn-wide" id="prepExamAdd" type="button">Add exam</button>
+    <div id="prepExamList"></div></article>
+  <article class="surface exam-tool"><h3>Timed mock exam</h3>
+    <p class="muted small">Built from the notes in Flashcards. No feedback until you submit or time runs out.</p>
+    <label for="prepTopic">Topic</label><input id="prepTopic" maxlength="100" placeholder="e.g. Biology — blood">
+    <div class="form-two"><div><label for="prepCount">Questions</label><select id="prepCount"><option value="5">5</option><option value="10" selected>10</option><option value="15">15</option></select></div>
+    <div><label for="prepMinutes">Minutes</label><input id="prepMinutes" type="number" min="1" max="180" value="15"></div></div>
+    <div class="form-two"><div><label for="prepType">Question types</label><select id="prepType"><option value="mixed">Mixed</option><option value="mcq">Multiple choice</option><option value="tf">True / false</option><option value="short">Short answer</option><option value="blank">Fill in the blank</option></select></div>
+    <div><label for="prepDiff">Difficulty</label><select id="prepDiff"><option>Mixed</option><option>Easy</option><option>Medium</option><option>Hard</option></select></div></div>
+    <button class="btn btn-primary btn-wide" id="prepStart" type="button">Start mock exam</button>
+    <div id="prepStatus" class="exam-status" role="status"></div><div id="prepPlay" class="exam-output"></div></article>
+  <article class="surface exam-tool"><h3>Mistake notebook</h3>
+    <p class="muted small">Missed questions from quizzes, mocks and explanations collect here. Get one right on a retry and it clears.</p>
+    <button class="btn btn-outline btn-wide" id="prepRetry" type="button">Retry mistakes</button>
+    <div id="prepMistakes"></div></article>
+  <article class="surface exam-tool"><h3>Explain it back</h3>
+    <p class="muted small">Teach the topic in your own words. You get a score, what you missed, and a follow-up question.</p>
+    <label for="prepExTopic">Topic</label><input id="prepExTopic" maxlength="100" placeholder="e.g. How blood clots">
+    <label for="prepExText">Your explanation</label><textarea id="prepExText" placeholder="Explain it as if teaching a friend…"></textarea>
+    <button class="btn btn-primary btn-wide" id="prepExGo" type="button">Check my explanation</button>
+    <div id="prepExStatus" class="exam-status" role="status"></div><div id="prepExOut" class="exam-output"></div></article>
+  </div>`;
+  panes[panes.length - 1].after(pane);
+  tb.addEventListener('click', function () {
+    document.querySelectorAll('[data-study-tab]').forEach(function (x) { x.classList.toggle('selected', x === tb); x.setAttribute('aria-selected', String(x === tb)); });
+    document.querySelectorAll('.study-pane').forEach(function (p) { p.classList.toggle('selected', p.id === 'study-prep'); });
+    renderExams(); renderMistakes();
+  });
+
+  // ---------- helpers ----------
+  function ansText(q) { return q.options ? q.options[q.correctIndex] : (q.answer || ''); }
+  function nz(s) { return String(s).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function kw(s) { var m = String(s).toLowerCase().match(/[a-z0-9]{5,}/g) || []; return m.filter(function (w, i) { return m.indexOf(w) === i; }); }
+  function parseJ(t) {
+    t = String(t).replace(/```(?:json)?/gi, '').replace(/[\u0000-\u001f]+/g, ' ');
+    var s = t.search(/[\[{]/); if (s < 0) return null;
+    var open = t[s], e = t.lastIndexOf(open === '[' ? ']' : '}');
+    if (e > s) { try { return JSON.parse(t.slice(s, e + 1)); } catch (x) {} }
+    var out = []; (t.match(/\{[^{}]*\}/g) || []).forEach(function (c) { try { out.push(JSON.parse(c)); } catch (x) {} });
+    return open === '[' && out.length ? out : null;
+  }
+  function normQ(q) {
+    if (!q || typeof q.question !== 'string') return null;
+    var t = String(q.type || '').toLowerCase().replace(/[^a-z]/g, ''), o = Array.isArray(q.options) ? q.options.map(String) : null, ex = q.explanation ? String(q.explanation) : '';
+    if (t === 'tf' || t === 'truefalse') { var a = q.answer; return { type: 'tf', question: q.question, options: ['True', 'False'], correctIndex: (a === true || /^t/i.test(String(a))) ? 0 : 1, explanation: ex }; }
+    if (o && o.length >= 2) { var ci = Number(q.correctIndex != null ? q.correctIndex : q.answer); if (!(ci >= 0 && ci < o.length)) return null; return { type: 'mcq', question: q.question, options: o, correctIndex: ci, explanation: ex }; }
+    if (q.answer != null && String(q.answer).trim()) return { type: t === 'blank' ? 'blank' : 'short', question: q.question, answer: String(q.answer), explanation: ex };
+    return null;
+  }
+  async function ai(sys, user, max, st) {
+    var eng = window.vexLocalEngine;
+    if (!eng) {
+      var b = $('loadLocalAi');
+      if (b && !b.disabled && window.confirm('Llama 3.2 1B is not loaded yet. Load it now? A first-time download can use about 1 GB of data.')) b.click();
+      var t0 = Date.now();
+      while (!window.vexLocalEngine && Date.now() - t0 < 600000) {
+        st.textContent = 'Loading Llama… keep this page open.';
+        await new Promise(function (r) { setTimeout(r, 1000); });
+        var s = $('localAiStatus'); if (s && /^Local AI failed/.test(s.textContent || '')) break;
+      }
+      eng = window.vexLocalEngine;
+    }
+    if (!eng) throw new Error('Llama is not loaded. Open Helper → Local AI, tap Load Llama, then try again.');
+    var r = await eng.chat.completions.create({ messages: [{ role: 'system', content: sys }, { role: 'user', content: user }], temperature: 0.2, max_tokens: max, stream: false });
+    return String((r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || '');
+  }
+  function notesNow() { return (($('notesInput') || {}).value || '').trim(); }
+
+  // ---------- exam countdown ----------
+  function daysTo(d) { var n = new Date(); n.setHours(0, 0, 0, 0); return Math.round((new Date(d + 'T00:00:00') - n) / 864e5); }
+  function renderExams() {
+    var box = $('prepExamList'); box.replaceChildren();
+    db.exams.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
+    if (!db.exams.length) { box.append(el('p', 'muted small', 'No exams yet. Add one to start the countdown.')); return; }
+    db.exams.forEach(function (x) {
+      var n = daysTo(x.date), row = el('div', 'prep-row'), l = el('div');
+      l.append(el('strong', null, x.name), el('span', 'prep-chip' + (n >= 0 && n <= 7 ? ' urgent' : ''), n < 0 ? 'passed ' + (-n) + ' d ago' : n === 0 ? 'today' : n + (n === 1 ? ' day left' : ' days left')));
+      var del = el('button', 'btn btn-outline prep-mini', 'Remove'); del.type = 'button';
+      del.onclick = function () { db.exams = db.exams.filter(function (e) { return e !== x; }); save(); renderExams(); };
+      row.append(l, del); box.append(row);
+    });
+    var next = db.exams.filter(function (x) { return daysTo(x.date) >= 0; })[0];
+    if (next && daysTo(next.date) <= 14 && db.mistakes.length) box.append(el('p', 'exam-feedback', db.mistakes.length + ' mistakes to clear before ' + next.name + '. Retry them in the notebook below.'));
+  }
+  $('prepExamAdd').onclick = function () {
+    var n = $('prepExamName').value.trim(), d = $('prepExamDate').value;
+    if (!n || !d) return;
+    db.exams.push({ name: n, date: d }); save(); $('prepExamName').value = ''; $('prepExamDate').value = ''; renderExams();
+  };
+
+  // ---------- mistake notebook ----------
+  function addMistake(q, yours, topic) {
+    var f = db.mistakes.filter(function (m) { return m.q.question === q.question; })[0];
+    if (f) { f.yours = yours; f.date = Date.now(); f.n = (f.n || 1) + 1; }
+    else db.mistakes.unshift({ q: q, yours: yours, topic: topic || 'Study', date: Date.now(), n: 1 });
+    save(); renderMistakes();
+  }
+  function removeMistake(q) {
+    var l = db.mistakes.length;
+    db.mistakes = db.mistakes.filter(function (m) { return m.q.question !== q.question; });
+    if (db.mistakes.length !== l) { save(); renderMistakes(); }
+  }
+  function replayable() { return db.mistakes.filter(function (m) { return m.q.type !== 'note'; }); }
+  function renderMistakes() {
+    var box = $('prepMistakes'), rb = $('prepRetry'); box.replaceChildren();
+    var rp = replayable().length; rb.textContent = 'Retry ' + rp + (rp === 1 ? ' mistake' : ' mistakes'); rb.disabled = !rp;
+    if (!db.mistakes.length) { box.append(el('p', 'muted small', 'Nothing here yet.')); return; }
+    db.mistakes.forEach(function (m) {
+      var c = el('div', 'exam-question'); c.append(el('strong', null, m.q.question));
+      c.append(el('p', 'muted small', m.topic + (m.q.type === 'note' ? ' · gap' : ' · missed ' + m.n + '×') + (m.yours ? ' · you wrote: ' + m.yours : '')));
+      var a = ansText(m.q), ex = (a ? 'Answer: ' + a : '') + (m.q.explanation ? (a ? ' — ' : '') + m.q.explanation : '');
+      if (ex) c.append(el('p', 'exam-feedback', ex));
+      var d = el('button', 'btn btn-outline prep-mini', 'Mastered'); d.type = 'button'; d.onclick = function () { removeMistake(m.q); };
+      c.append(d); box.append(c);
+    });
+  }
+  $('prepRetry').onclick = function () {
+    start(replayable().map(function (m) { return m.q; }), { retry: true, topic: 'Mistake retry' });
+    $('prepPlay').scrollIntoView({ behavior: 'smooth' });
+  };
+  // capture wrong answers from the existing multiple-choice quiz
+  var qp = $('quizPlay');
+  if (qp) new MutationObserver(function (ms) {
+    ms.forEach(function (m) {
+      var t = m.target;
+      if (!t.classList || !t.classList.contains('exam-option') || !t.classList.contains('incorrect')) return;
+      var card = t.closest('.exam-question'); if (!card || card.dataset.vexCap) return; card.dataset.vexCap = '1';
+      var opts = [].slice.call(card.querySelectorAll('.exam-option')), strip = function (s) { return s.replace(/^[A-D]\.\s*/, ''); };
+      var ci = opts.findIndex(function (b) { return b.classList.contains('correct'); }); if (ci < 0) return;
+      var fb = card.querySelector('.exam-feedback'), st = card.querySelector('strong');
+      addMistake({ type: 'mcq', question: (st ? st.textContent : '').replace(/^\d+\.\s*/, ''), options: opts.map(function (b) { return strip(b.textContent); }), correctIndex: ci, explanation: fb ? fb.textContent.replace(/^(Correct|Not quite)\.\s*/, '') : '' }, strip(t.textContent), ($('quizTopic') || {}).value || 'Quiz');
+    });
+  }).observe(qp, { subtree: true, attributes: true, attributeFilter: ['class'] });
+
+  // ---------- exam session (mock + retry) ----------
+  var sess = null, tick = null;
+  function stopTimer() { if (tick) { clearInterval(tick); tick = null; } }
+  function start(qs, o) {
+    stopTimer(); sess = { qs: qs, ans: {}, o: o, done: false };
+    var root = $('prepPlay'); root.replaceChildren();
+    if (o.minutes) {
+      var tm = el('div', 'prep-timer'), end = Date.now() + o.minutes * 60000;
+      root.append(tm);
+      var upd = function () { var s = Math.max(0, Math.round((end - Date.now()) / 1000)); tm.textContent = '⏱ ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); tm.classList.toggle('low', s <= 60); if (s <= 0) grade(); };
+      upd(); tick = setInterval(upd, 1000);
+    }
+    qs.forEach(function (q, i) {
+      var c = el('div', 'exam-question'); c.append(el('strong', null, (i + 1) + '. ' + q.question));
+      if (q.options) {
+        var w = el('div', 'exam-options');
+        q.options.forEach(function (op, k) {
+          var b = el('button', 'exam-option', (q.type === 'tf' ? '' : String.fromCharCode(65 + k) + '. ') + op); b.type = 'button';
+          b.onclick = function () { if (sess.done) return; sess.ans[i] = k; [].forEach.call(w.children, function (x, j) { x.classList.toggle('picked', j === k); }); };
+          w.append(b);
+        });
+        c.append(w);
+      } else {
+        var inp = el(q.type === 'blank' ? 'input' : 'textarea');
+        inp.placeholder = q.type === 'blank' ? 'Type the missing word or phrase' : 'Write your answer';
+        inp.setAttribute('aria-label', 'Answer ' + (i + 1)); inp.oninput = function () { sess.ans[i] = inp.value; };
+        c.append(inp);
+      }
+      root.append(c);
+    });
+    var sb = el('button', 'btn btn-primary btn-wide', o.minutes ? 'Submit exam' : 'Check answers'); sb.type = 'button'; sb.onclick = grade; root.append(sb);
+  }
+  function grade() {
+    if (!sess || sess.done) return; sess.done = true; stopTimer();
+    var qs = sess.qs, res = [], root = $('prepPlay'), cards = root.querySelectorAll('.exam-question'), sc = el('strong');
+    var sb = $('prepPlay').querySelector('.btn-primary'); if (sb) sb.remove();
+    var score = function () { var n = res.filter(Boolean).length; sc.textContent = 'Score: ' + n + '/' + qs.length + ' (' + Math.round(n / qs.length * 100) + '%)'; return Math.round(n / qs.length * 100); };
+    qs.forEach(function (q, i) {
+      var a = sess.ans[i], ok = false, c = cards[i];
+      if (q.options) ok = a === q.correctIndex;
+      else if (q.type === 'blank') { var u = nz(a || ''), cc = nz(q.answer); ok = !!u && (u === cc || (cc.length >= 3 && u.indexOf(cc) > -1)); }
+      else { var k = kw(q.answer), u2 = nz(a || ''); ok = k.length ? k.filter(function (w) { return u2.indexOf(w) > -1; }).length / k.length >= 0.5 : false; }
+      res[i] = ok;
+      var yours = q.options ? (a == null ? '(no answer)' : q.options[a]) : (a || '(no answer)');
+      c.querySelectorAll('input,textarea,button').forEach(function (x) { x.disabled = true; });
+      if (q.options) [].forEach.call(c.querySelectorAll('.exam-option'), function (b, j) { if (j === q.correctIndex) b.classList.add('correct'); else if (j === a) b.classList.add('incorrect'); });
+      var fb = el('p', 'exam-feedback'); c.append(fb);
+      var show = function () { fb.textContent = (res[i] ? 'Correct. ' : 'Missed. ') + 'Answer: ' + ansText(q) + (q.explanation ? ' — ' + q.explanation : ''); };
+      var record = function () { if (res[i]) removeMistake(q); else addMistake(q, yours, sess.o.topic); };
+      show(); record();
+      if (q.type === 'short') {
+        var tg = el('button', 'btn btn-outline prep-mini', res[i] ? 'Mark as missed' : 'I got it'); tg.type = 'button';
+        tg.onclick = function () { res[i] = !res[i]; tg.textContent = res[i] ? 'Mark as missed' : 'I got it'; record(); show(); score(); };
+        tg.disabled = false; c.append(tg);
+      }
+    });
+    var pct = score(); root.prepend(sc);
+    if (!sess.o.retry) {
+      var s = $('quizSubject'), p = $('quizScore'), f = $('quizLogForm');
+      if (s && p && f) { s.value = sess.o.topic; p.value = String(pct); f.requestSubmit(); }
+    }
+  }
+  $('prepStart').onclick = async function () {
+    var st = $('prepStatus'), b = this, notes = notesNow(), topic = $('prepTopic').value.trim() || 'Study topic';
+    if (notes.length < 20) { st.textContent = 'Add or scan notes in Flashcards first so the exam stays grounded.'; return; }
+    var n = +$('prepCount').value, ty = $('prepType').value, df = $('prepDiff').value, mins = Math.max(1, +$('prepMinutes').value || 15);
+    b.disabled = true; st.textContent = 'Building your exam…';
+    try {
+      var spec = ty === 'mixed' ? 'a mix of the four types' : 'only type "' + ty + '"';
+      var raw = await ai('You are VEX.STUDY, a careful school exam writer. Use only the supplied notes. Never invent facts. Return ONLY a valid JSON array, no markdown. Each item: {"type":"mcq"|"tf"|"short"|"blank","question":"...","options":["a","b","c","d"] (mcq only),"correctIndex":0-3 (mcq only),"answer": true or false for tf, or a short string for short and blank,"explanation":"..."}. A blank question must contain _____.',
+        'Notes:\n' + notes.slice(0, 6000) + '\n\nTopic: ' + topic + '. Write exactly ' + n + ' ' + df + ' difficulty questions, ' + spec + '.', 3200, st);
+      var arr = parseJ(raw); arr = (Array.isArray(arr) ? arr : (arr && arr.questions) || []).map(normQ).filter(Boolean).slice(0, n);
+      if (!arr.length) throw new Error('Llama could not format an exam. Try fewer questions or shorter notes.');
+      st.textContent = arr.length + ' questions · ' + mins + ' min. Good luck.';
+      start(arr, { minutes: mins, topic: topic });
+    } catch (e) { st.textContent = e.message || 'Exam generation failed.'; }
+    finally { b.disabled = false; }
+  };
+
+  // ---------- explain it back ----------
+  $('prepExGo').onclick = async function () {
+    var st = $('prepExStatus'), out = $('prepExOut'), b = this, notes = notesNow(), topic = $('prepExTopic').value.trim(), txt = $('prepExText').value.trim();
+    if (notes.length < 20) { st.textContent = 'Add or scan notes in Flashcards first so feedback is grounded.'; return; }
+    if (!topic || txt.length < 30) { st.textContent = 'Name the topic and explain it in at least a couple of sentences.'; return; }
+    b.disabled = true; out.replaceChildren(); st.textContent = 'Reading your explanation…';
+    try {
+      var r = parseJ(await ai('You are a strict but kind study coach. Compare the student explanation with the notes. Use only the notes. Return ONLY JSON: {"score":0-100,"correct":["..."],"missing":["..."],"misconceptions":["..."],"followUp":"one question"}.',
+        'Notes:\n' + notes.slice(0, 6000) + '\n\nTopic: ' + topic + '\n\nStudent explanation:\n' + txt.slice(0, 2500), 900, st));
+      if (!r || typeof r !== 'object' || Array.isArray(r)) throw new Error('Llama returned an unreadable result. Try a shorter explanation.');
+      var L = function (v) { return Array.isArray(v) ? v.map(String).filter(Boolean) : []; }, miss = L(r.missing).concat(L(r.misconceptions));
+      out.append(el('strong', null, 'Understanding: ' + Math.max(0, Math.min(100, Math.round(+r.score || 0))) + '%'));
+      [['You got right', L(r.correct)], ['Missing', L(r.missing)], ['Check these, possible misconceptions', L(r.misconceptions)]].forEach(function (s) {
+        if (!s[1].length) return; var ul = el('ul'); s[1].forEach(function (x) { ul.append(el('li', null, x)); }); out.append(el('p', 'exam-feedback', s[0] + ':'), ul);
+      });
+      if (r.followUp) out.append(el('p', 'exam-feedback', 'Next question: ' + r.followUp));
+      if (miss.length) {
+        var sv = el('button', 'btn btn-outline btn-wide', 'Save ' + miss.length + ' gaps to notebook'); sv.type = 'button';
+        sv.onclick = function () { miss.forEach(function (g) { addMistake({ type: 'note', question: 'Explain: ' + topic + ' — ' + g, explanation: '' }, '', topic); }); sv.disabled = true; sv.textContent = 'Saved to notebook'; };
+        out.append(sv);
+      }
+      st.textContent = 'Done.';
+    } catch (e) { st.textContent = e.message || 'Could not check your explanation.'; }
+    finally { b.disabled = false; }
+  };
+
+  renderExams(); renderMistakes();
+})();
+</script>
+
+</body>
 </html>
