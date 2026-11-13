@@ -3184,7 +3184,7 @@
                   <label for="paperSubject">Subject / chapter</label>
                   <input id="paperSubject" maxlength="100" placeholder="e.g. Class 10 Biology — blood" />
                   <div class="form-two">
-                    <div><label for="paperCount">Questions</label><select id="paperCount"><option value="5">5 questions</option><option value="10" selected>10 questions</option><option value="15">15 questions</option></select></div>
+                    <div><label for="paperCount">Questions</label><select id="paperCount"><option value="5" selected>5 questions</option><option value="8">8 questions</option><option value="10">10 questions</option></select></div>
                     <div><label for="paperDifficulty">Difficulty</label><select id="paperDifficulty"><option>Mixed</option><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
                   </div>
                   <button class="btn btn-primary btn-wide" id="buildPaper" type="button">Generate question paper</button>
@@ -3201,7 +3201,7 @@
                   <label for="quizTopic">Quiz topic</label>
                   <input id="quizTopic" maxlength="100" placeholder="Use your notes or name a topic" />
                   <div class="form-two">
-                    <div><label for="quizCount">Questions</label><select id="quizCount"><option value="5">5 questions</option><option value="10" selected>10 questions</option></select></div>
+                    <div><label for="quizCount">Questions</label><select id="quizCount"><option value="5" selected>5 questions</option><option value="8">8 questions</option><option value="10">10 questions</option></select></div>
                     <div><label for="quizLevel">Level</label><select id="quizLevel"><option>Mixed</option><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
                   </div>
                   <button class="btn btn-primary btn-wide" id="startQuiz" type="button">Create my quiz</button>
@@ -7133,22 +7133,24 @@ document.addEventListener('visibilitychange', function () {
               throw new Error('Llama is not loaded. Open Study Helper → Local AI, tap Load Llama, then try again.');
             }
           }
-          let system = 'You are VEX.STUDY, a careful and age-appropriate school study assistant. Use only the supplied notes. Never invent facts. Follow the requested output format exactly.';
+          // Llama 3.2 1B: long notes + high max_tokens → slow runs and truncated JSON.
+          let system = 'You are VEX.STUDY, a careful school study assistant. Use only the supplied notes. Never invent facts. When JSON is requested, return valid JSON only — no markdown fences, no extra commentary.';
           let user = fallbackPrompt;
-          let maxTokens = 1800;
+          let maxTokens = 900;
+          const countHint = Number(payload && (payload.count || payload.n)) || 0;
           if (outputType === 'cards') {
-            system += ' Return ONLY a valid JSON array of objects with keys "q" and "a". No markdown, no extra text.';
-            maxTokens = 2200;
+            system += ' Return ONLY a JSON array of objects with keys "q" and "a".';
+            maxTokens = 700;
           } else if (outputType === 'quiz') {
-            system += ' Return ONLY a valid JSON array of objects with keys "question", "options" (array of 4 strings), "correctIndex" (0-3), and "explanation". No markdown, no extra text.';
-            maxTokens = 2800;
+            system += ' Return ONLY a JSON array. Each item: "question", "options" (exactly 4 strings), "correctIndex" (0-3), "explanation" (one short sentence).';
+            maxTokens = Math.min(1500, 200 + Math.max(5, countHint || 8) * 100);
           } else if (outputType === 'paper') {
-            system += ' Return ONLY a valid JSON object with keys "title" and "questions" (array of objects with "question", "marks", "answer"). No markdown, no extra text.';
-            maxTokens = 3200;
+            system += ' Return ONLY a JSON object: {"title":"...","questions":[{"question":"...","marks":2,"answer":"..."}]}. Keep answers short.';
+            maxTokens = Math.min(1300, 160 + Math.max(5, countHint || 8) * 85);
           } else if (outputType === 'socratic') {
-            maxTokens = 500;
+            maxTokens = 280;
           } else if (outputType === 'tutor') {
-            maxTokens = 1200;
+            maxTokens = 650;
           }
           if (outputType === 'cards') {
             // Faster path: stream tokens, cap output length, and keep every complete card even if the output is cut off.
@@ -7215,19 +7217,53 @@ document.addEventListener('visibilitychange', function () {
             max_tokens: maxTokens
           });
           const generated = String(completion.choices?.[0]?.message?.content || '').trim();
-          if (!generated) throw new Error('The local Llama model returned an empty response. Try again or shorten the notes.');
+          if (!generated) throw new Error('The local Llama model returned an empty response. Try again with shorter notes or fewer questions.');
           if (outputType === 'socratic') return { question: generated };
           if (outputType === 'tutor') return { answer: generated };
-          const opening = outputType === 'paper' ? '{' : '[';
-          const start = generated.indexOf(opening);
-          const end = generated.lastIndexOf(outputType === 'paper' ? '}' : ']');
-          if (start < 0 || end <= start) throw new Error('Llama could not format this result. Try a shorter section or ask again.');
-          let parsed;
-          try { parsed = JSON.parse(generated.slice(start, end + 1)); }
-          catch { throw new Error('Llama returned an unreadable structured result. Try again with shorter notes.'); }
-          if (outputType === 'cards') return { cards: Array.isArray(parsed) ? parsed : [] };
-          if (outputType === 'quiz') return { topic: payload.topic || 'Study topic', questions: Array.isArray(parsed) ? parsed : [] };
-          if (outputType === 'paper') return parsed;
+          const cleanText = generated.replace(/```(?:json)?/gi, '').replace(/[\u0000-\u001f]+/g, ' ');
+          const tryParse = (raw) => { try { return JSON.parse(raw); } catch { return null; } };
+          const salvageObjects = (text) => {
+            const out = [];
+            (text.match(/\{[^{}]*\}/g) || []).forEach((chunk) => {
+              const o = tryParse(chunk);
+              if (o && typeof o === 'object') out.push(o);
+            });
+            return out;
+          };
+          let parsed = null;
+          if (outputType === 'paper') {
+            const s = cleanText.indexOf('{');
+            const e = cleanText.lastIndexOf('}');
+            if (s >= 0 && e > s) parsed = tryParse(cleanText.slice(s, e + 1));
+            if (!parsed || !Array.isArray(parsed.questions)) {
+              const objs = salvageObjects(cleanText).filter((o) => typeof o.question === 'string' && (o.answer != null || o.marks != null));
+              if (objs.length) parsed = { title: (payload && payload.subject) ? (payload.subject + ' practice paper') : 'Practice paper', questions: objs };
+            }
+            if (!parsed || !Array.isArray(parsed.questions) || !parsed.questions.length) {
+              throw new Error('Llama could not finish a full paper. Try 5 questions and shorter notes (under ~1 page).');
+            }
+            parsed.questions = parsed.questions.map((q) => ({
+              question: String(q.question || '').trim(),
+              marks: Math.max(1, Number(q.marks) || 2),
+              answer: String(q.answer || q.modelAnswer || '').trim()
+            })).filter((q) => q.question);
+            if (!parsed.questions.length) throw new Error('Llama could not format paper questions. Try fewer questions or shorter notes.');
+            if (!parsed.title) parsed.title = 'Practice paper';
+            return parsed;
+          }
+          // quiz / array outputs
+          const sArr = cleanText.indexOf('[');
+          const eArr = cleanText.lastIndexOf(']');
+          if (sArr >= 0 && eArr > sArr) parsed = tryParse(cleanText.slice(sArr, eArr + 1));
+          if (!Array.isArray(parsed) || !parsed.length) {
+            const objs = salvageObjects(cleanText);
+            if (objs.length) parsed = objs;
+          }
+          if (!Array.isArray(parsed) || !parsed.length) {
+            throw new Error('Llama could not format this result. Try fewer questions and shorter notes.');
+          }
+          if (outputType === 'cards') return { cards: parsed };
+          if (outputType === 'quiz') return { topic: (payload && payload.topic) || 'Study topic', questions: parsed };
           throw new Error('Unsupported study AI task.');
         }
         // Expose for other module scripts (Socratic mode lives in a separate module block).
@@ -7387,7 +7423,7 @@ document.addEventListener('visibilitychange', function () {
           const notes = byId('notesInput').value.trim() || textbookText;
           if (!notes) throw new Error('Add notes or scan a textbook page first.');
           const response = await requestStudyAi('/api/study/tutor', { notes, question },
-            'Answer the student question using only these textbook notes. Explain clearly in age-appropriate steps and say if the notes do not contain the answer. Notes:\n' + notes + '\n\nQuestion: ' + question,
+            'Answer the student question using only these textbook notes. Explain clearly in short age-appropriate steps and say if the notes do not contain the answer. Notes:\n' + String(notes).slice(0, 3500) + '\n\nQuestion: ' + question,
             'tutor');
           return String(response.answer || 'I could not form an answer from those notes.');
         };
@@ -7413,7 +7449,7 @@ document.addEventListener('visibilitychange', function () {
               count: Number(byId('paperCount').value), difficulty: byId('paperDifficulty').value
             };
             const response = await requestStudyAi('/api/study/paper', paperPayload,
-              'Create a ' + paperPayload.difficulty + ' practice paper for ' + (paperPayload.subject || 'this topic') + ' with exactly ' + paperPayload.count + ' questions. Use only these notes. Return one JSON object with title and questions; each question must have question, marks (integer), and answer. Notes:\n' + notes,
+              'Create a ' + paperPayload.difficulty + ' practice paper for ' + (paperPayload.subject || 'this topic') + ' with exactly ' + Math.min(10, paperPayload.count) + ' questions. Use only these notes. Keep each answer under 25 words. Return one JSON object with title and questions; each question must have question, marks (integer), and answer. Notes:\n' + String(notes).slice(0, 2800),
               'paper');
             generatedPaper = response;
             renderPaper();
@@ -7470,7 +7506,7 @@ document.addEventListener('visibilitychange', function () {
               notes, topic: quizTopicActive, count: Number(byId('quizCount').value), difficulty: byId('quizLevel').value
             };
             const response = await requestStudyAi('/api/study/quiz', quizPayload,
-              'Create exactly ' + quizPayload.count + ' multiple-choice questions about ' + quizPayload.topic + ' at ' + quizPayload.difficulty + ' difficulty. Use only these notes. Return a JSON array; each item must contain question, exactly four options, correctIndex (0 to 3), and explanation. Notes:\n' + notes,
+              'Create exactly ' + Math.min(10, quizPayload.count) + ' multiple-choice questions about ' + quizPayload.topic + ' at ' + quizPayload.difficulty + ' difficulty. Use only these notes. Keep explanations to one short sentence. Return a JSON array; each item must contain question, exactly four options, correctIndex (0 to 3), and explanation. Notes:\n' + String(notes).slice(0, 2800),
               'quiz');
             quizData = response.questions || [];
             quizAnswers = {};
@@ -7614,7 +7650,7 @@ document.addEventListener('visibilitychange', function () {
     const reviews = Array.isArray(s.reviews) ? s.reviews.slice(0, 10).map(r => ({ topic: r.topic || r.text || r.name || '', due: r.due || r.nextReview || '', done: !!r.done })) : [];
     const quizHistory = Array.isArray(s.quizHistory) ? s.quizHistory.slice(0, 8).map(q => ({ subject: q.subject || '', score: q.score, date: q.date || '' })) : [];
     const plan = Array.isArray(s.plan) ? s.plan.slice(0, 10).map(p => ({ title: p.title || p.subject || p.text || '', minutes: p.minutes || 0, done: !!p.done })) : [];
-    return JSON.stringify({ activeView, activeStudyTab, notes: String($('notesInput')?.value || '').trim().slice(0, 6000), currentFlashcard: activeCard ? { question: activeCard.question || activeCard.front || '', answer: activeCard.answer || activeCard.back || '', position: (Number(s.cardIndex) || 0) + 1, total: cards.length } : null, visibleExamPaper: String($('paperOutput')?.innerText || '').trim().slice(0, 3500), visibleQuiz: String($('quizPlay')?.innerText || '').trim().slice(0, 3500), quizStatus: String($('quizStatus')?.innerText || '').trim(), recentQuizHistory: quizHistory, reviewQueue: reviews, planner: plan, openTasks: (Array.isArray(s.tasks) ? s.tasks.filter(t => !t.done).slice(0, 8).map(t => t.text) : []) }, null, 2).slice(0, 12000);
+    return JSON.stringify({ activeView, activeStudyTab, notes: String($('notesInput')?.value || '').trim().slice(0, 2000), currentFlashcard: activeCard ? { question: activeCard.question || activeCard.front || '', answer: activeCard.answer || activeCard.back || '', position: (Number(s.cardIndex) || 0) + 1, total: cards.length } : null, visibleExamPaper: String($('paperOutput')?.innerText || '').trim().slice(0, 1200), visibleQuiz: String($('quizPlay')?.innerText || '').trim().slice(0, 1200), quizStatus: String($('quizStatus')?.innerText || '').trim(), recentQuizHistory: quizHistory, reviewQueue: reviews, planner: plan, openTasks: (Array.isArray(s.tasks) ? s.tasks.filter(t => !t.done).slice(0, 8).map(t => t.text) : []) }, null, 2).slice(0, 4500);
   }
   $('buildMindMap').addEventListener('click', () => {
     const text = notes();
@@ -7644,7 +7680,7 @@ document.addEventListener('visibilitychange', function () {
     setStatus('socraticStatus','Thinking from your notes…');
     try {
       const response = await window.requestStudyAi('/api/study/socratic', { notes:text, prompt },
-        'Act as a Socratic school tutor. Use only these notes. Follow this tutor task and respond with one concise question or hint at a time. Notes:\n' + text + '\n\nTutor task:\n' + prompt,
+        'Act as a Socratic school tutor. Use only these notes. Follow this tutor task and respond with one concise question or hint at a time. Notes:\n' + String(text).slice(0, 2500) + '\n\nTutor task:\n' + prompt,
         'socratic');
       const question = String(response.question || response.answer || '').trim();
       socraticLastQuestion = question;
@@ -8104,7 +8140,7 @@ document.addEventListener('visibilitychange', function () {
   <article class="surface exam-tool"><h3>Timed mock exam</h3>
     <p class="muted small">Built from the notes in Flashcards. No feedback until you submit or time runs out.</p>
     <label for="prepTopic">Topic</label><input id="prepTopic" maxlength="100" placeholder="e.g. Biology — blood">
-    <div class="form-two"><div><label for="prepCount">Questions</label><select id="prepCount"><option value="5">5</option><option value="10" selected>10</option><option value="15">15</option></select></div>
+    <div class="form-two"><div><label for="prepCount">Questions</label><select id="prepCount"><option value="5" selected>5</option><option value="8">8</option><option value="10">10</option></select></div>
     <div><label for="prepMinutes">Minutes</label><input id="prepMinutes" type="number" min="1" max="180" value="15"></div></div>
     <div class="form-two"><div><label for="prepType">Question types</label><select id="prepType"><option value="mixed">Mixed</option><option value="mcq">Multiple choice</option><option value="tf">True / false</option><option value="short">Short answer</option><option value="blank">Fill in the blank</option></select></div>
     <div><label for="prepDiff">Difficulty</label><select id="prepDiff"><option>Mixed</option><option>Easy</option><option>Medium</option><option>Hard</option></select></div></div>
@@ -8301,11 +8337,14 @@ document.addEventListener('visibilitychange', function () {
     var n = +$('prepCount').value, ty = $('prepType').value, df = $('prepDiff').value, mins = Math.max(1, +$('prepMinutes').value || 15);
     b.disabled = true; st.textContent = 'Building your exam…';
     try {
-      var spec = ty === 'mixed' ? 'a mix of the four types' : 'only type "' + ty + '"';
-      var raw = await ai('You are VEX.STUDY, a careful school exam writer. Use only the supplied notes. Never invent facts. Return ONLY a valid JSON array, no markdown. Each item: {"type":"mcq"|"tf"|"short"|"blank","question":"...","options":["a","b","c","d"] (mcq only),"correctIndex":0-3 (mcq only),"answer": true or false for tf, or a short string for short and blank,"explanation":"..."}. A blank question must contain _____.',
-        'Notes:\n' + notes.slice(0, 6000) + '\n\nTopic: ' + topic + '. Write exactly ' + n + ' ' + df + ' difficulty questions, ' + spec + '.', 3200, st);
-      var arr = parseJ(raw); arr = (Array.isArray(arr) ? arr : (arr && arr.questions) || []).map(normQ).filter(Boolean).slice(0, n);
-      if (!arr.length) throw new Error('Llama could not format an exam. Try fewer questions or shorter notes.');
+      var nSafe = Math.min(10, Math.max(3, n || 5));
+      var notesClip = notes.slice(0, 2600);
+      var tokenBudget = Math.min(1200, 160 + nSafe * (ty === 'mcq' || ty === 'mixed' ? 95 : 70));
+      var spec = ty === 'mixed' ? 'mix of mcq, tf, short, and blank' : 'only type "' + ty + '"';
+      var raw = await ai('You are VEX.STUDY, a careful school exam writer. Use only the supplied notes. Never invent facts. Return ONLY a JSON array (no markdown). Each item needs: type (mcq|tf|short|blank), question, and either options+correctIndex (mcq), answer true/false (tf), or answer string (short/blank). Blank questions must include _____. Keep questions and answers short.',
+        'Notes:\n' + notesClip + '\n\nTopic: ' + topic + '. Write exactly ' + nSafe + ' ' + df + ' difficulty questions, ' + spec + '.', tokenBudget, st);
+      var arr = parseJ(raw); arr = (Array.isArray(arr) ? arr : (arr && arr.questions) || []).map(normQ).filter(Boolean).slice(0, nSafe);
+      if (!arr.length) throw new Error('Llama could not format an exam (output too long or incomplete). Try 5 questions and shorter notes.');
       st.textContent = arr.length + ' questions · ' + mins + ' min. Good luck.';
       start(arr, { minutes: mins, topic: topic });
     } catch (e) { st.textContent = e.message || 'Exam generation failed.'; }
@@ -8320,7 +8359,7 @@ document.addEventListener('visibilitychange', function () {
     b.disabled = true; out.replaceChildren(); st.textContent = 'Reading your explanation…';
     try {
       var r = parseJ(await ai('You are a strict but kind study coach. Compare the student explanation with the notes. Use only the notes. Return ONLY JSON: {"score":0-100,"correct":["..."],"missing":["..."],"misconceptions":["..."],"followUp":"one question"}.',
-        'Notes:\n' + notes.slice(0, 6000) + '\n\nTopic: ' + topic + '\n\nStudent explanation:\n' + txt.slice(0, 2500), 900, st));
+        'Notes:\n' + notes.slice(0, 2800) + '\n\nTopic: ' + topic + '\n\nStudent explanation:\n' + txt.slice(0, 1800), 550, st));
       if (!r || typeof r !== 'object' || Array.isArray(r)) throw new Error('Llama returned an unreadable result. Try a shorter explanation.');
       var L = function (v) { return Array.isArray(v) ? v.map(String).filter(Boolean) : []; }, miss = L(r.missing).concat(L(r.misconceptions));
       out.append(el('strong', null, 'Understanding: ' + Math.max(0, Math.min(100, Math.round(+r.score || 0))) + '%'));
