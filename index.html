@@ -2733,6 +2733,8 @@
           <button class="drawer-link" id="drawerAbout" type="button"><span>ⓘ</span><span><strong>About</strong><small>Learn about VEX.STUDY</small></span></button>
           <button class="drawer-link" id="drawerTerms" type="button"><span>≡</span><span><strong>Terms &amp; Agreement</strong><small>Read the app terms</small></span></button>
           <button class="drawer-link" id="drawerPrivacy" type="button"><span>⚿</span><span><strong>Privacy</strong><small>How your data is handled</small></span></button>
+          <button class="drawer-link" id="drawerExportData" type="button"><span>↓</span><span><strong>Export Data</strong><small>Download a backup of your study data</small></span></button>
+          <button class="drawer-link" id="drawerImportData" type="button"><span>↑</span><span><strong>Import Data</strong><small>Restore a VEX backup from a JSON file</small></span></button>
           <p class="drawer-foot">Made for focused learning.</p>
         </aside>
         <main class="main-content">
@@ -7102,6 +7104,8 @@ document.addEventListener('visibilitychange', function () {
         }, true);
         byId('drawerTerms').addEventListener('click',()=>{closeVexDrawer();byId('termsOpen').click();});
         byId('drawerPrivacy').addEventListener('click',()=>{closeVexDrawer();byId('termsOpen').click();setTimeout(()=>{const el=byId('privacySection');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},200);});
+        byId('drawerExportData').addEventListener('click',()=>{closeVexDrawer();byId('exportStudyData').click();});
+        byId('drawerImportData').addEventListener('click',()=>{closeVexDrawer();byId('importStudyData').click();});
         const status = byId('textbookStatus');
         let textbookText = '';
         let replayingAiCardClick = false;
@@ -7862,20 +7866,76 @@ document.addEventListener('visibilitychange', function () {
     setStatus('intervalStatus','Saved '+focus+' min focus / '+rest+' min break. Select the matching preset if available; custom value is saved for future timer sessions.');
   });
   $('exportStudyData').addEventListener('click',()=>{
-    const data={format:'VEX.STUDY backup',version:1,exportedAt:new Date().toISOString(),state:getState(),notes:notes()};
-    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='vex-study-backup.json'; a.click(); URL.revokeObjectURL(url);
-    setStatus('backupStatus','Backup exported. Keep the file private; it may contain your study notes and activity.');
+    try {
+      const storage = {};
+      // Only include VEX-owned app keys; do not export unrelated site/browser storage.
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (/^vex_/i.test(key) || /^focus_/i.test(key))) {
+          storage[key] = localStorage.getItem(key);
+        }
+      }
+      const currentNotes = $('notesInput')?.value;
+      if (typeof currentNotes === 'string' && currentNotes) storage['vex_study_notes_v1'] = currentNotes.slice(0, 12000);
+      const data = {
+        format: 'VEX.STUDY backup',
+        version: 2,
+        exportedAt: new Date().toISOString(),
+        storage,
+        // Keep these fields for compatibility with earlier VEX backup versions.
+        state: getState(),
+        notes: typeof currentNotes === 'string' ? currentNotes : notes()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'vex-study-backup-' + new Date().toISOString().slice(0,10) + '.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+      setStatus('backupStatus','Backup exported. It includes VEX local study data, settings, theme and notes. Keep the file private.');
+    } catch (err) {
+      setStatus('backupStatus', err?.message || 'Could not export your VEX backup.');
+    }
   });
   $('importStudyData').addEventListener('change',async e=>{
-    const file=e.target.files?.[0]; e.target.value=''; if(!file)return;
-    try { const data=JSON.parse(await file.text()); const state=data.state || data;
-      if(!state || typeof state!=='object' || Array.isArray(state)) throw new Error('Invalid backup format.');
-      const current=getState(); const merged={...current,...state}; localStorage.setItem('focus_redesign_v1',JSON.stringify(merged));
-      if(typeof data.notes==='string') $('notesInput').value=data.notes;
-      setStatus('backupStatus','Backup restored on this device. Refresh the page to reload all saved views.');
-      renderInsights();
-    } catch(err){ setStatus('backupStatus',err?.message || 'Could not read this backup file.'); }
+    const file=e.target.files?.[0];
+    e.target.value='';
+    if(!file)return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (!data || typeof data !== 'object' || Array.isArray(data) || !data.version) {
+        throw new Error('This is not a valid VEX backup file.');
+      }
+      if (!window.confirm('Restore this VEX backup on this device? Existing VEX local data may be replaced.')) return;
+
+      if (data.storage && typeof data.storage === 'object' && !Array.isArray(data.storage)) {
+        const entries = Object.entries(data.storage);
+        for (const [key, value] of entries) {
+          if ((/^vex_/i.test(key) || /^focus_/i.test(key)) && typeof value === 'string') {
+            localStorage.setItem(key, value);
+          }
+        }
+      } else {
+        // Backward compatibility with VEX backup version 1.
+        const state = data.state || data;
+        if (!state || typeof state !== 'object' || Array.isArray(state)) {
+          throw new Error('Invalid backup format.');
+        }
+        const current = getState();
+        localStorage.setItem('focus_redesign_v1', JSON.stringify({...current, ...state}));
+        if (typeof data.notes === 'string') {
+          localStorage.setItem('vex_study_notes_v1', data.notes.slice(0, 12000));
+        }
+      }
+
+      setStatus('backupStatus','Backup restored. Reloading VEX to apply the restored data…');
+      window.setTimeout(() => window.location.reload(), 700);
+    } catch(err) {
+      setStatus('backupStatus',err?.message || 'Could not read this backup file.');
+    }
   });
   renderInsights();
 </script>
