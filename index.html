@@ -8169,19 +8169,65 @@ document.addEventListener('visibilitychange', function () {
   function nz(s) { return String(s).toLowerCase().replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim(); }
   function kw(s) { var m = String(s).toLowerCase().match(/[a-z0-9]{5,}/g) || []; return m.filter(function (w, i) { return m.indexOf(w) === i; }); }
   function parseJ(t) {
-    t = String(t).replace(/```(?:json)?/gi, '').replace(/[\u0000-\u001f]+/g, ' ');
-    var s = t.search(/[\[{]/); if (s < 0) return null;
-    var open = t[s], e = t.lastIndexOf(open === '[' ? ']' : '}');
-    if (e > s) { try { return JSON.parse(t.slice(s, e + 1)); } catch (x) {} }
-    var out = []; (t.match(/\{[^{}]*\}/g) || []).forEach(function (c) { try { out.push(JSON.parse(c)); } catch (x) {} });
-    return open === '[' && out.length ? out : null;
+    t = String(t || '').replace(/```(?:json)?/gi, '').replace(/[\u0000-\u001f]+/g, ' ').trim();
+    if (!t) return null;
+    var tryP = function (s) { try { return JSON.parse(s); } catch (x) { return null; } };
+    var s = t.search(/[\[{]/);
+    if (s >= 0) {
+      var open = t[s], close = open === '[' ? ']' : '}';
+      var e = t.lastIndexOf(close);
+      if (e > s) {
+        var full = tryP(t.slice(s, e + 1));
+        if (full != null) return full;
+        // repair trailing commas / incomplete last object
+        var slice = t.slice(s, e + 1).replace(/,\s*([\]}])/g, '$1');
+        full = tryP(slice);
+        if (full != null) return full;
+      }
+    }
+    var out = [];
+    (t.match(/\{[^{}]*\}/g) || []).forEach(function (c) {
+      var o = tryP(c);
+      if (o && typeof o === 'object') out.push(o);
+    });
+    if (out.length) return out;
+    // Q/A line fallback for short answers: "1. question? | answer"
+    var lines = t.split(/\n+/), qa = [];
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i].trim();
+      var m = line.match(/^\s*(?:\d+[.)]|[-*])\s*(.+?)\s*(?:\||→|->|:)\s*(.+)$/);
+      if (m) qa.push({ type: 'short', question: m[1].trim(), answer: m[2].trim() });
+    }
+    return qa.length ? qa : null;
   }
   function normQ(q) {
-    if (!q || typeof q.question !== 'string') return null;
-    var t = String(q.type || '').toLowerCase().replace(/[^a-z]/g, ''), o = Array.isArray(q.options) ? q.options.map(String) : null, ex = q.explanation ? String(q.explanation) : '';
-    if (t === 'tf' || t === 'truefalse') { var a = q.answer; return { type: 'tf', question: q.question, options: ['True', 'False'], correctIndex: (a === true || /^t/i.test(String(a))) ? 0 : 1, explanation: ex }; }
-    if (o && o.length >= 2) { var ci = Number(q.correctIndex != null ? q.correctIndex : q.answer); if (!(ci >= 0 && ci < o.length)) return null; return { type: 'mcq', question: q.question, options: o, correctIndex: ci, explanation: ex }; }
-    if (q.answer != null && String(q.answer).trim()) return { type: t === 'blank' ? 'blank' : 'short', question: q.question, answer: String(q.answer), explanation: ex };
+    if (!q || typeof q !== 'object') return null;
+    var question = q.question || q.q || q.prompt || q.text;
+    if (typeof question !== 'string' || !question.trim()) return null;
+    question = question.trim();
+    var t = String(q.type || '').toLowerCase().replace(/[^a-z]/g, '');
+    var o = Array.isArray(q.options) ? q.options.map(String).filter(Boolean) : (Array.isArray(q.choices) ? q.choices.map(String).filter(Boolean) : null);
+    var ex = q.explanation ? String(q.explanation) : (q.why ? String(q.why) : '');
+    var ans = q.answer != null ? q.answer : (q.a != null ? q.a : (q.correct != null ? q.correct : null));
+    if (t === 'tf' || t === 'truefalse' || t === 'trueorfalse') {
+      var truth = (ans === true || ans === 1 || /^t/i.test(String(ans)));
+      return { type: 'tf', question: question, options: ['True', 'False'], correctIndex: truth ? 0 : 1, explanation: ex };
+    }
+    if (o && o.length >= 2) {
+      var ci = Number(q.correctIndex != null ? q.correctIndex : (q.correct_index != null ? q.correct_index : q.answerIndex));
+      if (!(ci >= 0 && ci < o.length)) {
+        if (typeof ans === 'string') {
+          var ix = o.findIndex(function (x) { return x.toLowerCase() === String(ans).toLowerCase(); });
+          ci = ix >= 0 ? ix : 0;
+        } else ci = 0;
+      }
+      return { type: 'mcq', question: question, options: o.slice(0, 4), correctIndex: ci, explanation: ex };
+    }
+    if (ans != null && String(ans).trim()) {
+      var isBlank = t === 'blank' || t === 'fill' || t === 'fillintheblank' || /_{3,}/.test(question);
+      return { type: isBlank ? 'blank' : 'short', question: question, answer: String(ans).trim(), explanation: ex };
+    }
+    // last resort: treat object with only question as short with empty answer (skip)
     return null;
   }
   async function ai(sys, user, max, st) {
@@ -8335,16 +8381,67 @@ document.addEventListener('visibilitychange', function () {
     var st = $('prepStatus'), b = this, notes = notesNow(), topic = $('prepTopic').value.trim() || 'Study topic';
     if (notes.length < 20) { st.textContent = 'Add or scan notes in Flashcards first so the exam stays grounded.'; return; }
     var n = +$('prepCount').value, ty = $('prepType').value, df = $('prepDiff').value, mins = Math.max(1, +$('prepMinutes').value || 15);
-    b.disabled = true; st.textContent = 'Building your exam…';
+    b.disabled = true;
+    function buildPrompt(count, type) {
+      var notesClip = notes.slice(0, 1600);
+      if (type === 'short') {
+        return {
+          sys: 'You write short school exam questions. Use ONLY the notes. Return ONLY a JSON array. Each item: {"type":"short","question":"...","answer":"..."}. Keep question under 20 words and answer under 12 words. No markdown.',
+          user: 'Notes:\n' + notesClip + '\n\nTopic: ' + topic + '. Difficulty: ' + df + '. Write exactly ' + count + ' short-answer questions as JSON array.',
+          max: Math.min(700, 80 + count * 55)
+        };
+      }
+      if (type === 'tf') {
+        return {
+          sys: 'You write true/false school questions. Use ONLY the notes. Return ONLY a JSON array. Each item: {"type":"tf","question":"...","answer":true} or false. No markdown.',
+          user: 'Notes:\n' + notesClip + '\n\nTopic: ' + topic + '. Difficulty: ' + df + '. Write exactly ' + count + ' true/false questions as JSON array.',
+          max: Math.min(600, 70 + count * 45)
+        };
+      }
+      if (type === 'blank') {
+        return {
+          sys: 'You write fill-in-the-blank school questions. Use ONLY the notes. Return ONLY a JSON array. Each item: {"type":"blank","question":"sentence with _____","answer":"missing word"}. No markdown.',
+          user: 'Notes:\n' + notesClip + '\n\nTopic: ' + topic + '. Difficulty: ' + df + '. Write exactly ' + count + ' fill-in-the-blank questions as JSON array.',
+          max: Math.min(650, 75 + count * 50)
+        };
+      }
+      if (type === 'mcq') {
+        return {
+          sys: 'You write multiple-choice school questions. Use ONLY the notes. Return ONLY a JSON array. Each item: {"type":"mcq","question":"...","options":["A","B","C","D"],"correctIndex":0}. Keep short. No markdown.',
+          user: 'Notes:\n' + notesClip + '\n\nTopic: ' + topic + '. Difficulty: ' + df + '. Write exactly ' + count + ' MCQ questions as JSON array.',
+          max: Math.min(900, 100 + count * 75)
+        };
+      }
+      // mixed — prefer short+tf which are smaller
+      return {
+        sys: 'You write school exam questions. Use ONLY the notes. Return ONLY a JSON array mixing short and tf. Each item is either {"type":"short","question":"...","answer":"..."} or {"type":"tf","question":"...","answer":true}. Keep very short. No markdown.',
+        user: 'Notes:\n' + notesClip + '\n\nTopic: ' + topic + '. Difficulty: ' + df + '. Write exactly ' + count + ' mixed short/tf questions as JSON array.',
+        max: Math.min(800, 90 + count * 60)
+      };
+    }
+    function normalizeList(raw, want) {
+      var parsed = parseJ(raw);
+      var list = Array.isArray(parsed) ? parsed : (parsed && Array.isArray(parsed.questions) ? parsed.questions : []);
+      return list.map(normQ).filter(Boolean).slice(0, want);
+    }
     try {
-      var nSafe = Math.min(10, Math.max(3, n || 5));
-      var notesClip = notes.slice(0, 2600);
-      var tokenBudget = Math.min(1200, 160 + nSafe * (ty === 'mcq' || ty === 'mixed' ? 95 : 70));
-      var spec = ty === 'mixed' ? 'mix of mcq, tf, short, and blank' : 'only type "' + ty + '"';
-      var raw = await ai('You are VEX.STUDY, a careful school exam writer. Use only the supplied notes. Never invent facts. Return ONLY a JSON array (no markdown). Each item needs: type (mcq|tf|short|blank), question, and either options+correctIndex (mcq), answer true/false (tf), or answer string (short/blank). Blank questions must include _____. Keep questions and answers short.',
-        'Notes:\n' + notesClip + '\n\nTopic: ' + topic + '. Write exactly ' + nSafe + ' ' + df + ' difficulty questions, ' + spec + '.', tokenBudget, st);
-      var arr = parseJ(raw); arr = (Array.isArray(arr) ? arr : (arr && arr.questions) || []).map(normQ).filter(Boolean).slice(0, nSafe);
-      if (!arr.length) throw new Error('Llama could not format an exam (output too long or incomplete). Try 5 questions and shorter notes.');
+      var nSafe = Math.min(8, Math.max(3, n || 5));
+      st.textContent = 'Building ' + nSafe + ' questions… keep this tab open.';
+      var p1 = buildPrompt(nSafe, ty);
+      var raw1 = await ai(p1.sys, p1.user, p1.max, st);
+      var arr = normalizeList(raw1, nSafe);
+      // one automatic retry with fewer questions + simpler short format
+      if (arr.length < Math.min(3, nSafe)) {
+        st.textContent = 'Retrying with a simpler format…';
+        var retryN = Math.min(5, nSafe);
+        var p2 = buildPrompt(retryN, ty === 'mixed' ? 'short' : ty);
+        var raw2 = await ai(p2.sys, p2.user, p2.max, st);
+        var arr2 = normalizeList(raw2, retryN);
+        if (arr2.length > arr.length) arr = arr2;
+      }
+      if (!arr.length) {
+        throw new Error('Llama did not return usable questions. Paste a shorter notes section (half a page), keep type on Short answer, and try 5 questions again.');
+      }
       st.textContent = arr.length + ' questions · ' + mins + ' min. Good luck.';
       start(arr, { minutes: mins, topic: topic });
     } catch (e) { st.textContent = e.message || 'Exam generation failed.'; }
