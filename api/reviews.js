@@ -1,9 +1,9 @@
 
+import crypto from 'node:crypto';
+
 // VEX.STUDY community reviews API
 // Vercel serverless function
 // Storage: Upstash Redis
-
-const crypto = require('crypto');
 
 const URL_ =
   process.env.UPSTASH_REDIS_REST_URL ||
@@ -22,10 +22,15 @@ async function r(...cmd) {
   const res = await fetch(URL_, {
     method: 'POST',
     headers: {
-      Authorization: 'Bearer ' + TOKEN
+      Authorization: 'Bearer ' + TOKEN,
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(cmd)
   });
+
+  if (!res.ok) {
+    throw new Error('Redis request failed: ' + res.status);
+  }
 
   const j = await res.json();
 
@@ -74,7 +79,7 @@ const pub = (v) => ({
   ts: v.ts
 });
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   res.setHeader('X-Content-Type-Options', 'nosniff');
 
   if (
@@ -92,15 +97,11 @@ module.exports = async (req, res) => {
       const raw = await r('HGETALL', H);
       const items = [];
 
-      for (
-        let i = 0;
-        raw && i < raw.length;
-        i += 2
-      ) {
+      for (let i = 0; raw && i < raw.length; i += 2) {
         items.push(JSON.parse(raw[i + 1]));
       }
 
-      if (req.query.admin) {
+      if (req.query?.admin) {
         if (!adminOk(req)) {
           return res.status(401).json({
             error: 'Unauthorized'
@@ -123,8 +124,7 @@ module.exports = async (req, res) => {
 
       const average = count
         ? Math.round(
-            (live.reduce((s, v) => s + v.rating, 0) /
-              count) * 10
+            (live.reduce((s, v) => s + v.rating, 0) / count) * 10
           ) / 10
         : 0;
 
@@ -176,12 +176,7 @@ module.exports = async (req, res) => {
         const v = JSON.parse(cur);
         v.status = b.status;
 
-        await r(
-          'HSET',
-          H,
-          b.id,
-          JSON.stringify(v)
-        );
+        await r('HSET', H, b.id, JSON.stringify(v));
       } else {
         return res.status(400).json({
           error: 'Bad status'
@@ -203,17 +198,10 @@ module.exports = async (req, res) => {
       (req.headers['user-agent'] || '')
     );
 
-    const used = await r(
-      'INCR',
-      'vex:rl:' + fp
-    );
+    const used = await r('INCR', 'vex:rl:' + fp);
 
     if (used === 1) {
-      await r(
-        'EXPIRE',
-        'vex:rl:' + fp,
-        3600
-      );
+      await r('EXPIRE', 'vex:rl:' + fp, 3600);
     }
 
     if (used > MAX_PER_HOUR) {
@@ -223,11 +211,7 @@ module.exports = async (req, res) => {
     }
 
     if (b.action === 'report') {
-      const cur = await r(
-        'HGET',
-        H,
-        String(b.id || '')
-      );
+      const cur = await r('HGET', H, String(b.id || ''));
 
       if (!cur) {
         return res.status(404).json({
@@ -237,29 +221,18 @@ module.exports = async (req, res) => {
 
       await r('SADD', 'vex:rep:' + b.id, fp);
 
-      if (
-        (await r('SCARD', 'vex:rep:' + b.id)) >= HIDE_AT
-      ) {
+      if ((await r('SCARD', 'vex:rep:' + b.id)) >= HIDE_AT) {
         const v = JSON.parse(cur);
         v.status = 'hidden';
 
-        await r(
-          'HSET',
-          H,
-          b.id,
-          JSON.stringify(v)
-        );
+        await r('HSET', H, b.id, JSON.stringify(v));
       }
 
       return res.json({ ok: true });
     }
 
     if (b.action === 'delete') {
-      const cur = await r(
-        'HGET',
-        H,
-        String(b.id || '')
-      );
+      const cur = await r('HGET', H, String(b.id || ''));
 
       if (
         !cur ||
@@ -349,7 +322,6 @@ module.exports = async (req, res) => {
     }
 
     const id = crypto.randomBytes(8).toString('hex');
-
     const token = crypto.randomBytes(16).toString('hex');
 
     const status =
@@ -380,9 +352,11 @@ module.exports = async (req, res) => {
     });
 
   } catch (e) {
+    console.error('VEX reviews API error:', e);
+
     return res.status(500).json({
       error: 'Something went wrong. Please try again.'
     });
   }
-};
-    
+    }
+          
