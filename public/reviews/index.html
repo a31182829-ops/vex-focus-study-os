@@ -12,45 +12,38 @@
   <style>
     :root {
       --bg: #0a0706;
-      --bg-elevated: #12100e;
-      --bg-card: #161310;
-      --bg-card-hover: #1c1914;
-      --border: rgba(230, 200, 74, 0.12);
-      --border-strong: rgba(230, 200, 74, 0.28);
+      --bg-card: rgba(16, 12, 8, 0.82);
+      --border: rgba(230, 170, 70, 0.2);
+      --border-soft: rgba(230, 170, 70, 0.12);
       --text: #f5f0e6;
-      --text-muted: #a89f8f;
-      --text-dim: #6b6358;
-      --accent: #e6c84a;
-      --accent-soft: rgba(230, 200, 74, 0.15);
-      --accent-glow: rgba(230, 200, 74, 0.35);
+      --text-muted: #a89b88;
+      --text-dim: #6b6052;
+      --accent: #e89b3c;
+      --accent-soft: rgba(232, 155, 60, 0.14);
+      --accent-glow: rgba(232, 155, 60, 0.28);
       --success: #4ade80;
       --error: #f87171;
-      --star: #e6c84a;
-      --radius: 16px;
-      --radius-sm: 10px;
+      --star: #e8a54b;
+      --radius: 18px;
+      --radius-sm: 14px;
       --font: "DM Sans", system-ui, sans-serif;
       --font-display: "Space Grotesk", system-ui, sans-serif;
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
     }
 
     [data-theme="light"] {
-      --bg: #f8f4ec;
-      --bg-elevated: #ffffff;
-      --bg-card: #ffffff;
-      --bg-card-hover: #faf7f0;
-      --border: rgba(30, 25, 15, 0.1);
-      --border-strong: rgba(30, 25, 15, 0.18);
-      --text: #1a160f;
+      --bg: #f7f2e8;
+      --bg-card: rgba(255, 252, 246, 0.9);
+      --border: rgba(30, 24, 12, 0.12);
+      --border-soft: rgba(30, 24, 12, 0.07);
+      --text: #1a150e;
       --text-muted: #5c5346;
       --text-dim: #8a8070;
-      --accent: #c9a227;
-      --accent-soft: rgba(201, 162, 39, 0.12);
-      --accent-glow: rgba(201, 162, 39, 0.25);
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+      --accent: #d4892a;
+      --accent-soft: rgba(212, 137, 42, 0.12);
+      --accent-glow: rgba(212, 137, 42, 0.22);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -62,314 +55,192 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 100% 50% at 50% -8%, rgba(232, 155, 60, 0.09), transparent 58%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
     a { color: inherit; text-decoration: none; }
 
-    /* ─── Layout ─── */
     .page {
-      max-width: 920px;
+      position: relative;
+      z-index: 1;
+      max-width: 440px;
       margin: 0 auto;
-      padding: 28px 20px 80px;
+      padding: 20px 18px 64px;
     }
 
-    /* ─── Header ─── */
-    .topbar {
+    /* Close */
+    .top-actions {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 36px;
-      gap: 16px;
+      margin-bottom: 28px;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-family: var(--font-display);
-      font-weight: 700;
-      font-size: 1.15rem;
-      letter-spacing: -0.02em;
-    }
-
-    .brand-mark {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #8f83ff, #70e6d6);
+    .close-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      color: var(--text-muted);
       display: grid;
       place-items: center;
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: #0a0706;
-      flex-shrink: 0;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .close-btn:hover { color: var(--text); border-color: var(--border); }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 28px;
     }
 
-    .back-link {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: color 0.2s;
-    }
-    .back-link:hover { color: var(--accent); }
-
-    /* ─── Hero / Summary ─── */
-    .summary {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px 24px;
-      margin-bottom: 32px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 24px;
-      align-items: center;
-      box-shadow: var(--shadow);
+    .eyebrow {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
     }
 
-    .summary-left h1 {
+    .hero h1 {
       font-family: var(--font-display);
-      font-size: 1.65rem;
+      font-size: 2.05rem;
       font-weight: 700;
       letter-spacing: -0.03em;
-      margin-bottom: 6px;
+      line-height: 1.18;
+      margin-bottom: 14px;
     }
 
-    .summary-left p {
+    .hero h1 .line2 { color: var(--accent); }
+
+    .hero p {
+      font-size: 0.92rem;
       color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-
-    .rating-block {
-      text-align: right;
-      min-width: 140px;
-    }
-
-    .avg-score {
-      font-family: var(--font-display);
-      font-size: 2.75rem;
-      font-weight: 700;
-      letter-spacing: -0.04em;
-      line-height: 1;
-      color: var(--accent);
-    }
-
-    .stars-row {
-      display: flex;
-      gap: 3px;
-      justify-content: flex-end;
-      margin: 8px 0 4px;
-    }
-
-    .star {
-      width: 18px;
-      height: 18px;
-      color: var(--star);
-    }
-    .star.empty { color: var(--text-dim); opacity: 0.45; }
-
-    .review-count {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    /* ─── Section titles ─── */
-    .section-title {
-      font-family: var(--font-display);
-      font-size: 1.15rem;
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .section-title span {
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--text-dim);
-      background: var(--accent-soft);
-      padding: 3px 10px;
-      border-radius: 999px;
-    }
-
-    /* ─── Review cards ─── */
-    .reviews-list {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      margin-bottom: 40px;
-    }
-
-    .review-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 18px 18px 14px;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .review-card:hover {
-      border-color: var(--border-strong);
-      background: var(--bg-card-hover);
-    }
-
-    .review-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 10px;
-    }
-
-    .reviewer {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--accent-soft);
-      color: var(--accent);
-      display: grid;
-      place-items: center;
-      font-weight: 600;
-      font-size: 0.9rem;
-      flex-shrink: 0;
-    }
-
-    .reviewer-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .reviewer-name {
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .review-date {
-      font-size: 0.78rem;
-      color: var(--text-dim);
-    }
-
-    .review-stars {
-      display: flex;
-      gap: 2px;
-    }
-    .review-stars .star { width: 14px; height: 14px; }
-
-    .review-text {
-      font-size: 0.95rem;
-      color: var(--text);
       line-height: 1.6;
-      white-space: pre-wrap;
-      word-break: break-word;
+      max-width: 320px;
+      margin: 0 auto;
     }
 
-    .review-footer {
-      display: flex;
-      justify-content: flex-end;
-      margin-top: 12px;
-    }
-
-    .report-btn {
-      background: none;
-      border: none;
-      color: var(--text-dim);
-      font-size: 0.78rem;
-      cursor: pointer;
-      padding: 4px 8px;
-      border-radius: 6px;
-      transition: color 0.2s, background 0.2s;
-      font-family: inherit;
-    }
-    .report-btn:hover {
-      color: var(--error);
-      background: rgba(248, 113, 113, 0.1);
-    }
-    .report-btn:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
-
-    /* ─── Empty / Loading / Error states ─── */
-    .state-box {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--text-muted);
+    /* Stats card */
+    .stats-card {
       background: var(--bg-card);
-      border: 1px dashed var(--border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
       border-radius: var(--radius);
+      padding: 20px 16px;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      gap: 0 14px;
+      align-items: center;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.35);
     }
-    .state-box.hidden { display: none; }
 
-    .spinner {
-      width: 28px;
-      height: 28px;
-      border: 2.5px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      margin: 0 auto 14px;
+    .stats-divider {
+      width: 1px;
+      height: 58px;
+      background: var(--border);
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ─── Form ─── */
+    .stat-block { text-align: center; }
+
+    .stat-score {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 5px;
+      min-height: 1.6rem;
+      color: var(--text);
+    }
+    .stat-score.empty { color: var(--text-dim); font-size: 1.35rem; }
+
+    .stat-stars {
+      display: flex;
+      justify-content: center;
+      gap: 2px;
+      margin-bottom: 5px;
+    }
+    .stat-stars svg { width: 13px; height: 13px; color: var(--star); }
+    .stat-stars svg.empty { color: var(--text-dim); opacity: 0.45; }
+
+    .stat-label { font-size: 0.78rem; color: var(--text-muted); }
+
+    .stat-count {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1;
+      margin-bottom: 3px;
+    }
+
+    .stat-sub {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      margin-top: 2px;
+      line-height: 1.35;
+    }
+
+    /* Form card */
     .form-card {
       background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      padding: 28px 24px;
-      box-shadow: var(--shadow);
+      padding: 22px 18px;
+      margin-bottom: 28px;
+      box-shadow: 0 8px 28px rgba(0,0,0,0.35);
     }
 
     .form-card h2 {
       font-family: var(--font-display);
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin-bottom: 6px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
     }
 
     .form-card .sub {
+      font-size: 0.88rem;
       color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-bottom: 24px;
-    }
-
-    .field {
+      line-height: 1.55;
       margin-bottom: 20px;
     }
 
-    .field label {
+    .field { margin-bottom: 18px; }
+
+    .field > label {
       display: block;
-      font-size: 0.85rem;
-      font-weight: 500;
-      margin-bottom: 8px;
-      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--text);
     }
 
-    .field label .req {
-      color: var(--accent);
-      margin-left: 2px;
+    .field-label-muted {
+      font-weight: 500 !important;
+      color: var(--text-muted) !important;
+      font-size: 0.85rem !important;
     }
 
-    /* Star rating input */
+    /* Stars */
     .star-input {
       display: flex;
       gap: 6px;
       flex-direction: row-reverse;
       justify-content: flex-end;
     }
-
-    .star-input input {
-      display: none;
-    }
-
+    .star-input input { display: none; }
     .star-input label {
       cursor: pointer;
       margin: 0;
@@ -378,39 +249,39 @@
       display: grid;
       place-items: center;
       border-radius: 8px;
-      transition: background 0.15s, transform 0.15s;
+      transition: transform 0.15s, background 0.15s;
     }
     .star-input label:hover {
+      transform: scale(1.1);
       background: var(--accent-soft);
-      transform: scale(1.08);
     }
-
     .star-input label svg {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       color: var(--text-dim);
-      transition: color 0.15s;
+      opacity: 0.45;
+      transition: color 0.15s, opacity 0.15s;
     }
-
     .star-input input:checked ~ label svg,
     .star-input label:hover svg,
     .star-input label:hover ~ label svg {
       color: var(--star);
+      opacity: 1;
     }
-
     .star-input input:checked + label svg {
       color: var(--star);
+      opacity: 1;
     }
 
     input[type="text"],
     textarea {
       width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
+      background: rgba(6, 4, 3, 0.55);
+      border: 1px solid var(--border-soft);
       border-radius: var(--radius-sm);
-      padding: 12px 14px;
+      padding: 13px 14px;
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 0.93rem;
       color: var(--text);
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
@@ -422,14 +293,17 @@
       box-shadow: 0 0 0 3px var(--accent-soft);
     }
     input[type="text"]::placeholder,
-    textarea::placeholder {
-      color: var(--text-dim);
+    textarea::placeholder { color: var(--text-dim); }
+
+    [data-theme="light"] input[type="text"],
+    [data-theme="light"] textarea {
+      background: rgba(255,255,255,0.65);
     }
 
     textarea { min-height: 110px; }
 
     .char-hint {
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       color: var(--text-dim);
       margin-top: 6px;
       text-align: right;
@@ -440,8 +314,8 @@
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      margin-bottom: 22px;
-      font-size: 0.875rem;
+      margin-bottom: 12px;
+      font-size: 0.84rem;
       color: var(--text-muted);
       line-height: 1.45;
     }
@@ -454,16 +328,23 @@
       cursor: pointer;
     }
 
+    .fine-print {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
     .submit-btn {
       width: 100%;
       background: var(--accent);
       color: #0a0706;
       border: none;
-      border-radius: var(--radius-sm);
+      border-radius: 999px;
       padding: 14px 20px;
       font-family: var(--font-display);
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 0.98rem;
       cursor: pointer;
       transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
       box-shadow: 0 4px 20px var(--accent-glow);
@@ -474,110 +355,220 @@
     }
     .submit-btn:active:not(:disabled) { transform: translateY(0); }
     .submit-btn:disabled {
-      opacity: 0.55;
+      opacity: 0.5;
       cursor: not-allowed;
       box-shadow: none;
     }
 
-    /* Status messages */
     .form-status {
-      margin-top: 16px;
-      padding: 12px 14px;
-      border-radius: var(--radius-sm);
-      font-size: 0.9rem;
+      margin-top: 14px;
+      padding: 11px 13px;
+      border-radius: 10px;
+      font-size: 0.875rem;
       display: none;
     }
     .form-status.show { display: block; }
     .form-status.success {
-      background: rgba(74, 222, 128, 0.12);
+      background: rgba(74, 222, 128, 0.1);
       color: var(--success);
-      border: 1px solid rgba(74, 222, 128, 0.25);
+      border: 1px solid rgba(74, 222, 128, 0.2);
     }
     .form-status.error {
       background: rgba(248, 113, 113, 0.1);
       color: var(--error);
-      border: 1px solid rgba(248, 113, 113, 0.22);
+      border: 1px solid rgba(248, 113, 113, 0.2);
     }
     .form-status.loading {
       background: var(--accent-soft);
       color: var(--accent);
-      border: 1px solid var(--border-strong);
+      border: 1px solid var(--border);
     }
 
-    /* ─── Responsive ─── */
-    @media (max-width: 640px) {
-      .page { padding: 20px 16px 64px; }
-      .summary {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-      .rating-block { text-align: center; }
-      .stars-row { justify-content: center; }
-      .summary-left h1 { font-size: 1.4rem; }
-      .avg-score { font-size: 2.4rem; }
-      .form-card { padding: 22px 18px; }
+    /* Community feedback section */
+    .feedback-section { margin-top: 4px; }
+
+    .feedback-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .feedback-header h2 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .sort-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.85rem;
+      padding: 8px 12px;
+      outline: none;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .sort-select:focus { border-color: var(--accent); }
+
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .review-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--border-soft);
+      border-radius: var(--radius-sm);
+      padding: 15px;
+      transition: border-color 0.2s;
+    }
+    .review-card:hover { border-color: var(--border); }
+
+    .review-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 9px;
+    }
+
+    .reviewer {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      border: 1px solid var(--border-soft);
+      color: var(--accent);
+      display: grid;
+      place-items: center;
+      font-weight: 600;
+      font-size: 0.82rem;
+      flex-shrink: 0;
+    }
+
+    .reviewer-name { font-weight: 600; font-size: 0.88rem; }
+    .review-date { font-size: 0.73rem; color: var(--text-dim); }
+
+    .review-stars { display: flex; gap: 2px; }
+    .review-stars svg { width: 12px; height: 12px; color: var(--star); }
+    .review-stars svg.empty { color: var(--text-dim); opacity: 0.4; }
+
+    .review-text {
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.55;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .review-footer {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+
+    .report-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 0.73rem;
+      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-family: inherit;
+      transition: color 0.2s, background 0.2s;
+    }
+    .report-btn:hover {
+      color: var(--error);
+      background: rgba(248, 113, 113, 0.1);
+    }
+    .report-btn:disabled { opacity: 0.5; cursor: default; }
+
+    /* States */
+    .state-box {
+      text-align: center;
+      padding: 36px 16px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      border: 1px dashed var(--border-soft);
+      border-radius: var(--radius);
+      background: transparent;
+    }
+    .state-box.hidden { display: none; }
+
+    .spinner {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (min-width: 520px) {
+      .page { max-width: 480px; padding-top: 32px; }
+      .hero h1 { font-size: 2.25rem; }
     }
   </style>
 </head>
 <body>
   <div class="page">
-    <!-- Top bar -->
-    <header class="topbar">
-      <a href="/" class="brand">
-        <div class="brand-mark">V</div>
-        <span>VEX.STUDY</span>
+    <div class="top-actions">
+      <a href="/" class="close-btn" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
       </a>
-      <a href="/" class="back-link">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-        Back to app
-      </a>
+    </div>
+
+    <header class="hero">
+      <div class="eyebrow">The VEX Community</div>
+      <h1>
+        Real voices.<br>
+        <span class="line2">Real feedback.</span>
+      </h1>
+      <p>Your experience helps VEX.STUDY become better. Share your thoughts and explore feedback from other students.</p>
     </header>
 
-    <!-- Summary -->
-    <section class="summary" id="summary">
-      <div class="summary-left">
-        <h1>Community Reviews</h1>
-        <p>Honest feedback from students using VEX.STUDY</p>
+    <!-- Stats -->
+    <section class="stats-card">
+      <div class="stat-block">
+        <div class="stat-score empty" id="avgScore">—</div>
+        <div class="stat-stars" id="avgStars"></div>
+        <div class="stat-label">Community rating</div>
       </div>
-      <div class="rating-block">
-        <div class="avg-score" id="avgScore">—</div>
-        <div class="stars-row" id="avgStars"></div>
-        <div class="review-count" id="reviewCount">Loading…</div>
+      <div class="stats-divider"></div>
+      <div class="stat-block">
+        <div class="stat-count" id="reviewCount">0</div>
+        <div class="stat-label">Published reviews</div>
+        <div class="stat-sub" id="reviewHint">Waiting for the first review.</div>
       </div>
     </section>
 
-    <!-- Reviews list -->
-    <section>
-      <h2 class="section-title">
-        Latest reviews
-        <span id="listCount">0</span>
-      </h2>
-
-      <div id="loadingState" class="state-box">
-        <div class="spinner"></div>
-        Loading reviews…
-      </div>
-
-      <div id="errorState" class="state-box hidden">
-        Couldn’t load reviews. <button onclick="loadReviews()" style="background:none;border:none;color:var(--accent);cursor:pointer;font:inherit;text-decoration:underline;">Try again</button>
-      </div>
-
-      <div id="emptyState" class="state-box hidden">
-        No reviews yet. Be the first to share your experience.
-      </div>
-
-      <div class="reviews-list" id="reviewsList"></div>
-    </section>
-
-    <!-- Submission form -->
-    <section class="form-card" id="formSection">
-      <h2>Leave a review</h2>
-      <p class="sub">Help other students decide. Keep it real and useful.</p>
+    <!-- Form -->
+    <section class="form-card">
+      <h2>Share your experience</h2>
+      <p class="sub">Tell us what works well and what could be improved. Please don’t include personal information.</p>
 
       <form id="reviewForm" novalidate>
-        <!-- Star rating -->
         <div class="field">
-          <label>Your rating <span class="req">*</span></label>
+          <label>How would you rate VEX.STUDY?</label>
           <div class="star-input" role="radiogroup" aria-label="Rating">
             <input type="radio" name="rating" id="star5" value="5" required />
             <label for="star5" title="5 stars">
@@ -602,75 +593,94 @@
           </div>
         </div>
 
-        <!-- Name -->
         <div class="field">
-          <label for="name">Display name <span style="font-weight:400;opacity:0.7">(optional)</span></label>
+          <label for="name" class="field-label-muted">Display name <span style="opacity:0.7">(optional)</span></label>
           <input type="text" id="name" name="name" maxlength="40" placeholder="Anonymous" autocomplete="nickname" />
         </div>
 
-        <!-- Review text -->
         <div class="field">
-          <label for="text">Your review <span class="req">*</span></label>
-          <textarea id="text" name="text" maxlength="1200" placeholder="What did you like? What could be better? (min 20 characters)" required></textarea>
-          <div class="char-hint" id="charHint">0 / 20 minimum</div>
+          <label for="text" class="field-label-muted">Your review</label>
+          <textarea id="text" name="text" maxlength="1000" placeholder="What do you like about VEX? What should we improve?" required></textarea>
+          <div class="char-hint" id="charHint">0 / 1000</div>
         </div>
 
-        <!-- Consent -->
         <div class="consent-row">
           <input type="checkbox" id="consent" name="consent" required />
-          <label for="consent">I agree that my review may be displayed publicly on VEX.STUDY and understand it can be moderated or removed.</label>
+          <label for="consent">I am 13 or older, or have permission from a parent or guardian to submit this review. I understand that an approved review may be publicly visible.</label>
         </div>
 
-        <button type="submit" class="submit-btn" id="submitBtn">Submit review</button>
+        <p class="fine-print">Reviews are public after publication. Submissions may be moderated. Do not include your full name, school, phone number, email or other identifying information.</p>
 
+        <button type="submit" class="submit-btn" id="submitBtn">Submit review</button>
         <div class="form-status" id="formStatus" role="status"></div>
       </form>
+    </section>
+
+    <!-- Community feedback -->
+    <section class="feedback-section">
+      <div class="feedback-header">
+        <h2>Community feedback</h2>
+        <select class="sort-select" id="sortSelect" aria-label="Sort reviews">
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="highest">Highest rating</option>
+          <option value="lowest">Lowest rating</option>
+        </select>
+      </div>
+
+      <div id="loadingState" class="state-box">
+        <div class="spinner"></div>
+        Loading community reviews…
+      </div>
+
+      <div id="errorState" class="state-box hidden">
+        Couldn’t load reviews.
+        <button onclick="loadReviews()" style="background:none;border:none;color:var(--accent);cursor:pointer;font:inherit;text-decoration:underline;margin-left:4px;">Try again</button>
+      </div>
+
+      <div id="emptyState" class="state-box hidden">
+        No reviews yet. Be the first to share.
+      </div>
+
+      <div class="reviews-list" id="reviewsList"></div>
     </section>
   </div>
 
   <script type="module">
-    // ─── Theme sync with main app ───
     (function applyTheme() {
       try {
         const saved = localStorage.getItem("vex_theme");
         if (saved === "light" || saved === "dark") {
           document.documentElement.setAttribute("data-theme", saved);
         } else {
-          // Fallback: respect system if no saved preference
           const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
           document.documentElement.setAttribute("data-theme", prefersDark ? "dark" : "light");
         }
       } catch (_) {}
     })();
 
-    // ─── Helpers ───
     const API = "/api/reviews";
     const formStart = Date.now();
-
     const $ = (sel) => document.querySelector(sel);
-    const $$ = (sel) => document.querySelectorAll(sel);
+
+    let allReviews = [];
 
     function starSVG(filled) {
-      return `<svg class="star ${filled ? "" : "empty"}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
+      return `<svg class="${filled ? "" : "empty"}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`;
     }
 
-    function renderStars(rating, size = "normal") {
+    function renderStars(rating) {
       const r = Math.round(Number(rating) || 0);
       let html = "";
-      for (let i = 1; i <= 5; i++) {
-        html += starSVG(i <= r);
-      }
+      for (let i = 1; i <= 5; i++) html += starSVG(i <= r);
       return html;
     }
 
     function formatDate(iso) {
       if (!iso) return "";
       try {
-        const d = new Date(iso);
-        return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
-      } catch {
-        return "";
-      }
+        return new Date(iso).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+      } catch { return ""; }
     }
 
     function escapeHtml(str) {
@@ -680,11 +690,74 @@
     }
 
     function initial(name) {
-      const n = (name || "A").trim();
-      return n.charAt(0).toUpperCase();
+      return ((name || "A").trim().charAt(0) || "A").toUpperCase();
     }
 
-    // ─── Load reviews ───
+    function sortReviews(list, mode) {
+      const arr = [...list];
+      if (mode === "oldest") {
+        return arr.sort((a, b) => {
+          const da = new Date(a.createdAt || a.created_at || a.date || 0).getTime();
+          const db = new Date(b.createdAt || b.created_at || b.date || 0).getTime();
+          return da - db;
+        });
+      }
+      if (mode === "highest") {
+        return arr.sort((a, b) => (Number(b.rating) || 0) - (Number(a.rating) || 0));
+      }
+      if (mode === "lowest") {
+        return arr.sort((a, b) => (Number(a.rating) || 0) - (Number(b.rating) || 0));
+      }
+      // newest (default)
+      return arr.sort((a, b) => {
+        const da = new Date(a.createdAt || a.created_at || a.date || 0).getTime();
+        const db = new Date(b.createdAt || b.created_at || b.date || 0).getTime();
+        return db - da;
+      });
+    }
+
+    function renderList(reviews) {
+      const list = $("#reviewsList");
+      const mode = $("#sortSelect").value;
+      const sorted = sortReviews(reviews, mode);
+
+      if (!sorted.length) {
+        list.innerHTML = "";
+        return;
+      }
+
+      list.innerHTML = sorted.map((r) => {
+        const id = r.id || r._id || "";
+        const name = r.name || r.displayName || "Anonymous";
+        const text = r.text || r.review || r.content || "";
+        const rating = Number(r.rating) || 0;
+        const date = formatDate(r.createdAt || r.created_at || r.date);
+
+        return `
+          <article class="review-card">
+            <div class="review-header">
+              <div class="reviewer">
+                <div class="avatar">${escapeHtml(initial(name))}</div>
+                <div>
+                  <div class="reviewer-name">${escapeHtml(name)}</div>
+                  <div class="review-date">${escapeHtml(date)}</div>
+                </div>
+              </div>
+              <div class="review-stars">${renderStars(rating)}</div>
+            </div>
+            <div class="review-text">${escapeHtml(text)}</div>
+            <div class="review-footer">
+              <button type="button" class="report-btn" data-report="${escapeHtml(String(id))}" ${!id ? "disabled" : ""}>Report</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      list.querySelectorAll("[data-report]").forEach((btn) => {
+        btn.addEventListener("click", () => reportReview(btn.dataset.report, btn));
+      });
+    }
+
     async function loadReviews() {
       const loading = $("#loadingState");
       const error = $("#errorState");
@@ -698,31 +771,36 @@
 
       try {
         const res = await fetch(API, { method: "GET", headers: { Accept: "application/json" } });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        if (!res.ok) throw new Error("HTTP " + res.status);
 
         const data = await res.json();
-
-        // Expected shape flexibility
         const reviews = Array.isArray(data) ? data : (data.reviews || data.data || []);
         const avg = data.average ?? data.avg ?? data.averageRating ?? null;
         const total = data.total ?? data.count ?? reviews.length;
 
-        // Summary
-        if (avg != null && !isNaN(avg)) {
-          $("#avgScore").textContent = Number(avg).toFixed(1);
+        allReviews = reviews;
+
+        const scoreEl = $("#avgScore");
+        if (avg != null && !isNaN(avg) && total > 0) {
+          scoreEl.textContent = Number(avg).toFixed(1);
+          scoreEl.classList.remove("empty");
           $("#avgStars").innerHTML = renderStars(avg);
         } else if (reviews.length) {
           const sum = reviews.reduce((a, r) => a + (Number(r.rating) || 0), 0);
           const computed = sum / reviews.length;
-          $("#avgScore").textContent = computed.toFixed(1);
+          scoreEl.textContent = computed.toFixed(1);
+          scoreEl.classList.remove("empty");
           $("#avgStars").innerHTML = renderStars(computed);
         } else {
-          $("#avgScore").textContent = "—";
+          scoreEl.textContent = "—";
+          scoreEl.classList.add("empty");
           $("#avgStars").innerHTML = renderStars(0);
         }
 
-        $("#reviewCount").textContent = total === 1 ? "1 review" : `${total} reviews`;
-        $("#listCount").textContent = reviews.length;
+        $("#reviewCount").textContent = total;
+        $("#reviewHint").textContent = total === 0
+          ? "Waiting for the first review."
+          : (total === 1 ? "1 review published" : total + " reviews published");
 
         loading.classList.add("hidden");
 
@@ -731,111 +809,65 @@
           return;
         }
 
-        // Sort newest first if possible
-        const sorted = [...reviews].sort((a, b) => {
-          const da = new Date(a.createdAt || a.created_at || a.date || 0).getTime();
-          const db = new Date(b.createdAt || b.created_at || b.date || 0).getTime();
-          return db - da;
-        });
-
-        list.innerHTML = sorted.map((r) => {
-          const id = r.id || r._id || "";
-          const name = r.name || r.displayName || "Anonymous";
-          const text = r.text || r.review || r.content || "";
-          const rating = Number(r.rating) || 0;
-          const date = formatDate(r.createdAt || r.created_at || r.date);
-
-          return `
-            <article class="review-card" data-id="${escapeHtml(String(id))}">
-              <div class="review-header">
-                <div class="reviewer">
-                  <div class="avatar">${escapeHtml(initial(name))}</div>
-                  <div class="reviewer-meta">
-                    <span class="reviewer-name">${escapeHtml(name)}</span>
-                    <span class="review-date">${escapeHtml(date)}</span>
-                  </div>
-                </div>
-                <div class="review-stars">${renderStars(rating)}</div>
-              </div>
-              <div class="review-text">${escapeHtml(text)}</div>
-              <div class="review-footer">
-                <button type="button" class="report-btn" data-report="${escapeHtml(String(id))}" ${!id ? "disabled" : ""}>
-                  Report
-                </button>
-              </div>
-            </article>
-          `;
-        }).join("");
-
-        // Bind report buttons
-        list.querySelectorAll("[data-report]").forEach((btn) => {
-          btn.addEventListener("click", () => reportReview(btn.dataset.report, btn));
-        });
+        renderList(reviews);
 
       } catch (err) {
         console.error("Failed to load reviews:", err);
         loading.classList.add("hidden");
         error.classList.remove("hidden");
         $("#avgScore").textContent = "—";
-        $("#reviewCount").textContent = "—";
+        $("#avgScore").classList.add("empty");
+        $("#reviewCount").textContent = "0";
       }
     }
 
-    // ─── Report ───
     async function reportReview(id, btn) {
       if (!id || !confirm("Report this review as inappropriate?")) return;
-
       btn.disabled = true;
       btn.textContent = "Reporting…";
-
       try {
         const res = await fetch(API, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ action: "report", id }),
         });
-
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
-          throw new Error(body.error || body.message || `HTTP ${res.status}`);
+          throw new Error(body.error || body.message || "HTTP " + res.status);
         }
-
         btn.textContent = "Reported";
-        setTimeout(() => {
-          btn.textContent = "Report";
-          btn.disabled = false;
-        }, 2500);
+        setTimeout(() => { btn.textContent = "Report"; btn.disabled = false; }, 2500);
       } catch (err) {
         console.error("Report failed:", err);
         btn.textContent = "Failed";
-        setTimeout(() => {
-          btn.textContent = "Report";
-          btn.disabled = false;
-        }, 2000);
+        setTimeout(() => { btn.textContent = "Report"; btn.disabled = false; }, 2000);
         alert("Could not report review. Please try again later.");
       }
     }
 
-    // ─── Character counter ───
-    const textArea = $("#text");
-    const charHint = $("#charHint");
-
-    textArea.addEventListener("input", () => {
-      const len = textArea.value.trim().length;
-      charHint.textContent = `${len} / 20 minimum`;
-      charHint.classList.toggle("warn", len > 0 && len < 20);
+    // Sort change
+    $("#sortSelect").addEventListener("change", () => {
+      if (allReviews.length) renderList(allReviews);
     });
 
-    // ─── Form submit ───
+    // Char counter
+    const textArea = $("#text");
+    const charHint = $("#charHint");
+    textArea.addEventListener("input", () => {
+      const len = textArea.value.length;
+      charHint.textContent = len + " / 1000";
+      charHint.classList.toggle("warn", textArea.value.trim().length > 0 && textArea.value.trim().length < 20);
+    });
+
+    // Form
     const form = $("#reviewForm");
     const statusEl = $("#formStatus");
     const submitBtn = $("#submitBtn");
 
     function showStatus(type, msg) {
-      statusEl.className = `form-status show ${type}`;
+      statusEl.className = "form-status show " + type;
       statusEl.textContent = msg;
     }
-
     function clearStatus() {
       statusEl.className = "form-status";
       statusEl.textContent = "";
@@ -852,7 +884,6 @@
       const consent = $("#consent").checked;
       const t = Date.now() - formStart;
 
-      // Client validation
       if (!rating || rating < 1 || rating > 5) {
         showStatus("error", "Please select a star rating.");
         return;
@@ -863,7 +894,7 @@
         return;
       }
       if (!consent) {
-        showStatus("error", "You must agree to the terms to submit.");
+        showStatus("error", "You must confirm the age / permission statement.");
         return;
       }
 
@@ -881,27 +912,22 @@
             name,
             consent: true,
             t,
-            website: "", // honeypot
+            website: "",
           }),
         });
 
         const body = await res.json().catch(() => ({}));
-
-        if (!res.ok) {
-          throw new Error(body.error || body.message || `Request failed (${res.status})`);
-        }
+        if (!res.ok) throw new Error(body.error || body.message || "Request failed (" + res.status + ")");
 
         showStatus("success", "Thanks! Your review was submitted.");
         form.reset();
-        charHint.textContent = "0 / 20 minimum";
+        charHint.textContent = "0 / 1000";
         charHint.classList.remove("warn");
 
-        // Refresh list
         setTimeout(() => {
           loadReviews();
           clearStatus();
         }, 1200);
-
       } catch (err) {
         console.error("Submit failed:", err);
         showStatus("error", err.message || "Something went wrong. Please try again.");
@@ -910,10 +936,7 @@
       }
     });
 
-    // Initial load
     loadReviews();
-
-    // Expose for retry button
     window.loadReviews = loadReviews;
   </script>
 </body>
