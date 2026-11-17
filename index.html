@@ -3486,17 +3486,17 @@
         </main>
         <nav class="bottom-nav" aria-label="Main navigation">
           <button class="nav-item active" data-view="command" aria-current="page">
-            <span class="nav-icon">⌘</span><span>Command</span>
+            <span class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="9" rx="2"/><rect x="13.5" y="3.5" width="7" height="5" rx="2"/><rect x="13.5" y="11.5" width="7" height="9" rx="2"/><rect x="3.5" y="15.5" width="7" height="5" rx="2"/></svg></span><span>Command</span>
           </button>
           <button class="nav-item" data-view="study">
-            <span class="nav-icon">▤</span><span>Study</span>
+            <span class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20"/><path d="M9 8h6M9 12h4"/></svg></span><span>Study</span>
             <span class="nav-dot" id="studyNavDot" hidden></span>
           </button>
           <button class="nav-item" data-view="planner">
-            <span class="nav-icon">◷</span><span>Planner</span>
+            <span class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/><path d="m9 15 2 2 4-4"/></svg></span><span>Planner</span>
           </button>
           <button class="nav-item" data-view="progress">
-            <span class="nav-icon"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block"><path d="M4 4v16h16"/><path d="M8 15l3.5-4.5 3 2.5L19 7"/></svg></span><span>Progress</span>
+            <span class="nav-icon"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4v16h16"/><path d="M8 15l3.5-4.5 3 2.5L19 7"/></svg></span><span>Progress</span>
           </button>
         </nav>
         <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -8653,5 +8653,95 @@ document.addEventListener('visibilitychange', function () {
 })();
 </script>
 
+<style id="vex-design-v2">
+/* VEX design v2 — stage 1: navigation. Additive layer; no markup/JS/IDs changed beyond nav icon glyphs. */
+:root{--vx2-rail:92px;--vx2-bar-h:68px;--vx2-ease:cubic-bezier(.2,.8,.2,1)}
+html body .bottom-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:6px;position:fixed;z-index:60}
+html body .nav-item{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:56px;min-width:44px;padding:6px 4px;border:1px solid transparent;font:600 11px/1.1 inherit;letter-spacing:.01em;color:var(--muted);background:transparent}
+html body .nav-item .nav-icon{display:grid;place-items:center;width:44px;height:28px;border-radius:14px;font-size:0;transition:background .3s var(--vx2-ease),color .3s,transform .3s var(--vx2-ease)}
+html body .nav-item .nav-icon svg{width:22px!important;height:22px!important;display:block}
+html body .nav-item.active{background:transparent;border-color:transparent;box-shadow:none;color:var(--text)}
+html body .nav-item.active::after{display:none}
+html body .nav-item.active .nav-icon{background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 55%,var(--acc2)));color:var(--on-acc);filter:none;transform:none;box-shadow:0 6px 16px -6px var(--vx-glow)}
+html body .nav-item:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+html body .nav-dot{position:absolute;top:8px;right:calc(50% - 22px)}
+/* Phones: keep content clear of the floating bar */
+@media (max-width:1023px){html body .main-content{padding-bottom:calc(var(--vx2-bar-h) + 34px + env(safe-area-inset-bottom,0px))}}
+/* Laptops and desktops: left rail */
+@media (min-width:1024px){
+ html body{padding-left:var(--vx2-rail)}
+ html body .bottom-nav{top:0;bottom:0;left:0;right:auto;width:var(--vx2-rail);height:100vh;margin:0;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:14px 10px;border-radius:0 26px 26px 0;transform:none}
+ html body .nav-item{width:100%;min-height:68px}
+ html body .nav-item.active::before{content:"";position:absolute;left:-10px;top:22%;bottom:22%;width:4px;border-radius:0 4px 4px 0;background:var(--acc)}
+}
+@media (prefers-reduced-motion:reduce){html body .nav-item .nav-icon{transition:none}}
+
+/* ===== Stage 2: tokens (type scale, radii, depth) ===== */
+:root{--vx2-r-lg:24px;--vx2-r-md:18px;--vx2-r-sm:12px;--vx2-gap:clamp(12px,2vw,20px);--vx2-pad:clamp(14px,2.4vw,22px);
+--vx2-depth:0 1px 0 rgba(255,255,255,.06) inset,0 14px 34px -18px rgba(0,0,0,.55),0 2px 6px -2px rgba(0,0,0,.3);
+--vx2-depth-hi:0 1px 0 rgba(255,255,255,.1) inset,0 22px 48px -20px var(--vx-glow),0 4px 10px -4px rgba(0,0,0,.35)}
+body.light{--vx2-depth:0 1px 0 rgba(255,255,255,.9) inset,0 14px 30px -18px rgba(70,50,35,.28),0 2px 5px -2px rgba(70,50,35,.12)}
+html body .main-content{max-width:1280px;margin-inline:auto;overflow-x:clip}
+html body .view{min-width:0}
+html body .view *{min-width:0}
+html body img,html body svg,html body canvas{max-width:100%}
+html body .surface{border-radius:var(--vx2-r-lg);box-shadow:var(--vx2-depth);padding:var(--vx2-pad)}
+html body .surface .surface{border-radius:var(--vx2-r-md);box-shadow:none}
+html body .hero-copy,html body .muted{line-height:1.55;max-width:62ch}
+html body .small{font-size:13px}
+html body button,html body .study-tab,html body .drawer-link{min-height:44px}
+html body :focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* ===== Stage 3: Command Centre ===== */
+html body .hero-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:var(--vx2-gap)}
+html body .date-strip{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--vx2-r-sm);background:color-mix(in srgb,var(--acc) 9%,transparent);border:1px solid color-mix(in srgb,var(--acc) 22%,transparent)}
+html body .dashboard-grid{display:grid;gap:var(--vx2-gap);grid-template-columns:repeat(12,minmax(0,1fr));align-items:start}
+html body .dashboard-grid>*{grid-column:span 12}
+@media(min-width:760px){html body .dashboard-grid>*{grid-column:span 6}html body .dashboard-grid>.focus-card{grid-column:span 7}html body .dashboard-grid>.focus-card~*:first-of-type{grid-column:span 5}}
+@media(min-width:1100px){html body .dashboard-grid>*{grid-column:span 4}html body .dashboard-grid>.focus-card{grid-column:span 6}html body .dashboard-grid>.focus-card~*:first-of-type{grid-column:span 6}}
+html body .focus-card{box-shadow:var(--vx2-depth-hi);border-color:color-mix(in srgb,var(--acc) 34%,var(--line))}
+html body .card-label{font-weight:700;letter-spacing:.02em}
+html body .status-dot{border-radius:99px;padding:4px 10px}
+@media(max-width:640px){html body .hero-row{grid-template-columns:1fr}html body .hero-orb{display:none}}
+
+/* ===== Stage 4: Smart Study + AI Tutor ===== */
+html body .study-tabs{display:flex;gap:6px;overflow-x:auto;padding:5px;border-radius:99px;background:color-mix(in srgb,var(--panel) 80%,transparent);border:1px solid var(--line);scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}
+html body .study-tabs::-webkit-scrollbar{display:none}
+html body .study-tab{flex:0 0 auto;border-radius:99px;padding:0 18px;scroll-snap-align:start;white-space:nowrap;transition:background .25s var(--vx2-ease),color .25s}
+html body .study-tab.selected{background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 55%,var(--acc2)));color:var(--on-acc);box-shadow:0 8px 18px -8px var(--vx-glow)}
+html body .exam-tool{display:flex;flex-direction:column;gap:12px}
+html body .exam-tool input:not([type=file]),html body .exam-tool textarea,html body .exam-tool select{border-radius:var(--vx2-r-sm);min-height:44px;font-size:16px}
+html body .exam-tool textarea{line-height:1.5}
+html body .exam-status{border-radius:var(--vx2-r-sm);padding:10px 12px;line-height:1.45}
+html body #socraticLog>*{max-width:88%;border-radius:var(--vx2-r-md);padding:10px 14px;line-height:1.55;overflow-wrap:anywhere}
+html body pre,html body code{font-family:ui-monospace,"JetBrains Mono",Menlo,monospace;overflow-x:auto;max-width:100%}
+html body pre{padding:12px 14px;border-radius:var(--vx2-r-sm);background:color-mix(in srgb,var(--bg) 70%,#000)}
+html body .level-chip{border-radius:99px;box-shadow:var(--vx2-depth)}
+
+/* ===== Stage 5: Planner, Progress, gamification ===== */
+html body .dash-top{display:grid;gap:var(--vx2-gap);grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:900px){html body .dash-top{grid-template-columns:repeat(4,minmax(0,1fr))}}
+html body .stat-card .stat-num{font-variant-numeric:tabular-nums;font-size:clamp(28px,4.4vw,40px);font-weight:700;line-height:1.05}
+html body .stat-card .stat-label{font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+html body .stat-card .stat-ic{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:color-mix(in srgb,var(--acc) 14%,transparent);color:var(--acc)}
+html body .dash-head h3{font-size:17px;font-weight:700}
+html body .task-row{border-radius:var(--vx2-r-sm);padding:12px 14px;min-height:52px}
+html body .range-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+html body .streak-row{display:flex;align-items:center;gap:12px}
+html body .streak-icon{filter:drop-shadow(0 4px 10px var(--vx-glow))}
+html body .dash-card svg{height:auto}
+
+/* ===== Stage 6 prerequisites: motion, loading, small-device performance ===== */
+@keyframes vx2sk{to{background-position:-200% 0}}
+.vx-skeleton{border-radius:var(--vx2-r-sm);min-height:1em;background:linear-gradient(90deg,transparent 0,color-mix(in srgb,var(--acc) 14%,transparent) 50%,transparent 100%) 0 0/200% 100%,color-mix(in srgb,var(--panel2) 80%,transparent);animation:vx2sk 1.3s linear infinite}
+html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-md);padding:24px;text-align:center;color:var(--muted)}
+@media(max-width:640px){
+ html body .surface{-webkit-backdrop-filter:none;backdrop-filter:none}
+ html body .main-content{padding-inline:14px}
+ html body .view.active{animation-duration:.3s}
+ html body #socraticLog>*{max-width:94%}
+}
+@media(prefers-reduced-motion:reduce){html body *,html body *::before,html body *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+</style>
 </body>
 </html>
