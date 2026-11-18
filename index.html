@@ -8665,15 +8665,9 @@ html body .nav-item.active::after{display:none}
 html body .nav-item.active .nav-icon{background:linear-gradient(135deg,var(--acc),color-mix(in srgb,var(--acc) 55%,var(--acc2)));color:var(--on-acc);filter:none;transform:none;box-shadow:0 6px 16px -6px var(--vx-glow)}
 html body .nav-item:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 html body .nav-dot{position:absolute;top:8px;right:calc(50% - 22px)}
-/* Phones: keep content clear of the floating bar */
-@media (max-width:1023px){html body .main-content{padding-bottom:calc(var(--vx2-bar-h) + 34px + env(safe-area-inset-bottom,0px))}}
-/* Laptops and desktops: left rail */
-@media (min-width:1024px){
- html body{padding-left:var(--vx2-rail)}
- html body .bottom-nav{top:0;bottom:0;left:0;right:auto;width:var(--vx2-rail);height:100vh;margin:0;display:flex;flex-direction:column;justify-content:center;gap:10px;padding:14px 10px;border-radius:0 26px 26px 0;transform:none}
- html body .nav-item{width:100%;min-height:68px}
- html body .nav-item.active::before{content:"";position:absolute;left:-10px;top:22%;bottom:22%;width:4px;border-radius:0 4px 4px 0;background:var(--acc)}
-}
+/* All screens: keep content clear of the floating bar */
+@media (min-width:0px){html body .main-content{padding-bottom:calc(var(--vx2-bar-h) + 34px + env(safe-area-inset-bottom,0px))}}
+/* Desktop: keep the same floating bottom nav as mobile (left rail removed) */
 @media (prefers-reduced-motion:reduce){html body .nav-item .nav-icon{transition:none}}
 
 /* ===== Stage 2: tokens (type scale, radii, depth) ===== */
