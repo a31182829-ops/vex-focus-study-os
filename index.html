@@ -24,7 +24,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <!-- Optional Vite CSS: removed on 404 so standalone preview matches production type locks -->
-    <link rel="stylesheet" href="./src/styles.css" onerror="this.remove()" />
     <style data-vex="base">
       /* Keep Socratic conversations inside a stable panel; only the transcript scrolls. */
       #socraticModePanel {
@@ -69,6 +68,7 @@
         box-shadow: inset 0 1px 0 rgba(255, 255, 255, .025);
         transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
       }
+      .exam-tool input::-moz-placeholder, .exam-tool textarea::-moz-placeholder { color: #9d9790; opacity: 1; }
       .exam-tool input::placeholder, .exam-tool textarea::placeholder { color: #9d9790; opacity: 1; }
       .exam-tool input:focus, .exam-tool textarea:focus, .exam-tool select:focus {
         border-color: #ea9253;
@@ -121,7 +121,7 @@
       .socratic-arrive { animation: socraticArrive 1.5s ease both; border-color: #ea9253 !important; }
       @keyframes socraticArrive { 0% { transform: scale(.985); box-shadow: 0 0 0 0 rgba(234, 146, 83, 0); } 35% { transform: scale(1.012); box-shadow: 0 0 0 5px rgba(234, 146, 83, .22), 0 0 34px rgba(234, 146, 83, .28); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(234, 146, 83, 0); } }
       @media (prefers-reduced-motion: reduce) { .vex-feature-jump, .jump-arrow { transition: none; } .socratic-arrive { animation: none; outline: 2px solid #ea9253; } }
-      .exam-tool select { appearance: auto; }
+      .exam-tool select { -webkit-appearance: auto; -moz-appearance: auto; appearance: auto; }
       .local-ai-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
       .local-ai-actions .btn { flex: 1 1 180px; }
       #cancelLocalAi { border-color: rgba(255, 147, 130, .45); color: #ffbbb1; }
@@ -254,7 +254,8 @@
         display: block;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        -o-object-fit: cover;
+           object-fit: cover;
         background: #180d05;
         opacity: 1;
         transition: opacity .28s ease;
@@ -308,7 +309,7 @@
         .vex-intro-caption { padding: 10px 2px 0; }
         .vex-intro-caption strong { font-size: 1.05rem; }
         .vex-intro-caption span { font-size: 0.82rem; line-height: 1.35; }
-        #vexIntroScreen video { object-fit: cover; }
+        #vexIntroScreen video { -o-object-fit: cover; object-fit: cover; }
       }
       @media(max-width:380px) {
         .vex-intro-media { max-height: 46dvh; }
@@ -425,6 +426,7 @@
         box-shadow: inset 0 1px 0 rgba(255,255,255,.025);
         transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
       }
+      .exam-tool input::-moz-placeholder, .exam-tool textarea::-moz-placeholder { color: #858da8; opacity: 1; }
       .exam-tool input::placeholder, .exam-tool textarea::placeholder { color: #858da8; opacity: 1; }
       .exam-tool input:focus, .exam-tool textarea:focus, .exam-tool select:focus {
         border-color: #8f83ff;
@@ -446,7 +448,7 @@
       .socratic-arrive { animation: socraticArrive 1.5s ease both; border-color: #8f83ff !important; }
       @keyframes socraticArrive { 0% { transform: scale(.985); box-shadow: 0 0 0 0 rgba(143,131,255,0); } 35% { transform: scale(1.012); box-shadow: 0 0 0 5px rgba(143,131,255,.22), 0 0 34px rgba(143,131,255,.28); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(143,131,255,0); } }
       @media (prefers-reduced-motion: reduce) { .vex-feature-jump, .jump-arrow { transition: none; } .socratic-arrive { animation: none; outline: 2px solid #8f83ff; } }
-      .exam-tool select { appearance: auto; }
+      .exam-tool select { -webkit-appearance: auto; -moz-appearance: auto; appearance: auto; }
       .local-ai-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
       .local-ai-actions .btn { flex: 1 1 180px; }
       #cancelLocalAi { border-color: rgba(255, 130, 145, .45); color: #ffb1bc; }
@@ -579,7 +581,8 @@
         display: block;
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        -o-object-fit: cover;
+           object-fit: cover;
         background: #080b18;
         opacity: 1;
         transition: opacity .28s ease;
@@ -633,7 +636,7 @@
         .vex-intro-caption { padding: 10px 2px 0; }
         .vex-intro-caption strong { font-size: 1.05rem; }
         .vex-intro-caption span { font-size: 0.82rem; line-height: 1.35; }
-        #vexIntroScreen video { object-fit: cover; }
+        #vexIntroScreen video { -o-object-fit: cover; object-fit: cover; }
       }
       @media(max-width:380px) {
         .vex-intro-media { max-height: 46dvh; }
@@ -1288,6 +1291,9 @@
           background: transparent;
           padding: 10px 0;
         }
+        .task-form input::-moz-placeholder, .manual-form input::-moz-placeholder, .review-form input::-moz-placeholder, .chat-form input::-moz-placeholder, .planner-form-card input::-moz-placeholder, .quiz-log-form input::-moz-placeholder, .generator-card textarea::-moz-placeholder {
+          color: #5f6985;
+        }
         .task-form input::placeholder,
         .manual-form input::placeholder,
         .review-form input::placeholder,
@@ -1311,7 +1317,9 @@
           border-bottom: 0;
         }
         .task-check {
-          appearance: none;
+          -webkit-appearance: none;
+             -moz-appearance: none;
+                  appearance: none;
           width: 18px;
           height: 18px;
           border: 1px solid #5d6885;
@@ -1448,6 +1456,7 @@
           background: #ffffff05;
           border: 1px solid var(--line);
           border-radius: 15px;
+          width: -moz-max-content;
           width: max-content;
           max-width: 100%;
           overflow-x: auto;
@@ -2341,7 +2350,7 @@
         .textbook-upload { margin: 16px 0 8px; padding: 16px; display: grid; gap: 10px; border: 1px solid rgba(112,230,214,.18); background: rgba(112,230,214,.035); }
         .textbook-upload .upload-copy strong { display: block; font-size: 14px; }
         .textbook-upload .upload-copy p { margin: 5px 0 0; line-height: 1.55; }
-        .textbook-upload .upload-button { width: fit-content; cursor: pointer; }
+        .textbook-upload .upload-button { width: -moz-fit-content; width: fit-content; cursor: pointer; }
         #textbookStatus { margin: 0; line-height: 1.5; }
         #textbookStatus[data-state="loading"] { color: var(--cyan); }
         #textbookStatus[data-state="success"] { color: #70e6d6; }
@@ -2680,6 +2689,8 @@
       ]
     }
     </script>
+    <script type="module" crossorigin src="/assets/index-tG14JynH.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-D4m5AtOD.css">
   </head>
   <body>
     <div id="vexIntroScreen" role="status" aria-label="VEX.STUDY is loading">
@@ -2736,6 +2747,8 @@
           <button class="drawer-link" id="drawerPrivacy" type="button"><span>⚿</span><span><strong>Privacy</strong><small>How your data is handled</small></span></button>
           <button class="drawer-link" id="drawerExportData" type="button"><span>↓</span><span><strong>Export Data</strong><small>Download a backup of your study data</small></span></button>
           <button class="drawer-link" id="drawerImportData" type="button"><span>↑</span><span><strong>Import Data</strong><small>Restore a VEX backup from a JSON file</small></span></button>
+          <a class="drawer-link" id="drawerReviews" href="/reviews" style="text-decoration:none"><span>★</span><span><strong>Reviews</strong><small>Read and share community reviews</small></span></a>
+          <button class="drawer-link" id="drawerContact" type="button"><span>✉</span><span><strong>Contact Us</strong><small>vexstudyos@gmail.com</small></span></button>
           <p class="drawer-foot">Made for focused learning.</p>
         </aside>
         <main class="main-content">
@@ -3505,6 +3518,8 @@
           <span class="footer-separator" aria-hidden="true">·</span>
           <button class="legal-trigger" id="termsOpen" type="button" aria-haspopup="dialog" aria-controls="termsDialog">Terms &amp; Agreement</button>
           <span class="footer-separator" aria-hidden="true">·</span>
+          <button class="legal-trigger" id="contactOpen" type="button" aria-haspopup="dialog" aria-controls="contactDialog">Contact</button>
+          <span class="footer-separator" aria-hidden="true">·</span>
           <a class="legal-trigger" href="/reviews" style="text-decoration:none">Reviews</a>
         </footer>
         <div class="terms-backdrop" id="termsDialog" role="dialog" aria-modal="true" aria-labelledby="termsTitle" hidden>
@@ -3537,9 +3552,30 @@
             <h2 id="aboutTitle">VEX.STUDY<span class="gradient-text">.</span></h2>
             <p class="about-copy">VEX.STUDY is an educational study platform for students. Use focus timers, import notes, build flashcards and quizzes, plan revision, track progress, and get AI-powered study assistance with Llama 3.2 — all in one place.</p>
             <div class="about-credit">Made by <strong>Aadi</strong> <span aria-hidden="true">⌖</span></div>
+            <div class="vex-contact-mini">Official contact email<br><a href="mailto:vexstudyos@gmail.com">vexstudyos@gmail.com</a></div>
             <a class="legal-about-link" href="/reviews" style="text-decoration:none;display:inline-block">Community reviews ↗</a>
             <button class="legal-about-link" id="termsFromAbout" type="button">Read Terms &amp; Agreement ↗</button>
+            <button class="legal-about-link" id="contactFromAbout" type="button">Contact Us ↗</button>
             <button class="btn btn-primary about-done" id="aboutDone" type="button">Back to studying</button>
+          </section>
+        </div>
+        <div class="about-backdrop vex-contact-backdrop" id="contactDialog" role="dialog" aria-modal="true" aria-labelledby="contactTitle" hidden>
+          <section class="about-panel vex-contact-panel">
+            <button class="about-close" id="contactClose" type="button" aria-label="Close Contact Us">×</button>
+            <p class="about-kicker">GET IN TOUCH</p>
+            <h2 id="contactTitle">Contact Us<span class="gradient-text">.</span></h2>
+            <p class="about-copy">Questions, ideas or problems? Email us at the official VEX.STUDY contact address below.</p>
+            <a class="btn btn-primary vex-contact-email" href="mailto:vexstudyos@gmail.com">vexstudyos@gmail.com</a>
+            <ul class="vex-contact-list">
+              <li>Feedback</li>
+              <li>Bug reports</li>
+              <li>Technical support</li>
+              <li>Security reports</li>
+              <li>Feature suggestions</li>
+              <li>General enquiries</li>
+            </ul>
+            <p class="vex-contact-note">Please never include passwords or other private login details in your email.</p>
+            <button class="legal-about-link" id="contactBack" type="button">Close</button>
           </section>
         </div>
       </div>
@@ -4125,6 +4161,9 @@
           background: transparent;
           padding: 10px 0;
         }
+        .task-form input::-moz-placeholder, .manual-form input::-moz-placeholder, .review-form input::-moz-placeholder, .chat-form input::-moz-placeholder, .planner-form-card input::-moz-placeholder, .quiz-log-form input::-moz-placeholder, .generator-card textarea::-moz-placeholder {
+          color: #79736b;
+        }
         .task-form input::placeholder,
         .manual-form input::placeholder,
         .review-form input::placeholder,
@@ -4148,7 +4187,9 @@
           border-bottom: 0;
         }
         .task-check {
-          appearance: none;
+          -webkit-appearance: none;
+             -moz-appearance: none;
+                  appearance: none;
           width: 18px;
           height: 18px;
           border: 1px solid #797269;
@@ -4285,6 +4326,7 @@
           background: #ffffff05;
           border: 1px solid var(--line);
           border-radius: 15px;
+          width: -moz-max-content;
           width: max-content;
           max-width: 100%;
           overflow-x: auto;
@@ -5178,7 +5220,7 @@
         .textbook-upload { margin: 16px 0 8px; padding: 16px; display: grid; gap: 10px; border: 1px solid rgba(227, 117, 66, .18); background: rgba(227, 117, 66, .035); }
         .textbook-upload .upload-copy strong { display: block; font-size: 14px; }
         .textbook-upload .upload-copy p { margin: 5px 0 0; line-height: 1.55; }
-        .textbook-upload .upload-button { width: fit-content; cursor: pointer; }
+        .textbook-upload .upload-button { width: -moz-fit-content; width: fit-content; cursor: pointer; }
         #textbookStatus { margin: 0; line-height: 1.5; }
         #textbookStatus[data-state="loading"] { color: var(--cyan); }
         #textbookStatus[data-state="success"] { color: #e37542; }
@@ -6841,1109 +6883,7 @@ document.addEventListener('visibilitychange', function () {
         })();
       </script>
     </div>
-<script type="module">
 
-        const byId = (id) => document.getElementById(id);
-        const drawer = byId('vexDrawer');
-        const scrim = byId('drawerScrim');
-        function closeVexDrawer() {
-          drawer.classList.remove('is-open');
-          drawer.setAttribute('aria-hidden','true');
-          drawer.inert = true;
-          scrim.hidden = true;
-          byId('menuOpen').setAttribute('aria-expanded','false');
-          document.body.classList.remove('drawer-open');
-        }
-        function openVexDrawer() {
-          scrim.hidden = false;
-          drawer.inert = false;
-          drawer.setAttribute('aria-hidden','false');
-          document.body.classList.add('drawer-open');
-          requestAnimationFrame(() => drawer.classList.add('is-open'));
-          byId('menuOpen').setAttribute('aria-expanded','true');
-          byId('menuClose').focus();
-        }
-        // Stop scroll chaining from drawer into the page behind it
-        drawer.addEventListener('touchmove', function (e) { e.stopPropagation(); }, { passive: true });
-        drawer.addEventListener('wheel', function (e) { e.stopPropagation(); }, { passive: true });
-        // Name + time-based motivation bank
-        (function setupDrawerName() {
-          var KEY = 'vex_student_name';
-          var input = byId('drawerNameInput');
-          var saveBtn = byId('drawerNameSave');
-          var mot = byId('drawerMotivation');
-          if (!input || !saveBtn || !mot) return;
-
-          function dayPart() {
-            var h = new Date().getHours();
-            if (h >= 5 && h < 12) return 'morning';
-            if (h >= 12 && h < 17) return 'afternoon';
-            if (h >= 17 && h < 21) return 'evening';
-            return 'night';
-          }
-
-          var bank = {
-            morning: [
-              function (n) { return 'Good morning, ' + n + '. Fresh mind — start with one small win.'; },
-              function (n) { return n + ', the day is quiet. A short focus block sets the tone.'; },
-              function (n) { return 'Morning energy is real, ' + n + '. Open your notes and begin.'; },
-              function (n) { return 'Rise and revise, ' + n + '. Twenty-five minutes can change the day.'; },
-              function (n) { return n + ' — sunrise study hits different. Make today count.'; },
-              function (n) { return 'Early start, ' + n + '. You are already ahead of yesterday.'; },
-              function (n) { return 'Coffee optional. Focus optional? Not today, ' + n + '.'; },
-              function (n) { return n + ', clear the first topic before the world gets loud.'; }
-            ],
-            afternoon: [
-              function (n) { return 'Afternoon check-in, ' + n + '. One more block keeps momentum.'; },
-              function (n) { return n + ', mid-day dip is normal. Push through with a timer.'; },
-              function (n) { return 'Still time to win today, ' + n + '. Open Study and practise.'; },
-              function (n) { return n + ' — post-lunch focus is a superpower. Try fifteen minutes.'; },
-              function (n) { return 'Do not wait for evening, ' + n + '. Start the next chapter now.'; },
-              function (n) { return 'Steady beats perfect, ' + n + '. Keep the streak alive this afternoon.'; },
-              function (n) { return n + ', quiz yourself once. Active recall loves the afternoon.'; },
-              function (n) { return 'Halfway through the day, ' + n + '. Make the second half count.'; }
-            ],
-            evening: [
-              function (n) { return 'Evening study time, ' + n + '. Quiet focus, deep work.'; },
-              function (n) { return n + ', the day is not over. One focused session still counts.'; },
-              function (n) { return 'Lights low, mind clear — review time, ' + n + '.'; },
-              function (n) { return n + ', lock in before the night fully settles.'; },
-              function (n) { return 'Want to start studying, ' + n + '? Hit Start focus on Command.'; },
-              function (n) { return 'Evening is for closing loops, ' + n + '. Finish what you opened.'; },
-              function (n) { return n + ' — weak topics get stronger after sunset. Open Reviews.'; },
-              function (n) { return 'Protect this hour, ' + n + '. Tomorrow-you will thank you.'; }
-            ],
-            night: [
-              function (n) { return 'Late grind, ' + n + '. Keep it short and sharp.'; },
-              function (n) { return n + ', night mode on. One last clean session, then rest.'; },
-              function (n) { return 'Quiet hours hit different, ' + n + '. Use them wisely.'; },
-              function (n) { return n + ' — do not force hours. Force one honest focus block.'; },
-              function (n) { return 'Still here, ' + n + '? Respect. Make it quality, not endless.'; },
-              function (n) { return 'Night study works if you stay calm, ' + n + '. Timer on.'; },
-              function (n) { return n + ', close the day with a win, not guilt.'; },
-              function (n) { return 'Before sleep, ' + n + ': one recall pass beats scrolling.'; }
-            ],
-            anytime: [
-              function (n) { return 'It is study time, ' + n + '. One focused block is enough to start.'; },
-              function (n) { return n + ', small sessions stack up. You have got this.'; },
-              function (n) { return 'Back at it, ' + n + '. Make today count.'; },
-              function (n) { return n + ' — notes open, timer ready. Let us go.'; },
-              function (n) { return 'Progress is quiet, ' + n + '. Show up anyway.'; },
-              function (n) { return n + ', discipline is choosing the work when mood is mid.'; },
-              function (n) { return 'You do not need motivation for the whole day, ' + n + ' — just the next twenty-five minutes.'; },
-              function (n) { return n + ': consistency beats intensity. Start simple.'; },
-              function (n) { return 'Future marks are built in boring minutes, ' + n + '.'; },
-              function (n) { return n + ', the hard part is starting. After that, ride the timer.'; },
-              function (n) { return 'No drama. Just study, ' + n + '.'; },
-              function (n) { return n + ' — open the notes you have been avoiding. That is the win.'; },
-              function (n) { return 'Clarity comes after effort, ' + n + '. Begin before you feel ready.'; },
-              function (n) { return n + ', protect your focus like it is limited — because it is.'; },
-              function (n) { return 'Less scrolling, more solving, ' + n + '.'; },
-              function (n) { return n + ': one quiz, one card deck, one honest try.'; }
-            ]
-          };
-
-          function pickLine(n) {
-            var part = dayPart();
-            var pool = bank[part].concat(bank.anytime);
-            var i = Math.floor(Math.random() * pool.length);
-            return pool[i](n);
-          }
-
-          window.vexPickMotivation = pickLine;
-          window.vexGetStudentName = function () {
-            try { return (localStorage.getItem(KEY) || '').trim(); } catch (e) { return ''; }
-          };
-
-          function applyName(name, persist) {
-            name = String(name || '').trim().slice(0, 24);
-            if (!name) {
-              mot.hidden = true;
-              mot.textContent = '';
-              if (persist) try { localStorage.removeItem(KEY); } catch (e) {}
-              return;
-            }
-            input.value = name;
-            var line = pickLine(name);
-            mot.textContent = line;
-            mot.hidden = false;
-            if (persist) try { localStorage.setItem(KEY, name); } catch (e) {}
-            var daily = byId('dailyMessage');
-            if (daily) daily.textContent = line;
-          }
-
-          try {
-            var saved = localStorage.getItem(KEY);
-            if (saved) applyName(saved, false);
-          } catch (e) {}
-
-          saveBtn.addEventListener('click', function () { applyName(input.value, true); });
-          input.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter') { e.preventDefault(); applyName(input.value, true); }
-          });
-          // New line every time the menu opens
-          var _open = openVexDrawer;
-          // openVexDrawer already defined above; refresh motivation when drawer opens
-          var origOpen = openVexDrawer;
-          openVexDrawer = function () {
-            origOpen();
-            try {
-              var n = (localStorage.getItem(KEY) || '').trim();
-              if (n) {
-                var line = pickLine(n);
-                mot.textContent = line;
-                mot.hidden = false;
-                var daily = byId('dailyMessage');
-                if (daily) daily.textContent = line;
-              }
-            } catch (e) {}
-          };
-        })();
-        // Refresh daily message once name system is ready
-        (function () {
-          try {
-            var n = (localStorage.getItem('vex_student_name') || '').trim();
-            var daily = byId('dailyMessage');
-            if (n && daily && typeof window.vexPickMotivation === 'function') {
-              daily.textContent = window.vexPickMotivation(n);
-            }
-          } catch (e) {}
-        })();
-        byId('menuOpen').addEventListener('click',openVexDrawer);
-        byId('menuClose').addEventListener('click',closeVexDrawer);
-        scrim.addEventListener('click',closeVexDrawer);
-        document.addEventListener('keydown',event=>{if(event.key==='Escape')closeVexDrawer();});
-        byId('drawerUploadNotes').addEventListener('click',()=>{closeVexDrawer();byId('notesFile').click();});
-        const importedNotesKey = 'vex_study_notes_v1';
-        function updateNotesReadyState(count) {
-          const ready = !!byId('notesInput').value.trim();
-          const title = byId('drawerUploadTitle');
-          const hint = byId('drawerUploadHint');
-          const feature = byId('featureNotesStatus');
-          const clearButton = byId('clearCurrentNotes');
-          if (clearButton) clearButton.disabled = !ready;
-          if (title) title.textContent = ready ? 'Add More Notes' : 'Upload Notes';
-          if (hint) hint.textContent = ready ? (count ? count + ' file(s) imported · add more anytime' : 'Your notes are ready · add more anytime') : 'Choose multiple files from your device';
-          if (feature) feature.textContent = ready ? 'Your notes are loaded and ready for flashcards, quizzes, papers and study help. You can add more files anytime.' : 'Upload one or more notes files, then use them for flashcards, quizzes, papers and study help.';
-        }
-        try {
-          const savedNotes = localStorage.getItem(importedNotesKey);
-          if (savedNotes && !byId('notesInput').value.trim()) {
-            byId('notesInput').value = savedNotes.slice(0, 12000);
-            textbookText = byId('notesInput').value;
-            window.vexTextbookContext = textbookText;
-          }
-        } catch {}
-        updateNotesReadyState(0);
-        function renderTestImprovements() {
-          const content = byId('improvementsContent');
-          let saved = {};
-          try { saved = JSON.parse(localStorage.getItem('focus_redesign_v1') || '{}'); } catch {}
-          const history = Array.isArray(saved.quizHistory) ? saved.quizHistory : [];
-          const results = history.filter(q => Number.isFinite(Number(q.score)) && Number(q.score) >= 0 && Number(q.score) <= 100).slice(0, 12).reverse();
-          content.replaceChildren();
-          if (!results.length) {
-            const empty = document.createElement('div');
-            empty.className = 'improvement-empty';
-            empty.innerHTML = '<strong>No test scores yet</strong><p>Complete a quiz or log your first score in Planner. Your graph will appear here automatically.</p>';
-            content.append(empty);
-            return;
-          }
-          const latest = results[results.length - 1];
-          const subject = String(latest.subject || latest.topic || 'General');
-          const previous = [...results.slice(0, -1)].reverse().find(q => String(q.subject || q.topic || 'General').toLowerCase() === subject.toLowerCase());
-          const stats = document.createElement('div'); stats.className = 'improvement-stats';
-          const addStat = (label, value) => { const card=document.createElement('div'); card.className='improvement-stat'; const small=document.createElement('small'); small.textContent=label; const strong=document.createElement('strong'); strong.textContent=value; card.append(small,strong); stats.append(card); };
-          addStat('Latest score', Number(latest.score) + '%'); addStat('Subject', subject); addStat('Compared with previous', previous ? ((Number(latest.score)-Number(previous.score)>0?'+':'')+(Number(latest.score)-Number(previous.score))+' pts') : '—');
-          content.append(stats);
-          const wrap=document.createElement('div'); wrap.className='improvement-chart-wrap';
-          const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'); svg.setAttribute('viewBox','0 0 720 280'); svg.setAttribute('role','img'); svg.setAttribute('aria-label','Quiz scores over time from zero to one hundred percent'); svg.classList.add('improvement-chart');
-          const make=(tag,attrs,label)=>{const el=document.createElementNS('http://www.w3.org/2000/svg',tag); Object.entries(attrs||{}).forEach(([k,v])=>el.setAttribute(k,String(v))); if(label!==undefined)el.textContent=label; svg.append(el); return el;};
-          const left=48,right=690,top=20,bottom=226,height=bottom-top,width=right-left;
-          [0,25,50,75,100].forEach(v=>{const y=bottom-v/100*height; make('line',{x1:left,y1:y,x2:right,y2:y,stroke:vexTok('--line'),'stroke-width':1}); make('text',{x:left-10,y:y+4,'text-anchor':'end'},v+'%');});
-          const points=results.map((q,i)=>({x:results.length===1?left+width/2:left+i*width/(results.length-1),y:bottom-Number(q.score)/100*height,q}));
-          if(points.length>1)make('polyline',{points:points.map(p=>p.x+','+p.y).join(' '),fill:'none',stroke:vexTok('--acc-hi'),'stroke-width':4,'stroke-linecap':'round','stroke-linejoin':'round'});
-          points.forEach((p,i)=>{make('circle',{cx:p.x,cy:p.y,r:6,fill:vexTok('--acc2'),stroke:vexTok('--bg'),'stroke-width':3}); make('text',{x:p.x,y:Math.max(13,p.y-13),'text-anchor':'middle'},Number(p.q.score)+'%'); if(i===0||i===points.length-1||points.length<=6)make('text',{x:p.x,y:bottom+24,'text-anchor':'middle'},String(p.q.date||'').slice(5)||('Test '+(i+1)));});
-          wrap.append(svg); content.append(wrap);
-          const note=document.createElement('div'); note.className='improvement-delta';
-          if(previous){const diff=Number(latest.score)-Number(previous.score); const direction=diff>0?'higher':diff<0?'lower':'the same as'; note.classList.toggle('lower',diff<0); note.textContent='Your latest '+subject+' score is '+Math.abs(diff)+' percentage points '+direction+' your previous '+subject+' test ('+previous.score+'% → '+latest.score+'%).';}
-          else {note.textContent='This is the first saved test for '+subject+'. Log another test in the same subject to see whether your score is higher or lower.';}
-          content.append(note);
-        }
-        byId('drawerTestImprovements').addEventListener('click',()=>{
-          closeVexDrawer();
-          document.querySelector('[data-view="planner"]').click();
-          renderTestImprovements();
-          byId('testImprovementsPanel').hidden=false;
-          byId('testImprovementsPanel').scrollIntoView({behavior:'smooth',block:'start'});
-        });
-        byId('closeImprovements').addEventListener('click',()=>{byId('testImprovementsPanel').hidden=true;});
-        byId('drawerAbout').addEventListener('click',()=>{closeVexDrawer();byId('aboutOpen').click();});
-        function syncDrawerLightDarkLabel() {
-          var isLight = document.body.classList.contains('light');
-          var lab = byId('drawerLightDarkLabel');
-          var hint = byId('drawerLightDarkHint');
-          if (lab) lab.textContent = isLight ? 'Dark mode' : 'Light mode';
-          if (hint) hint.textContent = isLight ? 'Switch back to the dark UI' : 'Switch to a brighter UI';
-        }
-        byId('drawerWhatVexCanDo')?.addEventListener('click', function () {
-          closeVexDrawer();
-          document.querySelectorAll('.view').forEach(function (v) {
-            v.classList.toggle('active', v.id === 'view-tools');
-          });
-          document.querySelectorAll('.nav-item').forEach(function (b) {
-            b.classList.remove('active');
-            b.removeAttribute('aria-current');
-          });
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-        byId('drawerLightDark')?.addEventListener('click', function () {
-          byId('themeToggle')?.click();
-          syncDrawerLightDarkLabel();
-        });
-        syncDrawerLightDarkLabel();
-        document.body.addEventListener('click', function (e) {
-          if (e.target && (e.target.id === 'themeToggle' || e.target.closest && e.target.closest('#themeToggle'))) {
-            window.setTimeout(syncDrawerLightDarkLabel, 0);
-          }
-        }, true);
-        byId('drawerTerms').addEventListener('click',()=>{closeVexDrawer();byId('termsOpen').click();});
-        byId('drawerPrivacy').addEventListener('click',()=>{closeVexDrawer();byId('termsOpen').click();setTimeout(()=>{const el=byId('privacySection');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},200);});
-        byId('drawerExportData').addEventListener('click',()=>{closeVexDrawer();byId('exportStudyData').click();});
-        byId('drawerImportData').addEventListener('click',()=>{closeVexDrawer();byId('importStudyData').click();});
-        const status = byId('textbookStatus');
-        let textbookText = '';
-        let replayingAiCardClick = false;
-
-        function showStatus(message, kind) {
-          status.textContent = message;
-          status.dataset.state = kind || 'info';
-        }
-
-        // Vercel migration: use the existing on-device Llama 3.2 engine (WebLLM).
-        // AppDeploy server AI is removed. Local Llama is the only AI path, preserving the original license and model.
-        async function requestStudyAi(path, payload, fallbackPrompt, outputType) {
-          let engine = window.vexLocalEngine;
-          if (!engine) {
-            const loadBtn = document.getElementById('loadLocalAi');
-            const alreadyLoading = !!(loadBtn && loadBtn.disabled);
-            if (alreadyLoading || (loadBtn && window.confirm('Llama 3.2 1B is not loaded yet. Load it now? If it is already saved on this device it loads faster; a first-time download can use around 1 GB of data.'))) {
-              if (!alreadyLoading) loadBtn.click();
-              const waitStart = Date.now();
-              while (!window.vexLocalEngine && Date.now() - waitStart < 600000) {
-                if (typeof showStatus === 'function') showStatus('Loading Llama… this can take a minute. Keep this page open.', 'loading');
-                await new Promise((r) => setTimeout(r, 1000));
-                const st = document.getElementById('localAiStatus');
-                if (st && /^Local AI failed/.test(st.textContent || '')) break;
-              }
-              engine = window.vexLocalEngine;
-            }
-            if (!engine) {
-              throw new Error('Llama is not loaded. Open Study Helper → Local AI, tap Load Llama, then try again.');
-            }
-          }
-          // Llama 3.2 1B: long notes + high max_tokens → slow runs and truncated JSON.
-          let system = 'You are VEX.STUDY, a careful school study assistant. Use only the supplied notes. Never invent facts. When JSON is requested, return valid JSON only — no markdown fences, no extra commentary.';
-          let user = fallbackPrompt;
-          let maxTokens = 900;
-          const countHint = Number(payload && (payload.count || payload.n)) || 0;
-          if (outputType === 'cards') {
-            system += ' Return ONLY a JSON array of objects with keys "q" and "a".';
-            maxTokens = 700;
-          } else if (outputType === 'quiz') {
-            system += ' Return ONLY a JSON array. Each item: "question", "options" (exactly 4 strings), "correctIndex" (0-3), "explanation" (one short sentence).';
-            maxTokens = Math.min(1500, 200 + Math.max(5, countHint || 8) * 100);
-          } else if (outputType === 'paper') {
-            system += ' Return ONLY a JSON object: {"title":"...","questions":[{"question":"...","marks":2,"answer":"..."}]}. Keep answers short.';
-            maxTokens = Math.min(1300, 160 + Math.max(5, countHint || 8) * 85);
-          } else if (outputType === 'socratic') {
-            maxTokens = 280;
-          } else if (outputType === 'tutor') {
-            maxTokens = 650;
-          }
-          if (outputType === 'cards') {
-            // Faster path: stream tokens, cap output length, and keep every complete card even if the output is cut off.
-            const salvageCards = (raw) => {
-              const text = String(raw || '').replace(/```(?:json)?/gi, '');
-              const clean = (t) => t.replace(/[\u0000-\u001f]+/g, ' ');
-              const pick = (o) => {
-                if (!o || typeof o !== 'object') return null;
-                const q = o.q || o.Q || o.question || o.Question || o.front;
-                const a = o.a || o.A || o.answer || o.Answer || o.back;
-                if (typeof q === 'string' && typeof a === 'string' && q.trim() && a.trim()) return { q: q.trim(), a: a.trim() };
-                return null;
-              };
-              let out = [];
-              const s0 = text.indexOf('[');
-              const e0 = text.lastIndexOf(']');
-              if (s0 !== -1 && e0 > s0) {
-                try {
-                  const arr = JSON.parse(clean(text.slice(s0, e0 + 1)));
-                  if (Array.isArray(arr)) out = arr.map(pick).filter(Boolean);
-                } catch (err) { /* try the next method */ }
-              }
-              if (out.length) return out;
-              (text.match(/\{[^{}]*\}/g) || []).forEach((chunk) => {
-                try { const c = pick(JSON.parse(clean(chunk))); if (c) out.push(c); } catch (err) { /* skip */ }
-              });
-              if (out.length) return out;
-              const kv = /"(?:q|question)"\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*"(?:a|answer)"\s*:\s*"((?:[^"\\]|\\.)*)"/gi;
-              let m;
-              while ((m = kv.exec(text)) !== null) {
-                try { out.push({ q: JSON.parse('"' + clean(m[1]) + '"'), a: JSON.parse('"' + clean(m[2]) + '"') }); } catch (err) { /* skip */ }
-              }
-              if (out.length) return out;
-              const qa = /(?:^|\n)\s*(?:Q(?:uestion)?\s*\d*\s*[:.)-])\s*([^\n]+)\n+\s*(?:A(?:nswer)?\s*\d*\s*[:.)-])\s*([^\n]+)/gi;
-              while ((m = qa.exec(text)) !== null) {
-                out.push({ q: m[1].trim(), a: m[2].trim() });
-              }
-              return out;
-            };
-            const cardStream = await engine.chat.completions.create({
-              messages: [
-                { role: 'system', content: system },
-                { role: 'user', content: user }
-              ],
-              temperature: 0.2,
-              max_tokens: 700,
-              stream: true
-            });
-            let acc = '';
-            for await (const chunk of cardStream) {
-              acc += (chunk.choices && chunk.choices[0] && chunk.choices[0].delta && chunk.choices[0].delta.content) || '';
-              if (typeof window.vexCardProgress === 'function') window.vexCardProgress(salvageCards(acc).length);
-            }
-            const quickCards = salvageCards(acc);
-            if (!quickCards.length) throw new Error('Llama could not make cards from this text. Try a shorter section.');
-            return { cards: quickCards };
-          }
-          const completion = await engine.chat.completions.create({
-            messages: [
-              { role: 'system', content: system },
-              { role: 'user', content: user }
-            ],
-            temperature: 0.2,
-            max_tokens: maxTokens
-          });
-          const generated = String(completion.choices?.[0]?.message?.content || '').trim();
-          if (!generated) throw new Error('The local Llama model returned an empty response. Try again with shorter notes or fewer questions.');
-          if (outputType === 'socratic') return { question: generated };
-          if (outputType === 'tutor') return { answer: generated };
-          const cleanText = generated.replace(/```(?:json)?/gi, '').replace(/[\u0000-\u001f]+/g, ' ');
-          const tryParse = (raw) => { try { return JSON.parse(raw); } catch { return null; } };
-          const salvageObjects = (text) => {
-            const out = [];
-            (text.match(/\{[^{}]*\}/g) || []).forEach((chunk) => {
-              const o = tryParse(chunk);
-              if (o && typeof o === 'object') out.push(o);
-            });
-            return out;
-          };
-          let parsed = null;
-          if (outputType === 'paper') {
-            const s = cleanText.indexOf('{');
-            const e = cleanText.lastIndexOf('}');
-            if (s >= 0 && e > s) parsed = tryParse(cleanText.slice(s, e + 1));
-            if (!parsed || !Array.isArray(parsed.questions)) {
-              const objs = salvageObjects(cleanText).filter((o) => typeof o.question === 'string' && (o.answer != null || o.marks != null));
-              if (objs.length) parsed = { title: (payload && payload.subject) ? (payload.subject + ' practice paper') : 'Practice paper', questions: objs };
-            }
-            if (!parsed || !Array.isArray(parsed.questions) || !parsed.questions.length) {
-              throw new Error('Llama could not finish a full paper. Try 5 questions and shorter notes (under ~1 page).');
-            }
-            parsed.questions = parsed.questions.map((q) => ({
-              question: String(q.question || '').trim(),
-              marks: Math.max(1, Number(q.marks) || 2),
-              answer: String(q.answer || q.modelAnswer || '').trim()
-            })).filter((q) => q.question);
-            if (!parsed.questions.length) throw new Error('Llama could not format paper questions. Try fewer questions or shorter notes.');
-            if (!parsed.title) parsed.title = 'Practice paper';
-            return parsed;
-          }
-          // quiz / array outputs
-          const sArr = cleanText.indexOf('[');
-          const eArr = cleanText.lastIndexOf(']');
-          if (sArr >= 0 && eArr > sArr) parsed = tryParse(cleanText.slice(sArr, eArr + 1));
-          if (!Array.isArray(parsed) || !parsed.length) {
-            const objs = salvageObjects(cleanText);
-            if (objs.length) parsed = objs;
-          }
-          if (!Array.isArray(parsed) || !parsed.length) {
-            throw new Error('Llama could not format this result. Try fewer questions and shorter notes.');
-          }
-          if (outputType === 'cards') return { cards: parsed };
-          if (outputType === 'quiz') return { topic: (payload && payload.topic) || 'Study topic', questions: parsed };
-          throw new Error('Unsupported study AI task.');
-        }
-        // Expose for other module scripts (Socratic mode lives in a separate module block).
-        window.requestStudyAi = requestStudyAi;
-
-        async function readPhoto(file) {
-          if (!file || !file.type.startsWith('image/')) {
-            showStatus('Choose an image file from your textbook.', 'error');
-            return;
-          }
-          showStatus('Preparing your photo…', 'loading');
-          try {
-            showStatus('Reading textbook text on this device…', 'loading');
-            const Tesseract = await import('https://esm.sh/tesseract.js@6.0.1');
-            const worker = await Tesseract.createWorker('eng', 1, { logger: (m) => {
-              if (m.status === 'recognizing text' && Number.isFinite(m.progress)) showStatus('Reading textbook text… ' + Math.round(m.progress * 100) + '%', 'loading');
-            }});
-            let result;
-            try { result = await worker.recognize(file); }
-            finally { await worker.terminate(); }
-            textbookText = String(result.data?.text || '').trim().slice(0, 18000);
-            if (!textbookText) throw new Error('No readable text was found.');
-            byId('notesInput').value = textbookText;
-            window.vexTextbookContext = textbookText;
-            showStatus('Text extracted. Check it against your book, then make flashcards.', 'success');
-          } catch (err) {
-            const message = err && err.response && err.response.data && err.response.data.error;
-            showStatus(message || err.message || 'Scanning failed. Try a clearer photo.', 'error');
-          }
-        }
-
-        byId('notesFile').addEventListener('change', async (event) => {
-          const files = Array.from(event.target.files || []);
-          event.target.value = '';
-          if (!files.length) return;
-          const imported = [];
-          const failed = [];
-          showStatus('Importing ' + files.length + ' selected file(s)…', 'loading');
-          for (const file of files) {
-            try {
-              if (file.size > 18000000) throw new Error('File is larger than 18 MB.');
-              const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
-              let content = '';
-              if (isPdf) {
-                if (!pdfjsPromise) pdfjsPromise = import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs');
-                const pdfjs = await pdfjsPromise;
-                pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
-                const pdf = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
-                const pages = [];
-                for (let pageNo = 1; pageNo <= pdf.numPages; pageNo++) {
-                  const page = await pdf.getPage(pageNo);
-                  const pageContent = await page.getTextContent();
-                  const pageText = pageContent.items.map(item => item.str || '').join(' ').replace(/\s+/g, ' ').trim();
-                  if (pageText) pages.push('[ ' + file.name + ' · page ' + pageNo + ' ]\n' + pageText);
-                }
-                content = pages.join('\n\n');
-                if (!content.trim()) throw new Error('No selectable text; use Scan with camera for scanned pages.');
-              } else {
-                content = await file.text();
-                if (!content.trim()) throw new Error('File is empty.');
-                content = '[ ' + file.name + ' ]\n' + content.trim();
-              }
-              imported.push(content);
-            } catch (err) {
-              failed.push(file.name + ': ' + (err.message || 'Could not read file.'));
-            }
-          }
-          if (imported.length) {
-            const existing = byId('notesInput').value.trim();
-            const combined = [existing, ...imported].filter(Boolean).join('\n\n──────────\n\n');
-            byId('notesInput').value = combined.slice(0, 12000);
-            textbookText = byId('notesInput').value;
-            window.vexTextbookContext = textbookText;
-            try { localStorage.setItem(importedNotesKey, textbookText); } catch {}
-            document.querySelector('[data-view="study"]').click();
-            document.querySelector('[data-study-tab="cards"]').click();
-            updateNotesReadyState(imported.length);
-            byId('notesInput').focus({preventScroll:true});
-            const summary = imported.length + ' file(s) added to your notes. They were combined with existing notes.';
-            showStatus(summary + (failed.length ? ' Some files could not be read: ' + failed.join(' · ') : ' Ready for flashcards, quizzes and study help.'), failed.length ? 'error' : 'success');
-          } else {
-            showStatus('No files were imported. ' + failed.join(' · '), 'error');
-          }
-        });
-
-        byId('textbookPhoto').addEventListener('change', (event) => {
-          const file = event.target.files && event.target.files[0];
-          if (file) readPhoto(file);
-          event.target.value = '';
-        });
-
-        byId('notesInput').addEventListener('input', () => {
-          textbookText = byId('notesInput').value.trim();
-          window.vexTextbookContext = textbookText;
-          try { localStorage.setItem(importedNotesKey, byId('notesInput').value.slice(0, 12000)); } catch {}
-          updateNotesReadyState(0);
-        });
-
-        byId('clearCurrentNotes').addEventListener('click', () => {
-          if (!byId('notesInput').value.trim()) return;
-          const confirmed = window.confirm('Delete all current notes from this device? This will not delete your saved flashcards, quizzes or planner data.');
-          if (!confirmed) return;
-          byId('notesInput').value = '';
-          textbookText = '';
-          window.vexTextbookContext = '';
-          try { localStorage.removeItem(importedNotesKey); } catch {}
-          updateNotesReadyState(0);
-          showStatus('Current notes deleted from this device. You can upload or paste new notes anytime.', 'success');
-        });
-
-        byId('generateCards').addEventListener('click', async (event) => {
-          if (replayingAiCardClick) {
-            replayingAiCardClick = false;
-            return;
-          }
-          const notes = byId('notesInput').value.trim();
-          if (notes.length < 20) return;
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          const button = byId('generateCards');
-          button.disabled = true;
-          button.textContent = 'Making useful questions…';
-          showStatus('Building question-based flashcards from your notes…', 'loading');
-          try {
-            window.vexCardProgress = (n) => { if (n > 0) showStatus('Made ' + n + ' flashcard' + (n === 1 ? '' : 's') + ' so far…', 'loading'); };
-            const response = await requestStudyAi('/api/study/cards', { notes },
-              'Create 6 short active-recall flashcards from these notes. Keep each question and answer under 25 words. Return a JSON array with objects containing string fields q and a. Notes:\n' + notes.slice(0, 3000),
-              'cards');
-            const cards = response && response.cards;
-            if (!Array.isArray(cards) || !cards.length) throw new Error('No cards were returned. Try a shorter section.');
-            const createdCount = cards.length;
-            window.vexAiCards = cards;
-            window.vexTextbookContext = notes;
-            replayingAiCardClick = true;
-            button.textContent = '✦ Make flashcards';
-            button.disabled = false;
-            button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-            showStatus(createdCount + ' AI flashcard' + (createdCount === 1 ? '' : 's') + ' created. Check the answers against your textbook.', 'success');
-          } catch (err) {
-            const message = err && err.response && err.response.data && err.response.data.error;
-            const reason = message || (err && err.message) || 'AI flashcards failed.';
-            button.textContent = '✦ Make flashcards';
-            button.disabled = false;
-            if (/not loaded/i.test(reason)) {
-              showStatus(reason, 'error');
-              return;
-            }
-            // Use the offline card maker so you always get cards.
-            window.vexAiCards = [];
-            replayingAiCardClick = true;
-            button.dispatchEvent(new MouseEvent('click', { bubbles: true }));
-            showStatus('AI could not make cards (' + reason + ') so the offline card maker was used instead.', 'error');
-          }
-        }, true);
-
-        window.vexTutorAsk = async (question) => {
-          const notes = byId('notesInput').value.trim() || textbookText;
-          if (!notes) throw new Error('Add notes or scan a textbook page first.');
-          const response = await requestStudyAi('/api/study/tutor', { notes, question },
-            'Answer the student question using only these textbook notes. Explain clearly in short age-appropriate steps and say if the notes do not contain the answer. Notes:\n' + String(notes).slice(0, 3500) + '\n\nQuestion: ' + question,
-            'tutor');
-          return String(response.answer || 'I could not form an answer from those notes.');
-        };
-
-        const paperStatus = byId('paperStatus');
-        const quizStatus = byId('quizStatus');
-        let generatedPaper = null;
-        let quizData = [];
-        let quizAnswers = {};
-        let pdfPages = [];
-        let quizTopicActive = 'Study topic';
-        const notesNow = () => byId('notesInput').value.trim() || textbookText;
-        const setText = (node, value) => { node.textContent = value; };
-
-        byId('buildPaper').addEventListener('click', async () => {
-          const notes = notesNow();
-          if (notes.length < 20) { setText(paperStatus, 'Add notes or scan a textbook page in Flashcards first.'); return; }
-          const button = byId('buildPaper');
-          button.disabled = true; setText(paperStatus, 'Writing a paper from your notes…');
-          try {
-            const paperPayload = {
-              notes, subject: byId('paperSubject').value.trim(),
-              count: Number(byId('paperCount').value), difficulty: byId('paperDifficulty').value
-            };
-            const response = await requestStudyAi('/api/study/paper', paperPayload,
-              'Create a ' + paperPayload.difficulty + ' practice paper for ' + (paperPayload.subject || 'this topic') + ' with exactly ' + Math.min(10, paperPayload.count) + ' questions. Use only these notes. Keep each answer under 25 words. Return one JSON object with title and questions; each question must have question, marks (integer), and answer. Notes:\n' + String(notes).slice(0, 2800),
-              'paper');
-            generatedPaper = response;
-            renderPaper();
-            setText(paperStatus, 'Paper ready. Review the answer key after attempting the questions.');
-          } catch (err) {
-            setText(paperStatus, (err && err.response && err.response.data && err.response.data.error) || err.message || 'Paper generation failed. Try again.');
-          } finally { button.disabled = false; }
-        });
-
-        function renderPaper() {
-          if (!generatedPaper) return;
-          const output = byId('paperOutput');
-          output.replaceChildren();
-          const heading = document.createElement('h4');
-          heading.textContent = generatedPaper.title || 'Practice paper';
-          output.append(heading);
-          let totalMarks = 0;
-          generatedPaper.questions.forEach((item, index) => {
-            totalMarks += item.marks;
-            const card = document.createElement('div'); card.className = 'exam-question';
-            const label = document.createElement('strong');
-            label.textContent = (index + 1) + '. ' + item.question + ' (' + item.marks + ' marks)';
-            card.append(label); output.append(card);
-          });
-          const total = document.createElement('p'); total.className = 'muted small';
-          total.textContent = 'Total: ' + totalMarks + ' marks · Answer key is hidden until you open it.';
-          output.append(total);
-          const answers = byId('paperAnswers'); answers.replaceChildren();
-          generatedPaper.questions.forEach((item, index) => {
-            const row = document.createElement('div'); row.className = 'exam-question';
-            const title = document.createElement('strong'); title.textContent = (index + 1) + '. ' + item.answer;
-            row.append(title); answers.append(row);
-          });
-          byId('printPaper').hidden = false;
-          byId('toggleAnswerKey').hidden = false;
-          byId('paperAnswers').hidden = true;
-          byId('toggleAnswerKey').textContent = 'Show answer key';
-        }
-        byId('printPaper').addEventListener('click', () => window.print());
-        byId('toggleAnswerKey').addEventListener('click', () => {
-          const answers = byId('paperAnswers');
-          answers.hidden = !answers.hidden;
-          byId('toggleAnswerKey').textContent = answers.hidden ? 'Show answer key' : 'Hide answer key';
-        });
-
-        byId('startQuiz').addEventListener('click', async () => {
-          const notes = notesNow();
-          if (notes.length < 20) { setText(quizStatus, 'Add or scan textbook notes in Flashcards first so the quiz stays grounded.'); return; }
-          const button = byId('startQuiz');
-          button.disabled = true; setText(quizStatus, 'Building your quiz…');
-          try {
-            quizTopicActive = byId('quizTopic').value.trim() || byId('paperSubject').value.trim() || 'Study topic';
-            const quizPayload = {
-              notes, topic: quizTopicActive, count: Number(byId('quizCount').value), difficulty: byId('quizLevel').value
-            };
-            const response = await requestStudyAi('/api/study/quiz', quizPayload,
-              'Create exactly ' + Math.min(10, quizPayload.count) + ' multiple-choice questions about ' + quizPayload.topic + ' at ' + quizPayload.difficulty + ' difficulty. Use only these notes. Keep explanations to one short sentence. Return a JSON array; each item must contain question, exactly four options, correctIndex (0 to 3), and explanation. Notes:\n' + String(notes).slice(0, 2800),
-              'quiz');
-            quizData = response.questions || [];
-            quizAnswers = {};
-            renderQuiz();
-            setText(quizStatus, quizData.length + ' questions ready. Choose one answer for each question.');
-          } catch (err) {
-            setText(quizStatus, (err && err.response && err.response.data && err.response.data.error) || err.message || 'Quiz generation failed. Try again.');
-          } finally { button.disabled = false; }
-        });
-
-        function renderQuiz() {
-          const root = byId('quizPlay'); root.replaceChildren();
-          if (!quizData.length) return;
-          quizData.forEach((item, index) => {
-            const card = document.createElement('div'); card.className = 'exam-question';
-            const question = document.createElement('strong'); question.textContent = (index + 1) + '. ' + item.question;
-            card.append(question);
-            const options = document.createElement('div'); options.className = 'exam-options';
-            item.options.forEach((option, optionIndex) => {
-              const button = document.createElement('button'); button.type = 'button'; button.className = 'exam-option';
-              button.textContent = String.fromCharCode(65 + optionIndex) + '. ' + option;
-              button.addEventListener('click', () => {
-                if (quizAnswers[index] !== undefined) return;
-                quizAnswers[index] = optionIndex;
-                button.classList.add(optionIndex === item.correctIndex ? 'correct' : 'incorrect');
-                Array.from(options.children).forEach((child, i) => {
-                  child.disabled = true;
-                  if (i === item.correctIndex) child.classList.add('correct');
-                });
-                const feedback = document.createElement('p'); feedback.className = 'exam-feedback';
-                feedback.textContent = (optionIndex === item.correctIndex ? 'Correct. ' : 'Not quite. ') + item.explanation;
-                card.append(feedback);
-                if (Object.keys(quizAnswers).length === quizData.length) finishQuiz();
-              });
-              options.append(button);
-            });
-            card.append(options); root.append(card);
-          });
-        }
-        function finishQuiz() {
-          const score = quizData.filter((q, i) => quizAnswers[i] === q.correctIndex).length;
-          const percent = Math.round(score / quizData.length * 100);
-          const result = document.createElement('div'); result.className = 'exam-question';
-          const title = document.createElement('strong'); title.textContent = 'Score: ' + score + '/' + quizData.length + ' (' + percent + '%)';
-          const note = document.createElement('p'); note.className = 'exam-feedback'; note.textContent = 'Your score is being sent to the planner to schedule any needed revision.';
-          result.append(title, note); byId('quizPlay').prepend(result);
-          byId('quizStatus').textContent = 'Quiz complete · ' + percent + '%';
-          byId('quizSubject').value = quizTopicActive;
-          byId('quizScore').value = String(percent);
-          byId('quizLogForm').requestSubmit();
-        }
-
-        let pdfjsPromise;
-        byId('textbookPdf').addEventListener('change', async (event) => {
-          const file = event.target.files && event.target.files[0];
-          event.target.value = '';
-          if (!file) return;
-          if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-            setText(byId('pdfStatus'), 'Choose a PDF file.'); return;
-          }
-          if (file.size > 18000000) { setText(byId('pdfStatus'), 'PDF is too large. Choose a file under 18 MB.'); return; }
-          setText(byId('pdfStatus'), 'Loading PDF reader and extracting text…');
-          try {
-            if (!pdfjsPromise) pdfjsPromise = import('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs');
-            const pdfjs = await pdfjsPromise;
-            pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';
-            const bytes = await file.arrayBuffer();
-            const pdf = await pdfjs.getDocument({ data: bytes }).promise;
-            pdfPages = [];
-            for (let pageNo = 1; pageNo <= pdf.numPages; pageNo++) {
-              const page = await pdf.getPage(pageNo);
-              const content = await page.getTextContent();
-              const text = content.items.map((item) => item.str || '').join(' ').replace(/\s+/g, ' ').trim();
-              pdfPages.push({ page: pageNo, text });
-            }
-            byId('pdfFromPage').max = String(pdfPages.length);
-            byId('pdfToPage').max = String(pdfPages.length);
-            byId('pdfToPage').value = String(Math.min(5, pdfPages.length));
-            byId('usePdfPages').disabled = false;
-            setText(byId('pdfStatus'), 'Loaded ' + pdfPages.length + ' pages. Choose a range and search for a heading or key term.');
-            renderPdfSearch();
-          } catch (err) {
-            setText(byId('pdfStatus'), 'Could not read this PDF. It may be password-protected or scanned. Try the textbook photo scanner for scanned pages.');
-          }
-        });
-        function renderPdfSearch() {
-          const root = byId('pdfResults'); root.replaceChildren();
-          if (!pdfPages.length) return;
-          const query = byId('pdfSearch').value.trim().toLowerCase();
-          const from = Math.max(1, Number(byId('pdfFromPage').value) || 1);
-          const to = Math.min(pdfPages.length, Math.max(from, Number(byId('pdfToPage').value) || from));
-          const matches = pdfPages.filter((p) => p.page >= from && p.page <= to && (!query || p.text.toLowerCase().includes(query)));
-          matches.slice(0, 25).forEach((p) => {
-            const row = document.createElement('div'); row.className = 'exam-question';
-            const title = document.createElement('strong'); title.textContent = 'Page ' + p.page + (p.text ? '' : ' · No selectable text');
-            const snippet = document.createElement('p'); snippet.className = 'muted small'; snippet.textContent = p.text ? p.text.slice(0, 360) + (p.text.length > 360 ? '…' : '') : 'This page may be a scanned image. Use the photo scanner in Smart Study.';
-            row.append(title, snippet); root.append(row);
-          });
-          if (!matches.length) { const empty = document.createElement('p'); empty.className = 'muted small'; empty.textContent = 'No matching text in this page range.'; root.append(empty); }
-        }
-        ['pdfSearch', 'pdfFromPage', 'pdfToPage'].forEach((id) => byId(id).addEventListener('input', renderPdfSearch));
-        byId('usePdfPages').addEventListener('click', () => {
-          const from = Math.max(1, Number(byId('pdfFromPage').value) || 1);
-          const to = Math.min(pdfPages.length, Math.max(from, Number(byId('pdfToPage').value) || from));
-          const text = pdfPages.filter((p) => p.page >= from && p.page <= to).map((p) => '[PDF page ' + p.page + '] ' + p.text).join('\n\n').trim();
-          if (!text) { setText(byId('pdfStatus'), 'Those pages have no selectable text. Use the textbook photo scanner for scanned pages.'); return; }
-          byId('notesInput').value = [byId('notesInput').value.trim(), text].filter(Boolean).join('\n\n──────────\n\n').slice(0, 12000);
-          textbookText = byId('notesInput').value;
-          window.vexTextbookContext = textbookText;
-          try { localStorage.setItem(importedNotesKey, textbookText); } catch {}
-          updateNotesReadyState(1);
-          document.querySelector('[data-study-tab="cards"]').click();
-          setText(byId('textbookStatus'), 'PDF pages imported to notes. Check the text, then create flashcards, a paper, or a quiz.');
-          setText(byId('pdfStatus'), 'Selected pages imported into Smart Study notes.');
-        });
-      </script>
-
-<script type="module">
-  const $ = (id) => document.getElementById(id);
-  const safe = (s) => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const notes = () => ($('notesInput').value || '').trim();
-  const setStatus = (id, text) => { $(id).textContent = text; };
-  let socraticTopic = '';
-  let socraticLastQuestion = '';
-  /* Move the existing, fully wired quiz generator into its own Smart Study tab. */
-  const quizGeneratorCard = $('quizGeneratorCard');
-  const quizGeneratorMount = $('quizGeneratorMount');
-  if (quizGeneratorCard && quizGeneratorMount) quizGeneratorMount.appendChild(quizGeneratorCard);
-  let localEngine = null;
-  let localAiLoading = false;
-  let localAiCancelled = false;
-  function getState() {
-    try { return JSON.parse(localStorage.getItem('focus_redesign_v1') || '{}'); } catch { return {}; }
-  }
-  function getVexActivityContext() {
-    const s = getState();
-    const activeView = document.querySelector('.view.active')?.id || 'unknown';
-    const activeStudyTab = document.querySelector('.study-tab[aria-selected="true"]')?.dataset.studyTab || 'unknown';
-    const cards = Array.isArray(s.cards) ? s.cards : [];
-    const activeCard = cards.length ? cards[Math.max(0, Math.min(Number(s.cardIndex) || 0, cards.length - 1))] : null;
-    const reviews = Array.isArray(s.reviews) ? s.reviews.slice(0, 10).map(r => ({ topic: r.topic || r.text || r.name || '', due: r.due || r.nextReview || '', done: !!r.done })) : [];
-    const quizHistory = Array.isArray(s.quizHistory) ? s.quizHistory.slice(0, 8).map(q => ({ subject: q.subject || '', score: q.score, date: q.date || '' })) : [];
-    const plan = Array.isArray(s.plan) ? s.plan.slice(0, 10).map(p => ({ title: p.title || p.subject || p.text || '', minutes: p.minutes || 0, done: !!p.done })) : [];
-    return JSON.stringify({ activeView, activeStudyTab, notes: String($('notesInput')?.value || '').trim().slice(0, 2000), currentFlashcard: activeCard ? { question: activeCard.question || activeCard.front || '', answer: activeCard.answer || activeCard.back || '', position: (Number(s.cardIndex) || 0) + 1, total: cards.length } : null, visibleExamPaper: String($('paperOutput')?.innerText || '').trim().slice(0, 1200), visibleQuiz: String($('quizPlay')?.innerText || '').trim().slice(0, 1200), quizStatus: String($('quizStatus')?.innerText || '').trim(), recentQuizHistory: quizHistory, reviewQueue: reviews, planner: plan, openTasks: (Array.isArray(s.tasks) ? s.tasks.filter(t => !t.done).slice(0, 8).map(t => t.text) : []) }, null, 2).slice(0, 4500);
-  }
-  $('buildMindMap').addEventListener('click', () => {
-    const text = notes();
-    if (text.length < 20) { setStatus('mindMapStatus', 'Add notes in Flashcards first.'); return; }
-    const terms = text.replace(/[^\p{L}\p{N}\s-]/gu, ' ').split(/\s+/).filter(w => w.length > 3);
-    const stop = new Set(['that','this','with','from','then','they','their','which','when','where','what','have','into','your','about','also','than','because','there','these','those']);
-    const counts = new Map();
-    terms.forEach(w => { const k = w.toLowerCase(); if (!stop.has(k) && !/^\d+$/.test(k)) counts.set(k, (counts.get(k)||0)+1); });
-    const top = [...counts.entries()].sort((a,b)=>b[1]-a[1]).slice(0,8);
-    if (!top.length) { setStatus('mindMapStatus','Could not find key terms in these notes.'); return; }
-    const root = $('mindMapCanvas'); root.replaceChildren();
-    const center = document.createElement('div'); center.className='mindmap-node mindmap-center'; center.textContent = ($('paperSubject').value.trim() || 'Your notes').slice(0,50); root.append(center);
-    const spokes = document.createElement('div'); spokes.className='mindmap-spokes';
-    top.forEach(([term,count]) => { const n=document.createElement('div'); n.className='mindmap-node'; n.textContent=term+' · '+count; spokes.append(n); });
-    root.append(spokes);
-    setStatus('mindMapStatus', 'Map created from frequent terms. Review connections for accuracy; this simple local map does not infer causal relationships.');
-  });
-  async function socraticTurn(answer, mode) {
-    const text = notes();
-    if (!text) { setStatus('socraticStatus','Add notes or scan a textbook page first.'); return; }
-    const q = socraticTopic || $('socraticQuestion').value.trim();
-    const prompt = mode === 'start'
-      ? 'Act as a Socratic tutor. Do not give the final answer. Ask exactly one clear, age-appropriate question that helps the learner reason about this topic using only the notes. Topic: '+q
-      : (mode === 'hint' ? 'Give one small hint to help answer this question, without revealing the full answer. Previous question: '+socraticLastQuestion+' Topic: '+q
-      : 'The learner answered: '+answer+'. Briefly respond to their reasoning, correct gently using only notes, then ask exactly one next Socratic question. Previous question: '+socraticLastQuestion+' Topic: '+q);
-    $('socraticForm').hidden = false;
-    setStatus('socraticStatus','Thinking from your notes…');
-    try {
-      const response = await window.requestStudyAi('/api/study/socratic', { notes:text, prompt },
-        'Act as a Socratic school tutor. Use only these notes. Follow this tutor task and respond with one concise question or hint at a time. Notes:\n' + String(text).slice(0, 2500) + '\n\nTutor task:\n' + prompt,
-        'socratic');
-      const question = String(response.question || response.answer || '').trim();
-      socraticLastQuestion = question;
-      const row = document.createElement('div'); row.className='exam-question'; row.textContent = (mode === 'start' ? 'Tutor: ' : mode === 'hint' ? 'Hint: ' : 'Tutor: ') + question;
-      $('socraticLog').append(row);
-      setStatus('socraticStatus','Your turn. Think it through; it is okay to be unsure.');
-    } catch (err) { setStatus('socraticStatus', (err?.response?.data?.error) || 'Tutor unavailable. Check your notes and try again.'); }
-  }
-  $('startSocratic').addEventListener('click', () => { socraticTopic=$('socraticQuestion').value.trim() || 'the current notes'; $('socraticLog').replaceChildren(); socraticTurn('', 'start'); });
-  $('socraticForm').addEventListener('submit', e => { e.preventDefault(); const a=$('socraticAnswer').value.trim(); if (!a) return; const row=document.createElement('div'); row.className='exam-question'; row.textContent='You: '+a; $('socraticLog').append(row); $('socraticAnswer').value=''; socraticTurn(a,'answer'); });
-  $('socraticHint').addEventListener('click', () => socraticTurn('', 'hint'));
-  const socraticJump = () => {
-    const target = $('socraticModePanel');
-    if (!target) return;
-    document.querySelector('[data-view="study"]')?.click();
-    target.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
-    target.classList.remove('socratic-arrive');
-    void target.offsetWidth;
-    target.classList.add('socratic-arrive');
-    window.setTimeout(() => $('socraticQuestion')?.focus({ preventScroll: true }), 450);
-    window.setTimeout(() => target.classList.remove('socratic-arrive'), 1800);
-  };
-  const featureDestinations = [
-    ['Focus timer','view-command','timerStart'], ['Custom intervals','view-command','timerStart'], ['Daily focus goal','view-command','timerStart'], ['Consistency tracking','view-command','timerStart'],
-    ['Focus list & planner','view-planner',null], ['Study notes workspace','view-study','notesInput'], ['Flashcards','view-study','flashcard'], ['Quiz builder','view-study','quizTopic'], ['Quiz-to-planner guidance','view-planner','quizLogForm'],
-    ['PDF chapter navigator','view-study','pdfFromPage'], ['Textbook photo / notes scanner','view-study','notesInput'], ['Mind maps','view-study','mindMapCanvas'], ['Socratic mode','view-study','socraticModePanel'], ['Review scheduling','view-study','reviewTopic'], ['Llama 3.2 1B chat','view-study','loadLocalAi'], ['Study analytics','view-planner',null], ['Quiz-history insights','view-planner','quizLogForm'], ['Theme toggle',null,'themeToggle'], ['Export & restore','view-study','backupStatus']
-  ];
-  document.querySelectorAll('.vex-feature-list > article').forEach((card, index) => {
-    const [label, viewId, targetId] = featureDestinations[index] || ['Open feature', 'view-study', null];
-    card.classList.add('vex-feature-card');
-    card.removeAttribute('role'); card.removeAttribute('tabindex'); card.removeAttribute('aria-label');
-    const oldHint = card.querySelector('.feature-jump-hint'); if (oldHint) oldHint.remove();
-    const button = document.createElement('button'); button.type = 'button'; button.className = 'feature-open-btn';
-    button.innerHTML = 'Open feature <span aria-hidden="true">↗</span>';
-    button.setAttribute('aria-label', 'Open ' + label);
-    button.addEventListener('click', () => {
-      if (targetId === 'themeToggle') { $('themeToggle')?.click(); return; }
-      const view = viewId ? $(viewId) : null;
-      if (view && view.classList.contains('view') && !view.classList.contains('active')) {
-        const nav = document.querySelector('[data-view="' + viewId.replace('view-','') + '"]');
-        if (nav) nav.click(); else { document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === viewId)); }
-      }
-      const target = targetId ? $(targetId) : view;
-      window.setTimeout(() => {
-        target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        if (targetId === 'socraticModePanel') { target?.classList.add('socratic-arrive'); window.setTimeout(() => $('socraticQuestion')?.focus({preventScroll:true}), 450); window.setTimeout(() => target?.classList.remove('socratic-arrive'), 1800); }
-        else if (target && /INPUT|TEXTAREA|SELECT/.test(target.tagName)) target.focus({preventScroll:true});
-      }, 80);
-    });
-    card.appendChild(button);
-  });
-  $('socraticFeatureJump')?.addEventListener('click', () => $('socraticFeatureJump')?.querySelector('.feature-open-btn')?.click());
-  $('loadLocalAi').addEventListener('click', async () => {
-    const button=$('loadLocalAi');
-    if (localAiLoading || localEngine) return;
-    localAiLoading=true; localAiCancelled=false; button.disabled=true; $('cancelLocalAi').hidden=false;
-    const localAiStartedAt=Date.now();
-    setStatus('localAiStatus','Checking browser storage and GPU support first. No cache will be cleared.');
-    try {
-      if (!('gpu' in navigator)) throw new Error('WebGPU is unavailable in this browser/device. The model cannot run locally here; no model cache was cleared.');
-      if (navigator.storage && navigator.storage.estimate) {
-        const storage = await navigator.storage.estimate();
-        const free = Number.isFinite(storage.quota) && Number.isFinite(storage.usage) ? Math.max(0, storage.quota-storage.usage) : null;
-        if (free !== null && free < 1.3 * 1024 * 1024 * 1024) throw new Error('Not enough estimated browser storage headroom for Llama 3.2 1B and runtime cache. Free some device storage and retry; existing cached model files have not been deleted.');
-      }
-      let adapter;
-      try { adapter = await navigator.gpu.requestAdapter(); } catch (e) { throw new Error('The browser could not start a WebGPU adapter ('+(e?.message||'unknown error')+'). No download was started.'); }
-      if (!adapter) throw new Error('No compatible WebGPU adapter was found. Llama 3.2 1B cannot run locally on this browser/device. No download was started.');
-      const webllm = await import('https://esm.run/@mlc-ai/web-llm@0.2.86');
-      const modelId='Llama-3.2-1B-Instruct-q4f16_1-MLC';
-      const supported = webllm.prebuiltAppConfig.model_list.some(m => m.model_id === modelId);
-      if (!supported) throw new Error('This WebLLM package does not list the configured Llama model. No model was loaded.');
-      setStatus('localAiStatus','Starting WebLLM. It may reuse cached files; the percentage is model-initialization progress, not a reliable measure of mobile data used. Do not reload this page while it is loading.');
-      const enginePromise = webllm.CreateMLCEngine(modelId, { initProgressCallback: p => {
-        if (localAiCancelled) return;
-        const progress=Math.max(0,Math.min(1,Number(p.progress)||0));
-        const percent=Math.round(progress*100);
-        const elapsedSeconds=(Date.now()-localAiStartedAt)/1000;
-        const remainingSeconds=progress>0.03 ? Math.max(0,Math.round(elapsedSeconds*(1-progress)/progress)) : null;
-        const eta=remainingSeconds===null ? 'ETA calculating…' : remainingSeconds<60 ? 'about '+remainingSeconds+' sec left' : 'about '+Math.ceil(remainingSeconds/60)+' min left';
-        const stage = percent >= 100 ? 'Download stage reached 100%; initializing model and GPU' : 'Loading model files';
-        setStatus('localAiStatus',stage+' · '+percent+'% · '+eta+'. This is not a data-usage meter. '+(p.text||''));
-      } });
-      localEngine = await enginePromise;
-      window.vexLocalEngine = localEngine;
-      if (localAiCancelled) { await localEngine?.unload?.(); localEngine=null; window.vexLocalEngine=null; return; }
-      $('askLocalAi').disabled=false;
-      setStatus('localAiStatus','Llama 3.2 1B loaded. Prompts are processed in your browser while this local engine is active.');
-    } catch (err) {
-      if (!localAiCancelled) {
-        const detail=String(err?.message || err || 'Unknown error');
-        const lower=detail.toLowerCase();
-        const advice = /valid external instance reference no longer exists|instance.*no longer exists|instance dropped|device lost|gpu|webgpu|operationerror|poperrorscope|memory|out of memory/.test(lower)
-          ? ' WebLLM lost or disposed an internal runtime/GPU instance during initialization. This does not prove the cached model is corrupt. Do not clear site data or repeatedly restart the model load; a retry on the same device may fail again. Keep this exact error for diagnosis.'
-          : /cache|network|fetch|failed to execute.*add|timeout|load failed/.test(lower)
-            ? ' A model-file network/cache operation failed. Keep this page open on a stable connection; do not clear site data, as cached files may still be recoverable.'
-            : ' Cached model files were not intentionally deleted. Copy this full error before retrying.';
-        setStatus('localAiStatus','Local AI failed: '+detail+'.'+advice+' If Llama cannot download or run, use Focus Buddy in Study Helper as the fallback.');
-      }
-    } finally {
-      localAiLoading=false;
-      if (!localAiCancelled && !localEngine) button.disabled=false;
-      $('cancelLocalAi').hidden=true;
-    }
-  });
-  $('openFocusBuddyFallback')?.addEventListener('click', () => {
-    document.querySelector('[data-view="study"]')?.click();
-    document.querySelector('[data-study-tab="tutor"]')?.click();
-    $('study-tutor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    $('chatInput')?.focus({ preventScroll: true });
-  });
-  $('cancelLocalAi').addEventListener('click', () => {
-    if (!localAiLoading) return;
-    localAiCancelled=true;
-    setStatus('localAiStatus','Cancellation requested. Stopping the model download…');
-    $('cancelLocalAi').disabled=true;
-    $('cancelLocalAi').hidden=true;
-    $('cancelLocalAi').disabled=false;
-    $('loadLocalAi').disabled=false;
-    setStatus('localAiStatus','Cancellation requested. WebLLM may finish or reject an in-flight file request before stopping; this page was not reloaded and cached files were not cleared.');
-  });
-  $('whatVexCanDo')?.addEventListener('click', () => {
-    document.querySelectorAll('.view').forEach((v) => v.classList.toggle('active', v.id === 'view-tools'));
-    document.querySelectorAll('.nav-item').forEach((b) => {
-      b.classList.remove('active');
-      b.removeAttribute('aria-current');
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-  // Keep drawer light/dark label in sync when themeToggle runs
-  const _themeBtn = $('themeToggle');
-  if (_themeBtn) {
-    const _orig = _themeBtn.onclick;
-    _themeBtn.addEventListener('click', () => {
-      window.setTimeout(() => {
-        const isLight = document.body.classList.contains('light');
-        const lab = $('drawerLightDarkLabel');
-        const hint = $('drawerLightDarkHint');
-        if (lab) lab.textContent = isLight ? 'Dark mode' : 'Light mode';
-        if (hint) hint.textContent = isLight ? 'Switch back to the dark UI' : 'Switch to a brighter UI';
-      }, 10);
-    });
-  }
-  $('askLocalAi').addEventListener('click', async () => {
-    if (!localEngine) return;
-    const prompt=$('localAiPrompt').value.trim(); if (!prompt) return;
-    $('askLocalAi').disabled=true; setStatus('localAiOutput','Generating locally…');
-    try {
-      const result=await localEngine.chat.completions.create({messages:[{role:'system',content:'You are VEX.STUDY, a careful, age-appropriate study coach. Help across flashcards, active quizzes, exam papers, textbook notes, planner tasks, review schedules and quiz history. Use the supplied current app context to understand what the student is working on, explain mistakes step by step, give a hint before revealing a solution when appropriate, and suggest one small next action. Ground textbook-specific claims in the supplied notes and activity. Clearly say when context is missing or insufficient. Never invent scores, questions, or answers, and do not claim to watch activity in the background.'},{role:'user',content:'CURRENT VEX.STUDY ACTIVITY CONTEXT (current flashcard, visible quiz/exam, notes, planner, reviews and recent results when available):\n'+getVexActivityContext()+'\n\nSTUDENT REQUEST:\n'+prompt}],temperature:0.3,max_tokens:650});
-      setStatus('localAiOutput', result.choices?.[0]?.message?.content || 'No response generated.');
-    } catch (err) { setStatus('localAiOutput',err?.message || 'Local generation failed.'); }
-    finally { $('askLocalAi').disabled=false; }
-  });
-  function renderInsights() {
-    const s=getState(); const quizzes=Array.isArray(s.quizHistory)?s.quizHistory:[];
-    const minutes=Math.max(0,Number(s.minutes)||0); const sessions=Math.max(0,Number(s.sessions)||0);
-    const accuracy=quizzes.length?Math.round(quizzes.reduce((a,q)=>a+(Number(q.score)||0),0)/quizzes.length):null;
-    $('focusEfficiency').textContent='Focus efficiency: '+(accuracy===null?'log a quiz to compare':Math.round(Math.min(100,minutes/(Math.max(1,sessions*25))*100)*0.5+(accuracy*0.5))+'/100 · approximate session/accuracy blend');
-    const reviews=Array.isArray(s.reviews)?s.reviews:[];
-    $('forgettingEstimate').textContent=reviews.length?'Review estimate: '+reviews.filter(r=>!r.done).length+' pending topics · next scheduled review is a reminder, not an exact forgetting prediction':'Review estimate: add topics to Reviews';
-    const heat=$('studyHeatmap'); heat.replaceChildren();
-    const activity=Array.isArray(s.activityHours)?s.activityHours:[];
-    for(let h=0;h<24;h++){ const cell=document.createElement('div'); cell.className='heat-cell'; const n=Number(activity[h])||0; cell.style.opacity=String(0.25+Math.min(0.75,n/5)); cell.title=h+':00 · '+n+' recorded sessions'; cell.textContent=h%6===0?String(h).padStart(2,'0'):''; heat.append(cell); }
-    const topics=new Map(); quizzes.forEach(q=>{const name=String(q.subject||q.topic||'General').slice(0,45); const list=topics.get(name)||[]; list.push(Number(q.score)||0); topics.set(name,list);});
-    const out=$('weaknessRadar'); out.replaceChildren(); const heading=document.createElement('strong'); heading.textContent='Subject weakness radar'; out.append(heading);
-    if(!topics.size){ const p=document.createElement('p'); p.className='muted small'; p.textContent='Log quiz scores by subject to see which needs revision.'; out.append(p); }
-    [...topics.entries()].sort((a,b)=>a[1].reduce((x,y)=>x+y,0)/a[1].length-b[1].reduce((x,y)=>x+y,0)/b[1].length).slice(0,5).forEach(([name,scores])=>{const p=document.createElement('p'); p.className='muted small'; p.textContent=name+' · average '+Math.round(scores.reduce((a,b)=>a+b,0)/scores.length)+'%'; out.append(p);});
-    const milestones=$('milestoneStrip'); milestones.textContent=sessions>=25?'Milestone unlocked: Steady Learner · 25 sessions':sessions>=10?'Milestone unlocked: Consistent · 10 sessions':sessions>=3?'Milestone unlocked: Getting Started · 3 sessions':'First milestone: complete 3 focus sessions. No streak pressure—every restart counts.';
-  }
-  $('refreshInsights').addEventListener('click',renderInsights);
-  $('saveIntervals').addEventListener('click',()=>{
-    const focus=Math.max(5,Math.min(120,Number($('focusMinutesCustom').value)||25));
-    const rest=Math.max(1,Math.min(45,Number($('breakMinutesCustom').value)||5));
-    try { const s=getState(); s.customFocus=focus; s.customBreak=rest; localStorage.setItem('focus_redesign_v1',JSON.stringify(s)); }
-    catch {}
-    document.querySelectorAll('.preset').forEach(b=>b.classList.remove('active'));
-    const preset=document.querySelector('.preset[data-minutes="'+focus+'"]');
-    if(preset) preset.classList.add('active');
-    setStatus('intervalStatus','Saved '+focus+' min focus / '+rest+' min break. Select the matching preset if available; custom value is saved for future timer sessions.');
-  });
-  $('exportStudyData').addEventListener('click',()=>{
-    try {
-      const storage = {};
-      // Only include VEX-owned app keys; do not export unrelated site/browser storage.
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && (/^vex_/i.test(key) || /^focus_/i.test(key))) {
-          storage[key] = localStorage.getItem(key);
-        }
-      }
-      const currentNotes = $('notesInput')?.value;
-      if (typeof currentNotes === 'string' && currentNotes) storage['vex_study_notes_v1'] = currentNotes.slice(0, 12000);
-      const data = {
-        format: 'VEX.STUDY backup',
-        version: 2,
-        exportedAt: new Date().toISOString(),
-        storage,
-        // Keep these fields for compatibility with earlier VEX backup versions.
-        state: getState(),
-        notes: typeof currentNotes === 'string' ? currentNotes : notes()
-      };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'vex-study-backup-' + new Date().toISOString().slice(0,10) + '.json';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.setTimeout(() => URL.revokeObjectURL(url), 1500);
-      setStatus('backupStatus','Backup exported. It includes VEX local study data, settings, theme and notes. Keep the file private.');
-    } catch (err) {
-      setStatus('backupStatus', err?.message || 'Could not export your VEX backup.');
-    }
-  });
-  $('importStudyData').addEventListener('change',async e=>{
-    const file=e.target.files?.[0];
-    e.target.value='';
-    if(!file)return;
-    try {
-      const data = JSON.parse(await file.text());
-      if (!data || typeof data !== 'object' || Array.isArray(data) || !data.version) {
-        throw new Error('This is not a valid VEX backup file.');
-      }
-      if (!window.confirm('Restore this VEX backup on this device? Existing VEX local data may be replaced.')) return;
-
-      if (data.storage && typeof data.storage === 'object' && !Array.isArray(data.storage)) {
-        const entries = Object.entries(data.storage);
-        for (const [key, value] of entries) {
-          if ((/^vex_/i.test(key) || /^focus_/i.test(key)) && typeof value === 'string') {
-            localStorage.setItem(key, value);
-          }
-        }
-      } else {
-        // Backward compatibility with VEX backup version 1.
-        const state = data.state || data;
-        if (!state || typeof state !== 'object' || Array.isArray(state)) {
-          throw new Error('Invalid backup format.');
-        }
-        const current = getState();
-        localStorage.setItem('focus_redesign_v1', JSON.stringify({...current, ...state}));
-        if (typeof data.notes === 'string') {
-          localStorage.setItem('vex_study_notes_v1', data.notes.slice(0, 12000));
-        }
-      }
-
-      setStatus('backupStatus','Backup restored. Reloading VEX to apply the restored data…');
-      window.setTimeout(() => window.location.reload(), 700);
-    } catch(err) {
-      setStatus('backupStatus',err?.message || 'Could not read this backup file.');
-    }
-  });
-  renderInsights();
-</script>
 
     <script>
       (() => {
@@ -8071,7 +7011,6 @@ document.addEventListener('visibilitychange', function () {
     </script>
     <script defer src="/_vercel/speed-insights/script.js"></script>
     <!-- Optional Vite entry: 404-safe. Type lock re-runs after load so main.ts cannot shrink heroes. -->
-    <script type="module" src="./src/main.ts" onerror="console.info('VEX: src/main.ts not present (standalone mode)')"></script>
       <script>
 (function () {
   var box = document.getElementById('themeSwatches');
@@ -8115,6 +7054,7 @@ document.addEventListener('visibilitychange', function () {
         --vx-edge: color-mix(in srgb, var(--acc) 32%, var(--line));
       }
       html { -webkit-tap-highlight-color: transparent; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--acc) 45%, transparent) transparent; }
+      ::-moz-selection { background: color-mix(in srgb, var(--acc) 42%, transparent); color: var(--text); }
       ::selection { background: color-mix(in srgb, var(--acc) 42%, transparent); color: var(--text); }
 
       /* Screen transitions: soft blur-in, then a staggered rise for each block */
@@ -8186,7 +7126,6 @@ document.addEventListener('visibilitychange', function () {
       html body .bottom-nav {
         margin-bottom: env(safe-area-inset-bottom, 0px);
         border-radius: 22px;
-        -webkit-backdrop-filter: blur(26px) saturate(170%);
         backdrop-filter: blur(26px) saturate(170%);
         box-shadow: 0 18px 50px -10px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .08), 0 0 0 1px var(--vx-glow-soft);
       }
@@ -8730,12 +7669,62 @@ html body .dash-card svg{height:auto}
 .vx-skeleton{border-radius:var(--vx2-r-sm);min-height:1em;background:linear-gradient(90deg,transparent 0,color-mix(in srgb,var(--acc) 14%,transparent) 50%,transparent 100%) 0 0/200% 100%,color-mix(in srgb,var(--panel2) 80%,transparent);animation:vx2sk 1.3s linear infinite}
 html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-md);padding:24px;text-align:center;color:var(--muted)}
 @media(max-width:640px){
- html body .surface{-webkit-backdrop-filter:none;backdrop-filter:none}
+ html body .surface{backdrop-filter:none}
  html body .main-content{padding-inline:14px}
  html body .view.active{animation-duration:.3s}
  html body #socraticLog>*{max-width:94%}
 }
 @media(prefers-reduced-motion:reduce){html body *,html body *::before,html body *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
+<style data-vex="contact">
+.vex-contact-backdrop { z-index: 900; }
+.vex-contact-panel { max-height: calc(100dvh - 40px); overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.vex-contact-mini { margin: 0 0 14px; padding: 12px 14px; border: 1px solid rgba(128,128,160,.25); border-radius: 15px; background: rgba(128,128,160,.07); color: var(--muted); font-size: 12px; line-height: 1.7; }
+.vex-contact-mini a, .vex-contact-note a { color: inherit; font-weight: 700; word-break: break-all; }
+.vex-contact-email { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 48px; margin: 4px 0 16px; text-decoration: none; word-break: break-all; }
+.vex-contact-list { list-style: none; margin: 0 0 14px; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+.vex-contact-list li { padding: 7px 12px; border: 1px solid rgba(128,128,160,.25); border-radius: 999px; background: rgba(128,128,160,.07); color: var(--muted); font-size: 12px; }
+.vex-contact-note { margin: 0 auto 8px; max-width: 280px; color: var(--muted); font-size: 11px; line-height: 1.6; }
+</style>
+<script>
+(function () {
+  var dlg = document.getElementById('contactDialog');
+  if (!dlg) return;
+  var about = document.getElementById('aboutDialog');
+  var lastFocus = null;
+  function openContact(returnTo) {
+    lastFocus = (returnTo && returnTo.focus) ? returnTo : document.activeElement;
+    if (about && !about.hidden) {
+      about.classList.remove('is-open');
+      about.hidden = true;
+      document.body.classList.remove('about-visible');
+    }
+    dlg.hidden = false;
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function () { dlg.classList.add('is-open'); });
+    document.getElementById('contactClose').focus();
+  }
+  function closeContact() {
+    dlg.classList.remove('is-open');
+    dlg.hidden = true;
+    document.body.style.overflow = '';
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  ['contactOpen', 'contactFromAbout'].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('click', function () { openContact(); });
+  });
+  var drawerContact = document.getElementById('drawerContact');
+  if (drawerContact) drawerContact.addEventListener('click', function () {
+    var menuClose = document.getElementById('menuClose');
+    if (menuClose) menuClose.click();
+    openContact(document.getElementById('menuOpen'));
+  });
+  document.getElementById('contactClose').addEventListener('click', closeContact);
+  document.getElementById('contactBack').addEventListener('click', closeContact);
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) closeContact(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !dlg.hidden) closeContact(); });
+})();
+</script>
 </body>
 </html>
