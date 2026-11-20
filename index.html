@@ -2689,7 +2689,8 @@
       ]
     }
     </script>
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" crossorigin src="/assets/index-Z0E95S2E.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-D4m5AtOD.css">
   </head>
   <body>
     <div id="vexIntroScreen" role="status" aria-label="VEX.STUDY is loading">
@@ -7723,6 +7724,209 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
   document.getElementById('contactBack').addEventListener('click', closeContact);
   dlg.addEventListener('click', function (e) { if (e.target === dlg) closeContact(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !dlg.hidden) closeContact(); });
+})();
+</script>
+<style id="vex-menu-fix">html body .menu-trigger{pointer-events:auto;cursor:pointer;touch-action:manipulation;z-index:70}</style>
+<script>
+/* VEX.STUDY – menu drawer wiring (open/close + every drawer link) */
+(function () {
+  'use strict';
+  function $(id) { return document.getElementById(id); }
+  var openBtn = $('menuOpen'), closeBtn = $('menuClose'), drawer = $('vexDrawer'), scrim = $('drawerScrim');
+  if (!openBtn || !drawer || !scrim) return;
+  var lastFocus = null, NAME_KEY = 'vex_student_name', STATE_KEY = 'focus_redesign_v1';
+
+  function toast(msg) {
+    var t = $('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.classList.remove('show'); }, 2500);
+  }
+  function store(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+
+  /* ---------- open / close ---------- */
+  function isOpen() { return drawer.classList.contains('is-open'); }
+  function syncLightLabel() {
+    var light = document.body.classList.contains('light');
+    var l = $('drawerLightDarkLabel');
+    if (l) l.textContent = light ? 'Dark mode' : 'Light mode';
+  }
+  function openDrawer() {
+    if (isOpen()) return;
+    lastFocus = document.activeElement;
+    var inp = $('drawerNameInput');
+    if (inp) inp.value = (store(NAME_KEY) || '').trim();
+    syncLightLabel();
+    scrim.hidden = false;
+    drawer.removeAttribute('inert');
+    drawer.setAttribute('aria-hidden', 'false');
+    openBtn.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(function () { drawer.classList.add('is-open'); });
+    setTimeout(function () { if (closeBtn) closeBtn.focus(); }, 60);
+  }
+  function closeDrawer(restoreFocus) {
+    if (!isOpen() && scrim.hidden) return;
+    drawer.classList.remove('is-open');
+    scrim.hidden = true;
+    drawer.setAttribute('inert', '');
+    drawer.setAttribute('aria-hidden', 'true');
+    openBtn.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    if (restoreFocus !== false && lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  openBtn.addEventListener('click', function () { isOpen() ? closeDrawer() : openDrawer(); });
+  if (closeBtn) closeBtn.addEventListener('click', function () { closeDrawer(); });
+  scrim.addEventListener('click', function () { closeDrawer(); });
+  document.addEventListener('keydown', function (e) {
+    if (!isOpen()) return;
+    if (e.key === 'Escape') { closeDrawer(); return; }
+    if (e.key === 'Tab') {
+      var f = drawer.querySelectorAll('button, a[href], input, [tabindex]:not([tabindex="-1"])');
+      if (!f.length) return;
+      var first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+  function link(id, fn) {
+    var el = $(id);
+    if (el) el.addEventListener('click', function (e) { closeDrawer(false); fn(e); });
+  }
+
+  /* ---------- views ---------- */
+  function showToolsView() {
+    document.querySelectorAll('.view').forEach(function (v) { v.classList.toggle('active', v.id === 'view-tools'); });
+    document.querySelectorAll('.nav-item').forEach(function (b) { b.classList.remove('active'); b.removeAttribute('aria-current'); });
+    var p = $('testImprovementsPanel'); if (p) p.hidden = true;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  var wv = $('whatVexCanDo');
+  if (wv) wv.addEventListener('click', showToolsView);
+  link('drawerWhatVexCanDo', showToolsView);
+
+  /* ---------- name ---------- */
+  function saveName() {
+    var inp = $('drawerNameInput');
+    if (!inp) return;
+    var nm = inp.value.trim().slice(0, 24);
+    try { if (nm) localStorage.setItem(NAME_KEY, nm); else localStorage.removeItem(NAME_KEY); } catch (e) {}
+    var msg = '';
+    if (nm && typeof window.vexPickMotivation === 'function') { try { msg = window.vexPickMotivation(nm); } catch (e) {} }
+    var mot = $('drawerMotivation');
+    if (mot) { mot.textContent = msg; mot.hidden = !msg; }
+    var dm = $('dailyMessage');
+    if (dm && msg) dm.textContent = msg;
+    toast(nm ? 'Name saved' : 'Name cleared');
+  }
+  var ns = $('drawerNameSave'); if (ns) ns.addEventListener('click', saveName);
+  var ni = $('drawerNameInput');
+  if (ni) ni.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); saveName(); } });
+
+  /* ---------- light / dark ---------- */
+  var ld = $('drawerLightDark');
+  if (ld) ld.addEventListener('click', function () {
+    var t = $('themeToggle'); if (t) t.click();
+    syncLightLabel();
+  });
+
+  /* ---------- upload notes ---------- */
+  link('drawerUploadNotes', function () {
+    var nav = document.querySelector('.nav-item[data-view="study"]'); if (nav) nav.click();
+    var f = $('notesFile'); if (f) f.click();
+  });
+
+  /* ---------- test improvements ---------- */
+  function el(tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; }
+  function renderImprovements() {
+    var box = $('improvementsContent'); if (!box) return;
+    box.replaceChildren();
+    var hist = [];
+    try { hist = (JSON.parse(store(STATE_KEY) || '{}').quizHistory) || []; } catch (e) {}
+    if (!hist.length) { box.append(el('p', 'muted small', 'No quizzes saved yet. Log a quiz score in Progress and your improvements will show up here.')); return; }
+    var scores = hist.map(function (q) { return Number(q.score) || 0; });
+    var avg = Math.round(scores.reduce(function (a, b) { return a + b; }, 0) / scores.length);
+    var stats = el('div', 'improvement-stats');
+    [[String(hist.length), 'Quizzes'], [avg + '%', 'Average'], [Math.max.apply(null, scores) + '%', 'Best']].forEach(function (s) {
+      var c = el('div', 'improvement-stat'); c.append(el('strong', null, s[0]), el('span', null, s[1])); stats.append(c);
+    });
+    box.append(stats);
+    var by = {};
+    hist.slice().reverse().forEach(function (q) { (by[q.subject] = by[q.subject] || []).push(Number(q.score) || 0); });
+    var list = el('div', 'improvement-list');
+    Object.keys(by).forEach(function (sub) {
+      var a = by[sub], last = a[a.length - 1], row = el('div', 'improvement-row');
+      var txt = last + '%';
+      if (a.length > 1) { var d = last - a[a.length - 2]; txt += ' (' + (d > 0 ? '+' : '') + d + ' vs previous)'; }
+      else txt += ' (first attempt)';
+      var weak = last < 60 ? ' · needs revision' : '';
+      row.append(el('strong', null, sub), el('span', 'muted small', ' ' + txt + weak));
+      row.style.cssText = 'display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-top:1px solid rgba(128,128,160,.2)';
+      list.append(row);
+    });
+    box.append(list);
+  }
+  link('drawerTestImprovements', function () {
+    var p = $('testImprovementsPanel'); if (!p) return;
+    renderImprovements();
+    p.hidden = false;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    var c = $('closeImprovements'); if (c) c.focus({ preventScroll: true });
+  });
+  var ci = $('closeImprovements'); if (ci) ci.addEventListener('click', function () { var p = $('testImprovementsPanel'); if (p) p.hidden = true; });
+
+  /* ---------- about / terms / privacy ---------- */
+  link('drawerAbout', function () { var b = $('aboutOpen'); if (b) b.click(); });
+  link('drawerTerms', function () { var b = $('termsOpen'); if (b) b.click(); });
+  link('drawerPrivacy', function () {
+    var b = $('termsOpen'); if (b) b.click();
+    setTimeout(function () { var s = $('privacySection'); if (s) s.scrollIntoView({ block: 'start' }); }, 80);
+  });
+
+  /* ---------- export / import ---------- */
+  function exportData() {
+    var data = {};
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k === STATE_KEY || k.indexOf('vex_') === 0) data[k] = localStorage.getItem(k);
+      }
+    } catch (e) {}
+    var blob = new Blob([JSON.stringify({ app: 'VEX.STUDY', version: 1, exportedAt: new Date().toISOString(), data: data }, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'vex-study-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    var st = $('backupStatus'); if (st) st.textContent = 'Backup downloaded. It stays on your device.';
+    toast('Backup downloaded');
+  }
+  function importData(file) {
+    if (!file) return;
+    var r = new FileReader();
+    r.onload = function () {
+      try {
+        var j = JSON.parse(r.result);
+        if (!j || j.app !== 'VEX.STUDY' || typeof j.data !== 'object') throw new Error('bad');
+        Object.keys(j.data).forEach(function (k) {
+          if ((k === STATE_KEY || k.indexOf('vex_') === 0) && typeof j.data[k] === 'string') localStorage.setItem(k, j.data[k]);
+        });
+        toast('Backup restored – reloading…');
+        setTimeout(function () { location.reload(); }, 700);
+      } catch (e) {
+        var st = $('backupStatus'); if (st) st.textContent = 'That file is not a valid VEX backup.';
+        toast('Invalid backup file');
+      }
+    };
+    r.readAsText(file);
+  }
+  var ex = $('exportStudyData'); if (ex) ex.addEventListener('click', exportData);
+  var im = $('importStudyData');
+  if (im) im.addEventListener('change', function () { importData(im.files && im.files[0]); im.value = ''; });
+  link('drawerExportData', exportData);
+  link('drawerImportData', function () { if (im) im.click(); });
 })();
 </script>
 </body>
