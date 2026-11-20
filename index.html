@@ -7673,6 +7673,46 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
  html body .main-content{padding-inline:14px}
  html body .view.active{animation-duration:.3s}
  html body #socraticLog>*{max-width:94%}
+
+ /* === TEXT OVERFLOW FIXES (Add task + Make flashcards) === */
+ html body .generator-footer {
+   flex-direction: column !important;
+   align-items: stretch !important;
+   gap: 12px !important;
+ }
+ html body .generator-footer .btn,
+ html body #generateCards {
+   width: 100% !important;
+   white-space: normal !important;
+   text-align: center !important;
+   justify-content: center !important;
+   padding: 12px 14px !important;
+   font-size: 12px !important;
+ }
+ html body .generator-footer > span,
+ html body .generator-footer .muted {
+   text-align: center !important;
+   max-width: 100% !important;
+   display: block !important;
+ }
+
+ /* Task form - stop Add task button + placeholder from fighting */
+ html body .task-form {
+   flex-wrap: wrap !important;
+   gap: 8px !important;
+ }
+ html body .task-form .btn,
+ html body #taskForm .btn {
+   flex: 0 0 auto !important;
+   white-space: nowrap !important;
+   padding: 10px 14px !important;
+   font-size: 12px !important;
+   min-width: 90px !important;
+ }
+ html body .task-form input {
+   flex: 1 1 140px !important;
+   min-width: 0 !important;
+ }
 }
 @media(prefers-reduced-motion:reduce){html body *,html body *::before,html body *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
