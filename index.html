@@ -8184,6 +8184,480 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
   }
 })();
 </script>
+<script>
+/* VEX.STUDY – Local Llama (WebLLM) + study-tool wiring that was disconnected */
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var loadBtn = $('loadLocalAi');
+  var cancelBtn = $('cancelLocalAi');
+  var askBtn = $('askLocalAi');
+  var statusEl = $('localAiStatus');
+  var promptEl = $('localAiPrompt');
+  var outEl = $('localAiOutput');
+  if (!loadBtn) return;
+
+  var MODEL_ID = 'Llama-3.2-1B-Instruct-q4f16_1-MLC';
+  var WEBLLM_URL = 'https://esm.run/@mlc-ai/web-llm';
+  var loading = false;
+  var cancelled = false;
+  var engine = null;
+
+  function setStatus(msg) {
+    if (statusEl) statusEl.textContent = msg;
+  }
+
+  function toast(msg) {
+    var t = $('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.classList.remove('show'); }, 2400);
+  }
+
+  function notesText() {
+    var n = $('notesInput');
+    return n ? String(n.value || '').trim() : '';
+  }
+
+  function webgpuOk() {
+    return !!(navigator.gpu);
+  }
+
+  async function ensureEngine() {
+    if (engine || window.vexLocalEngine) {
+      engine = engine || window.vexLocalEngine;
+      window.vexLocalEngine = engine;
+      return engine;
+    }
+    if (!webgpuOk()) {
+      throw new Error('This browser/device has no WebGPU. Llama cannot run here. Use Chrome/Edge on a supported device, or use Focus Buddy offline helpers.');
+    }
+    cancelled = false;
+    loading = true;
+    loadBtn.disabled = true;
+    if (cancelBtn) cancelBtn.hidden = false;
+    setStatus('Loading WebLLM library…');
+
+    var mod;
+    try {
+      mod = await import(WEBLLM_URL);
+    } catch (e) {
+      loading = false;
+      loadBtn.disabled = false;
+      if (cancelBtn) cancelBtn.hidden = true;
+      throw new Error('Could not load WebLLM (network blocked?). Check connection and try again.');
+    }
+    if (cancelled) {
+      loading = false;
+      loadBtn.disabled = false;
+      if (cancelBtn) cancelBtn.hidden = true;
+      throw new Error('Download cancelled.');
+    }
+
+    var CreateMLCEngine = mod.CreateMLCEngine;
+    if (typeof CreateMLCEngine !== 'function') {
+      loading = false;
+      loadBtn.disabled = false;
+      if (cancelBtn) cancelBtn.hidden = true;
+      throw new Error('WebLLM loaded but CreateMLCEngine is missing. Library format changed.');
+    }
+
+    setStatus('Downloading Llama 3.2 1B (~1 GB first time). Keep this tab open…');
+    try {
+      engine = await CreateMLCEngine(MODEL_ID, {
+        initProgressCallback: function (p) {
+          if (cancelled) return;
+          var text = (p && (p.text || p.progress)) ? (p.text || '') : '';
+          var frac = p && typeof p.progress === 'number' ? Math.round(p.progress * 100) : null;
+          if (frac != null && text) setStatus(text + ' (' + frac + '%)');
+          else if (text) setStatus(text);
+          else if (frac != null) setStatus('Loading model… ' + frac + '%');
+        }
+      });
+    } catch (e) {
+      loading = false;
+      loadBtn.disabled = false;
+      if (cancelBtn) cancelBtn.hidden = true;
+      var msg = (e && e.message) ? e.message : String(e);
+      throw new Error('Local AI failed: ' + msg);
+    }
+
+    if (cancelled) {
+      try { if (engine && engine.unload) await engine.unload(); } catch (e) {}
+      engine = null;
+      window.vexLocalEngine = null;
+      loading = false;
+      loadBtn.disabled = false;
+      if (cancelBtn) cancelBtn.hidden = true;
+      throw new Error('Download cancelled.');
+    }
+
+    window.vexLocalEngine = engine;
+    loading = false;
+    loadBtn.disabled = true;
+    loadBtn.textContent = 'Llama loaded ✓';
+    if (cancelBtn) cancelBtn.hidden = true;
+    if (askBtn) askBtn.disabled = false;
+    setStatus('Llama 3.2 1B ready on this device. Your chats stay local.');
+    toast('Llama ready');
+    return engine;
+  }
+
+  loadBtn.addEventListener('click', function () {
+    if (loading) return;
+    if (engine || window.vexLocalEngine) {
+      setStatus('Already loaded.');
+      if (askBtn) askBtn.disabled = false;
+      return;
+    }
+    ensureEngine().catch(function (err) {
+      setStatus(err.message || 'Local AI failed.');
+      toast('Llama failed to load');
+      loadBtn.disabled = false;
+      loadBtn.textContent = 'Load Llama 3.2 1B locally';
+    });
+  });
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', function () {
+      if (!loading) return;
+      cancelled = true;
+      setStatus('Cancelling… reload the page if it stays stuck.');
+      toast('Cancel requested');
+    });
+  }
+
+  async function chat(messages, opts) {
+    var eng = await ensureEngine();
+    opts = opts || {};
+    var r = await eng.chat.completions.create({
+      messages: messages,
+      temperature: opts.temperature != null ? opts.temperature : 0.3,
+      max_tokens: opts.max_tokens != null ? opts.max_tokens : 512,
+      stream: false
+    });
+    return String((r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || '').trim();
+  }
+
+  // Shared helper used by prep / tools
+  window.vexAiChat = function (systemPrompt, userPrompt, maxTokens) {
+    return chat(
+      [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
+      { temperature: 0.2, max_tokens: maxTokens || 500 }
+    );
+  };
+
+  if (askBtn) {
+    askBtn.addEventListener('click', function () {
+      var q = promptEl ? String(promptEl.value || '').trim() : '';
+      if (!q) {
+        setStatus('Type a question first.');
+        return;
+      }
+      askBtn.disabled = true;
+      setStatus('Thinking locally…');
+      if (outEl) outEl.textContent = '';
+      var notes = notesText().slice(0, 3500);
+      var sys = notes
+        ? 'You are a concise study tutor. Prefer the student notes when relevant. If notes do not cover it, say so and answer carefully.\n\nNotes:\n' + notes
+        : 'You are a concise study tutor for school students. Keep answers clear and structured.';
+      chat([{ role: 'system', content: sys }, { role: 'user', content: q }], { max_tokens: 700 })
+        .then(function (ans) {
+          if (outEl) {
+            outEl.replaceChildren();
+            var p = document.createElement('div');
+            p.className = 'exam-question';
+            p.style.whiteSpace = 'pre-wrap';
+            p.textContent = ans || '(empty reply)';
+            outEl.appendChild(p);
+          }
+          setStatus('Done.');
+        })
+        .catch(function (err) {
+          setStatus(err.message || 'Ask failed.');
+        })
+        .finally(function () {
+          askBtn.disabled = false;
+        });
+    });
+  }
+
+  // --- Socratic mode ---
+  var sStart = $('startSocratic');
+  var sLog = $('socraticLog');
+  var sStatus = $('socraticStatus');
+  var sForm = $('socraticForm');
+  var sAnswer = $('socraticAnswer');
+  var sHint = $('socraticHint');
+  var socratic = { topic: '', turns: 0 };
+
+  function socraticPush(role, text) {
+    if (!sLog) return;
+    var d = document.createElement('div');
+    d.className = 'exam-question';
+    d.style.whiteSpace = 'pre-wrap';
+    d.style.alignSelf = role === 'user' ? 'flex-end' : 'flex-start';
+    d.textContent = (role === 'user' ? 'You: ' : 'Tutor: ') + text;
+    sLog.appendChild(d);
+    sLog.scrollTop = sLog.scrollHeight;
+  }
+
+  if (sStart) {
+    sStart.addEventListener('click', function () {
+      var topic = ($('socraticQuestion') || {}).value || '';
+      topic = String(topic).trim();
+      if (!topic) {
+        if (sStatus) sStatus.textContent = 'Enter a topic or doubt first.';
+        return;
+      }
+      socratic.topic = topic;
+      socratic.turns = 0;
+      if (sLog) sLog.replaceChildren();
+      if (sStatus) sStatus.textContent = 'Starting Socratic session…';
+      sStart.disabled = true;
+      var notes = notesText().slice(0, 2500);
+      var sys = 'You are a Socratic tutor. Ask ONE short guiding question at a time. Do not dump the full answer. Use notes if provided.\n' +
+        (notes ? ('Notes:\n' + notes) : '');
+      chat([{ role: 'system', content: sys }, { role: 'user', content: 'Topic/doubt: ' + topic + '\nStart with one question.' }], { max_tokens: 220 })
+        .then(function (ans) {
+          socraticPush('bot', ans || 'What do you already know about this?');
+          if (sStatus) sStatus.textContent = 'Reply below. Aim to explain in your own words.';
+        })
+        .catch(function (err) {
+          if (sStatus) sStatus.textContent = err.message || 'Could not start.';
+        })
+        .finally(function () { sStart.disabled = false; });
+    });
+  }
+
+  if (sForm) {
+    sForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var ans = sAnswer ? String(sAnswer.value || '').trim() : '';
+      if (!ans) return;
+      if (!socratic.topic) {
+        if (sStatus) sStatus.textContent = 'Start a session first.';
+        return;
+      }
+      socraticPush('user', ans);
+      if (sAnswer) sAnswer.value = '';
+      if (sStatus) sStatus.textContent = 'Reading your reply…';
+      socratic.turns += 1;
+      var notes = notesText().slice(0, 2000);
+      var sys = 'Socratic tutor. React briefly to the student, then ask ONE next question. Do not lecture.\nTopic: ' + socratic.topic +
+        (notes ? ('\nNotes:\n' + notes) : '');
+      chat([{ role: 'system', content: sys }, { role: 'user', content: ans }], { max_tokens: 240 })
+        .then(function (r) {
+          socraticPush('bot', r || 'Can you say that another way?');
+          if (sStatus) sStatus.textContent = 'Keep going.';
+        })
+        .catch(function (err) {
+          if (sStatus) sStatus.textContent = err.message || 'Reply failed.';
+        });
+    });
+  }
+
+  if (sHint) {
+    sHint.addEventListener('click', function () {
+      if (!socratic.topic) {
+        if (sStatus) sStatus.textContent = 'Start a session first.';
+        return;
+      }
+      if (sStatus) sStatus.textContent = 'Hint…';
+      chat(
+        [{ role: 'system', content: 'Give a short hint (not the full answer) for the topic.' },
+         { role: 'user', content: 'Topic: ' + socratic.topic + '\nOne gentle hint.' }],
+        { max_tokens: 120 }
+      ).then(function (h) {
+        socraticPush('bot', 'Hint: ' + (h || 'Break the problem into smaller steps.'));
+        if (sStatus) sStatus.textContent = '';
+      }).catch(function (err) {
+        if (sStatus) sStatus.textContent = err.message || 'Hint failed.';
+      });
+    });
+  }
+
+  // --- Question paper ---
+  var buildPaper = $('buildPaper');
+  if (buildPaper) {
+    buildPaper.addEventListener('click', function () {
+      var subject = String(($('paperSubject') || {}).value || '').trim() || 'Study topic';
+      var count = +(($('paperCount') || {}).value || 5);
+      var diff = String(($('paperDifficulty') || {}).value || 'Mixed');
+      var st = $('paperStatus');
+      var out = $('paperOutput');
+      var ansBox = $('paperAnswers');
+      var notes = notesText();
+      if (notes.length < 20) {
+        if (st) st.textContent = 'Add notes first (upload/paste) so the paper stays grounded.';
+        return;
+      }
+      buildPaper.disabled = true;
+      if (st) st.textContent = 'Generating paper with local Llama…';
+      if (out) out.replaceChildren();
+      if (ansBox) { ansBox.replaceChildren(); ansBox.hidden = true; }
+      var sys = 'You write school exam questions using ONLY the notes. Return plain text. Number questions 1..N. After all questions, write a line "ANSWER KEY" then numbered short answers.';
+      var user = 'Notes:\n' + notes.slice(0, 3500) + '\n\nSubject: ' + subject + '\nDifficulty: ' + diff + '\nWrite ' + count + ' questions.';
+      chat([{ role: 'system', content: sys }, { role: 'user', content: user }], { max_tokens: 900 })
+        .then(function (text) {
+          var parts = String(text || '').split(/ANSWER KEY/i);
+          if (out) {
+            var d = document.createElement('div');
+            d.className = 'exam-question';
+            d.style.whiteSpace = 'pre-wrap';
+            d.textContent = (parts[0] || text || '').trim();
+            out.appendChild(d);
+          }
+          if (ansBox && parts[1]) {
+            var a = document.createElement('div');
+            a.className = 'exam-question';
+            a.style.whiteSpace = 'pre-wrap';
+            a.textContent = parts[1].trim();
+            ansBox.appendChild(a);
+          }
+          var tk = $('toggleAnswerKey');
+          var pr = $('printPaper');
+          if (tk) { tk.hidden = !parts[1]; tk.onclick = function () { if (ansBox) ansBox.hidden = !ansBox.hidden; }; }
+          if (pr) {
+            pr.hidden = false;
+            pr.onclick = function () { window.print(); };
+          }
+          if (st) st.textContent = 'Paper ready.';
+        })
+        .catch(function (err) {
+          if (st) st.textContent = err.message || 'Paper generation failed.';
+        })
+        .finally(function () { buildPaper.disabled = false; });
+    });
+  }
+
+  // --- Interactive quiz ---
+  var startQuiz = $('startQuiz');
+  if (startQuiz) {
+    startQuiz.addEventListener('click', function () {
+      var topic = String(($('quizTopic') || {}).value || '').trim() || 'Study topic';
+      var count = +(($('quizCount') || {}).value || 5);
+      var st = $('quizStatus') || $('quizGenStatus');
+      // try common status ids
+      var statusNode = $('quizStatus');
+      if (!statusNode) {
+        // create soft status on the button area
+        statusNode = startQuiz.parentElement && startQuiz.parentElement.querySelector('.exam-status');
+      }
+      var play = $('quizPlay');
+      var notes = notesText();
+      if (notes.length < 20) {
+        if (statusNode) statusNode.textContent = 'Add notes first.';
+        else toast('Add notes first');
+        return;
+      }
+      startQuiz.disabled = true;
+      if (statusNode) statusNode.textContent = 'Building quiz…';
+      if (play) play.replaceChildren();
+      var sys = 'Return ONLY a JSON array of MCQs. Each: {"question":"...","options":["A","B","C","D"],"correctIndex":0,"explanation":"..."}. Use ONLY the notes. No markdown.';
+      var user = 'Notes:\n' + notes.slice(0, 3000) + '\n\nTopic: ' + topic + '\nWrite ' + count + ' MCQs as JSON array.';
+      chat([{ role: 'system', content: sys }, { role: 'user', content: user }], { max_tokens: 1000 })
+        .then(function (raw) {
+          raw = String(raw || '').replace(/```(?:json)?/gi, '').trim();
+          var start = raw.search(/\[/);
+          var end = raw.lastIndexOf(']');
+          var list = [];
+          try {
+            list = JSON.parse(start >= 0 && end > start ? raw.slice(start, end + 1) : raw);
+          } catch (e) { list = []; }
+          if (!Array.isArray(list) || !list.length) throw new Error('Model did not return quiz JSON. Try fewer questions or shorter notes.');
+          if (!play) throw new Error('Quiz play area missing in UI.');
+          var score = 0, answered = 0;
+          list.slice(0, count).forEach(function (q, i) {
+            var card = document.createElement('div');
+            card.className = 'exam-question';
+            var h = document.createElement('strong');
+            h.textContent = (i + 1) + '. ' + (q.question || q.q || '');
+            card.appendChild(h);
+            var opts = Array.isArray(q.options) ? q.options : [];
+            var wrap = document.createElement('div');
+            wrap.className = 'exam-options';
+            var ci = Number(q.correctIndex);
+            if (!(ci >= 0 && ci < opts.length)) ci = 0;
+            opts.forEach(function (op, k) {
+              var b = document.createElement('button');
+              b.type = 'button';
+              b.className = 'exam-option';
+              b.textContent = String.fromCharCode(65 + k) + '. ' + op;
+              b.addEventListener('click', function () {
+                if (card.dataset.done) return;
+                card.dataset.done = '1';
+                answered++;
+                [].forEach.call(wrap.children, function (x, j) {
+                  x.disabled = true;
+                  if (j === ci) x.classList.add('correct');
+                  else if (j === k) x.classList.add('incorrect');
+                });
+                if (k === ci) score++;
+                var fb = document.createElement('p');
+                fb.className = 'exam-feedback';
+                fb.textContent = (k === ci ? 'Correct. ' : 'Not quite. ') + (q.explanation || '');
+                card.appendChild(fb);
+                if (answered >= list.slice(0, count).length && statusNode) {
+                  statusNode.textContent = 'Score: ' + score + '/' + answered;
+                }
+              });
+              wrap.appendChild(b);
+            });
+            card.appendChild(wrap);
+            play.appendChild(card);
+          });
+          if (statusNode) statusNode.textContent = 'Answer each question.';
+        })
+        .catch(function (err) {
+          if (statusNode) statusNode.textContent = err.message || 'Quiz failed.';
+          else toast(err.message || 'Quiz failed.');
+        })
+        .finally(function () { startQuiz.disabled = false; });
+    });
+  }
+
+  // saveIntervals – wire if present
+  var saveInt = $('saveIntervals');
+  if (saveInt) {
+    saveInt.addEventListener('click', function () {
+      var f = $('focusMinutesCustom');
+      var b = $('breakMinutesCustom');
+      var st = $('intervalStatus');
+      var fm = f ? Math.max(5, Math.min(120, +f.value || 25)) : 25;
+      var bm = b ? Math.max(1, Math.min(45, +b.value || 5)) : 5;
+      try {
+        localStorage.setItem('vex_intervals', JSON.stringify({ focus: fm, brk: bm }));
+      } catch (e) {}
+      if (st) st.textContent = 'Saved: ' + fm + ' min focus / ' + bm + ' min break. (Applied next timer preset use.)';
+      toast('Intervals saved');
+    });
+  }
+
+  var refreshInsights = $('refreshInsights');
+  if (refreshInsights) {
+    refreshInsights.addEventListener('click', function () {
+      var fe = $('focusEfficiency');
+      var fg = $('forgettingEstimate');
+      try {
+        var raw = localStorage.getItem('focus_redesign_v1');
+        var state = raw ? JSON.parse(raw) : {};
+        var hist = state.quizHistory || [];
+        var avg = hist.length ? Math.round(hist.reduce(function (a, q) { return a + (Number(q.score) || 0); }, 0) / hist.length) : null;
+        if (fe) fe.textContent = avg != null ? ('Focus efficiency: avg quiz score ' + avg + '% across ' + hist.length + ' logs') : 'Focus efficiency: no quiz logs yet';
+        if (fg) fg.textContent = (state.reviews && state.reviews.length)
+          ? ('Review estimate: ' + state.reviews.filter(function (r) { return !r.done; }).length + ' open review items')
+          : 'Review estimate: add topics to Reviews';
+      } catch (e) {
+        if (fe) fe.textContent = 'Focus efficiency: could not read local data';
+      }
+      toast('Insights refreshed');
+    });
+  }
+})();
+</script>
 <style id="vex-motion-v5">
 /* ==========================================================================
    VEX Motion v5 — animation + smoothness layer (loaded last).
