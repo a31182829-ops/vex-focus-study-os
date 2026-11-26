@@ -7974,6 +7974,136 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
   link('drawerImportData', function () { if (im) im.click(); });
 })();
 </script>
+<script>
+/* VEX.STUDY – notes file upload (was missing: picker opened but files never landed in #notesInput) */
+(function () {
+  'use strict';
+  var fileInput = document.getElementById('notesFile');
+  var photoInput = document.getElementById('textbookPhoto');
+  var notesInput = document.getElementById('notesInput');
+  var statusEl = document.getElementById('textbookStatus');
+  var featEl = document.getElementById('featureNotesStatus');
+  if (!fileInput || !notesInput) return;
+
+  function setStatus(msg, state) {
+    if (!statusEl) return;
+    statusEl.textContent = msg;
+    if (state) statusEl.setAttribute('data-state', state);
+    else statusEl.removeAttribute('data-state');
+  }
+
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(function () { t.classList.remove('show'); }, 2400);
+  }
+
+  function readTextFile(file) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(String(r.result || '')); };
+      r.onerror = function () { reject(new Error('Could not read ' + (file.name || 'file'))); };
+      r.readAsText(file);
+    });
+  }
+
+  function isTexty(file) {
+    var name = String(file.name || '').toLowerCase();
+    var type = String(file.type || '').toLowerCase();
+    if (type.indexOf('text/') === 0) return true;
+    if (type === 'application/json' || type === 'application/csv') return true;
+    return /\.(txt|md|markdown|csv|json|log|text)$/i.test(name);
+  }
+
+  function isPdf(file) {
+    var name = String(file.name || '').toLowerCase();
+    var type = String(file.type || '').toLowerCase();
+    return type === 'application/pdf' || /\.pdf$/i.test(name);
+  }
+
+  fileInput.addEventListener('change', function () {
+    var files = Array.prototype.slice.call(fileInput.files || []);
+    fileInput.value = '';
+    if (!files.length) return;
+
+    setStatus('Reading ' + files.length + ' file' + (files.length === 1 ? '' : 's') + '…', 'loading');
+
+    var chunks = [];
+    var skipped = [];
+    var i = 0;
+
+    function next() {
+      if (i >= files.length) {
+        finish();
+        return;
+      }
+      var f = files[i++];
+      if (isTexty(f)) {
+        readTextFile(f).then(function (t) {
+          t = String(t || '').replace(/\u0000/g, '').trim();
+          if (t) chunks.push('// --- ' + (f.name || 'notes') + ' ---\n' + t);
+          else skipped.push((f.name || 'file') + ' (empty)');
+          next();
+        }).catch(function () {
+          skipped.push(f.name || 'file');
+          next();
+        });
+      } else if (isPdf(f)) {
+        skipped.push((f.name || 'PDF') + ' — paste the text, or export as .txt first (PDF extract not wired in this build)');
+        next();
+      } else {
+        skipped.push((f.name || 'file') + ' (unsupported type)');
+        next();
+      }
+    }
+
+    function finish() {
+      if (!chunks.length) {
+        setStatus(
+          skipped.length
+            ? ('Nothing imported. ' + skipped.join('; '))
+            : 'No readable text found in the selected files.',
+          'error'
+        );
+        toast('Upload failed — try a .txt / .md file');
+        return;
+      }
+
+      var existing = notesInput.value.trim();
+      var joined = chunks.join('\n\n');
+      notesInput.value = existing ? (existing + '\n\n' + joined) : joined;
+      try {
+        notesInput.dispatchEvent(new Event('input', { bubbles: true }));
+      } catch (e) {}
+
+      var msg = 'Imported ' + chunks.length + ' file' + (chunks.length === 1 ? '' : 's') + ' into your notes.';
+      if (skipped.length) msg += ' Skipped: ' + skipped.join('; ');
+      setStatus(msg, 'success');
+      if (featEl) {
+        featEl.textContent =
+          'Notes loaded (' + notesInput.value.length + ' chars). Ready for flashcards, quizzes and study help.';
+      }
+      toast(chunks.length + ' notes file' + (chunks.length === 1 ? '' : 's') + ' imported');
+    }
+
+    next();
+  });
+
+  if (photoInput) {
+    photoInput.addEventListener('change', function () {
+      photoInput.value = '';
+      setStatus(
+        'Camera scan needs OCR, which is not loaded in this standalone build. Paste the text or upload a .txt / .md file instead.',
+        'error'
+      );
+      toast('Photo OCR not available here — paste text instead');
+    });
+  }
+})();
+</script>
 <style id="vex-motion-v5">
 /* ==========================================================================
    VEX Motion v5 — animation + smoothness layer (loaded last).
