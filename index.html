@@ -7975,7 +7975,7 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
 })();
 </script>
 <script>
-/* VEX.STUDY – notes file upload (was missing: picker opened but files never landed in #notesInput) */
+/* VEX.STUDY – notes file upload + PDF text extract (pdf.js CDN) */
 (function () {
   'use strict';
   var fileInput = document.getElementById('notesFile');
@@ -7984,6 +7984,10 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
   var statusEl = document.getElementById('textbookStatus');
   var featEl = document.getElementById('featureNotesStatus');
   if (!fileInput || !notesInput) return;
+
+  var PDFJS_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  var PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  var pdfjsReady = null;
 
   function setStatus(msg, state) {
     if (!statusEl) return;
@@ -8010,6 +8014,15 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
     });
   }
 
+  function readArrayBuffer(file) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(r.result); };
+      r.onerror = function () { reject(new Error('Could not read ' + (file.name || 'file'))); };
+      r.readAsArrayBuffer(file);
+    });
+  }
+
   function isTexty(file) {
     var name = String(file.name || '').toLowerCase();
     var type = String(file.type || '').toLowerCase();
@@ -8022,6 +8035,64 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
     var name = String(file.name || '').toLowerCase();
     var type = String(file.type || '').toLowerCase();
     return type === 'application/pdf' || /\.pdf$/i.test(name);
+  }
+
+  function loadPdfJs() {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (pdfjsReady) return pdfjsReady;
+    pdfjsReady = new Promise(function (resolve, reject) {
+      var s = document.createElement('script');
+      s.src = PDFJS_SRC;
+      s.async = true;
+      s.onload = function () {
+        try {
+          if (!window.pdfjsLib) throw new Error('pdf.js failed to load');
+          window.pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+          resolve(window.pdfjsLib);
+        } catch (e) {
+          reject(e);
+        }
+      };
+      s.onerror = function () {
+        pdfjsReady = null;
+        reject(new Error('Could not load PDF engine (check network)'));
+      };
+      document.head.appendChild(s);
+    });
+    return pdfjsReady;
+  }
+
+  function extractPdfText(file) {
+    return loadPdfJs().then(function (pdfjsLib) {
+      return readArrayBuffer(file).then(function (buf) {
+        return pdfjsLib.getDocument({ data: buf }).promise;
+      }).then(function (pdf) {
+        var maxPages = Math.min(pdf.numPages || 0, 40); // keep it sane on phones
+        var parts = [];
+        var pageNo = 1;
+        function nextPage() {
+          if (pageNo > maxPages) {
+            var text = parts.join('\n\n').replace(/\s+\n/g, '\n').trim();
+            if (!text) throw new Error('No extractable text (scanned/image PDF?)');
+            if ((pdf.numPages || 0) > maxPages) {
+              text += '\n\n// …truncated: only first ' + maxPages + ' of ' + pdf.numPages + ' pages';
+            }
+            return text;
+          }
+          var n = pageNo++;
+          return pdf.getPage(n).then(function (page) {
+            return page.getTextContent().then(function (content) {
+              var line = (content.items || []).map(function (it) {
+                return it && it.str ? it.str : '';
+              }).join(' ').replace(/\s+/g, ' ').trim();
+              if (line) parts.push(line);
+              return nextPage();
+            });
+          });
+        }
+        return nextPage();
+      });
+    });
   }
 
   fileInput.addEventListener('change', function () {
@@ -8052,8 +8123,17 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
           next();
         });
       } else if (isPdf(f)) {
-        skipped.push((f.name || 'PDF') + ' — paste the text, or export as .txt first (PDF extract not wired in this build)');
-        next();
+        setStatus('Extracting text from PDF: ' + (f.name || 'document') + '…', 'loading');
+        extractPdfText(f).then(function (t) {
+          t = String(t || '').trim();
+          if (t) chunks.push('// --- ' + (f.name || 'PDF') + ' ---\n' + t);
+          else skipped.push((f.name || 'PDF') + ' (no text found)');
+          next();
+        }).catch(function (err) {
+          var reason = (err && err.message) ? err.message : 'could not extract text';
+          skipped.push((f.name || 'PDF') + ' — ' + reason);
+          next();
+        });
       } else {
         skipped.push((f.name || 'file') + ' (unsupported type)');
         next();
@@ -8068,7 +8148,7 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
             : 'No readable text found in the selected files.',
           'error'
         );
-        toast('Upload failed — try a .txt / .md file');
+        toast('Upload failed — try another file or paste the text');
         return;
       }
 
@@ -8086,7 +8166,7 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
         featEl.textContent =
           'Notes loaded (' + notesInput.value.length + ' chars). Ready for flashcards, quizzes and study help.';
       }
-      toast(chunks.length + ' notes file' + (chunks.length === 1 ? '' : 's') + ' imported');
+      toast(chunks.length + ' file' + (chunks.length === 1 ? '' : 's') + ' imported');
     }
 
     next();
@@ -8096,10 +8176,10 @@ html body .empty-state{border:1px dashed var(--line);border-radius:var(--vx2-r-m
     photoInput.addEventListener('change', function () {
       photoInput.value = '';
       setStatus(
-        'Camera scan needs OCR, which is not loaded in this standalone build. Paste the text or upload a .txt / .md file instead.',
+        'Camera scan needs OCR, which is not loaded in this standalone build. Paste the text or upload a .txt / .md / text PDF instead.',
         'error'
       );
-      toast('Photo OCR not available here — paste text instead');
+      toast('Photo OCR not available here — use PDF or paste text');
     });
   }
 })();
